@@ -10,15 +10,17 @@ export default function Home() {
         <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
           <Sidebar />
         </div>
-        <CodeMirror
-          value="console.log('hello world!');"
-          theme={sublime}
-          height="100%"
-          extensions={[javascript({ jsx: true })]}
-          onChange={(value, viewUpdate) => {
-            console.log('value:', value);
-          }}
-        />
+        <div className="col-auto col-md-9 col-xl-10 px-sm-10 px-0">
+          <CodeMirror
+            value="console.log('hello world!');"
+            theme={sublime}
+            minHeight="100%"
+            extensions={[javascript({ jsx: true })]}
+            onChange={(value, viewUpdate) => {
+              console.log('value:', value);
+            }}
+          />
+        </div>
       </div>
     </div>
   )
