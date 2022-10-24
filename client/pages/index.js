@@ -12,9 +12,10 @@ export default function Home() {
         </div>
         <div className="col-auto col-md-9 col-xl-10 px-sm-10 px-0">
           <CodeMirror
+            className="h-100"
             value="console.log('hello world!');"
             theme={sublime}
-            minHeight="100%"
+            height='100%'
             extensions={[javascript({ jsx: true })]}
             onChange={(value, viewUpdate) => {
               console.log('value:', value);
