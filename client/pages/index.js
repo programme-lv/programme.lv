@@ -12,6 +12,19 @@ int main() {
   cout<<"Hello, world!"<<endl;
 }
 `
+
+var written_code = hello_cpp;
+
+function execute_code() {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: written_code })
+  };
+  fetch('/api/execute', requestOptions)
+      .then(response => response.json())
+}
+
 export default function Home() {
   return (
     <div className="container-fluid">
@@ -20,16 +33,21 @@ export default function Home() {
           <Sidebar />
         </div>
         <div className="col-auto col-md-9 col-xl-10 px-sm-10 px-0">
-          <CodeMirror
-            className="h-100"
-            value={hello_cpp}
-            theme={sublime}
-            height='100%'
-            extensions={[cpp()]}
-            onChange={(value, viewUpdate) => {
-              console.log('value:', value);
-            }}
-          />
+          <div className="h-75">
+            <CodeMirror
+              className="h-100"
+              value={hello_cpp}
+              theme={sublime}
+              height='100%'
+              extensions={[cpp()]}
+              onChange={(value, viewUpdate) => {
+                written_code = value;
+              }}
+            />
+          </div>
+          <div className="h-25 bg-dark">
+            <button onClick={execute_code} type="button" className="btn btn-success">Success</button>
+          </div>
         </div>
       </div>
     </div>
