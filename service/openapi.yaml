@@ -30,6 +30,13 @@ paths:
       summary: atgriež informāciju par uzdevumu
       tags:
         - tasks
+      parameters:
+        - in: path
+          name: task_id
+          schema:
+            type: integer
+          required: true
+          description: uzdevuma identifikators
       responses:
         '200':
           description: OK
@@ -46,6 +53,13 @@ paths:
       summary: izdzēš uzdevumu
       tags:
         - tasks
+      parameters:
+        - in: path
+          name: task_id
+          schema:
+            type: integer
+          required: true
+          description: uzdevuma identifikators
       responses:
         '200':
           description: OK
@@ -70,10 +84,39 @@ paths:
       summary: atgriež iesūtījuma rezultātus
       tags:
         - submissions
+      parameters:
+        - in: path
+          name: subm_id
+          schema:
+            type: integer
+          required: true
+          description: iesūtījuma identifikators
       responses:
         '200':
           description: OK
-
+  /execute/enqueue:
+    post:
+      summary: izveido iesūtījumu izpildei bez uzdevuma
+      tags:
+        - execute
+      responses:
+        '200':
+          description: OK
+  /execute/{execution_id}:
+    get:
+      summary: iegūst izpildes statusu
+      tags:
+        - execute
+      parameters:
+        - in: path
+          name: execution_id
+          schema:
+            type: integer
+          required: true
+          description: izpildes identifikators
+      responses:
+        '200':
+          description: OK
 tags:
   - name: tasks
     description: Uzdevumu izveide, dzēšana, saraksts.

@@ -1,5 +1,19 @@
 # deikstra
+
+UZMANĪBU! MAN PAŠAM NAV SKAIDRS, VAI DEIKSTRA IR SERVICE VAI PLATFORMA
+TAD JAU KAUT KAD VĒLĀK PRECIZĒS TOS NOSAUKUMUS
+
 Moderna programmēšanas izglītības platforma.
+
+"Deikstra" ir sacensību programmēšanai paredzēts testēšanas serveris. Tas paredz divu veidu iesūtījumus: ar un bez iepriekš defineta uzdevuma.
+
+Iesūtījums bez iepriekš definēta uzdevuma satur ievaddatus, kas tiks padoti programmai, un atgriež tās izvaddatus.
+
+Iepriekš definēta uzdevuma svarīgākā komponente - loģika, kas piešķir iesūtījumam tā rezultātu.
+
+Uzdevums parasti satur testu kopu, uz kuras tiek izpildīts un pārbaudīts lietotāja sarakstītais problēmas risinājuma pirmkods.
+
+Iesūtītais lietotāja pirmkods darbojas norobežotā vidē, kas neļauj veikt kaitējumu sistēmai, uz kuras tas tiek izpildīts.
 
 ## Mērķis
 
