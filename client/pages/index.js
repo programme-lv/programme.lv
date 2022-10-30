@@ -27,12 +27,11 @@ function execute_code() {
 
 export default function Home() {
   return (
-    <div className="container-fluid">
-      <div className="row flex-nowrap">
-        <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
-          <Sidebar />
+    <div className="d-flex">
+        <div className="bg-dark">
+          <Sidebar/>
         </div>
-        <div className="col-auto col-md-9 col-xl-10 px-sm-10 px-0">
+        <div className="flex-grow-1">
           <div className="h-75">
             <CodeMirror
               className="h-100"
@@ -45,11 +44,20 @@ export default function Home() {
               }}
             />
           </div>
-          <div className="h-25 bg-dark">
-            <button onClick={execute_code} type="button" className="btn btn-success">Success</button>
+          <div className="h-25 bg-dark p-2 pb-3 d-flex">
+            <div className='col-4 px-3 d-flex flex-column'>
+              <label className="form-label text-white">Standard Input ( stdin )</label>
+              <textarea className="form-control flex-grow-1" spellCheck="false"></textarea>
+            </div>
+            <div className="col-4 px-3 d-flex flex-column">
+              <label className="form-label text-white">Expected Output ( stdout )</label>
+              <textarea className="form-control flex-grow-1" spellCheck="false"></textarea>
+            </div>
+            <div className="col-4 px-3">
+              <button onClick={execute_code} className="col btn btn-success" type="button">Run</button>
+            </div>
           </div>
         </div>
-      </div>
     </div>
   )
 }
