@@ -6,6 +6,10 @@ func EnqueueExecution(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }
 
+func ListExecutions(w http.ResponseWriter, r *http.Request) {
+	// TODO
+}
+
 func GetExecution(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }
