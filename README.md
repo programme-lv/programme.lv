@@ -1,7 +1,6 @@
-# deikstra
+## projekts joprojām ir analīzes fāzē. kods nav aktuāls.
 
-UZMANĪBU! MAN PAŠAM NAV SKAIDRS, VAI DEIKSTRA IR SERVICE VAI PLATFORMA
-TAD JAU KAUT KAD VĒLĀK PRECIZĒS TOS NOSAUKUMUS
+# deikstra
 
 Moderna programmēšanas izglītības platforma.
 
