@@ -9,5 +9,5 @@ class TestStatus:
     PE  =   7   # Presentation Error
     ILE =   8   # Idleness Limit Exceeded
     IG  =   9   # Ignored
-    SV  =   10   # Security Violation
+    SV  =   10  # Security Violation
     CF  =   11  # Check Failed
