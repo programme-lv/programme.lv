@@ -1,6 +1,6 @@
 SRC = $(CURDIR)/source
 BLD = $(CURDIR)/build
-RES = $(CURDIR)/built
+RES = $(CURDIR)/result
 
 $(shell mkdir -p $(BLD))
 $(shell mkdir -p $(RES))
