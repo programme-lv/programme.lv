@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+// Scheduler GRPC server definitions
+service Scheduler {
+    rpc RegisterWorker(RegisterReq) returns (RegisterRes) {}
+    rpc DeregisterWorker(DeregisterReq) returns (DeregisterRes) {}
+}
+
+message RegisterReq {
+    string address = 1;
+}
+
+message RegisterRes {
+    bool success = 1;
+    string workerID = 2;
+}
+
+message DeregisterReq {
+    string workerID = 1;
+}
+
+message DeregisterRes {
+    bool success = 1;
+}
