@@ -13,8 +13,12 @@ mkdir result
     echo "g++ source/generator.cpp -o build/generator";
 ) | parallel -t
 
-# create tests
+# generate tests
 mkdir result/tests
 (cd ./result/tests && ../../build/generator)
 
+# generate answers for the tests
 ls result/tests | parallel -t "build/solution < result/tests/{} > result/tests/{}.a"
+
+# remove build folder
+rm -r build

@@ -4,11 +4,11 @@ using namespace std;
 
 void write_test(int test) {
     startTest(test);
-
     int a = rnd.next(1, test*test);
     int b = rnd.next(1, test*test);
     println(a,b);
 }
+
 int main(int argc, char* argv[]) {
     registerGen(argc, argv, 1);
 
