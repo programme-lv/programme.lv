@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # this script installs tasks into /srv/deikstra/tasks
 
 
@@ -7,10 +9,13 @@ if [ $EUID != 0 ]; then
     exit $?
 fi
 
+rm -r /srv/deikstra/tasks
 mkdir -p /srv/deikstra/tasks
 
 for task in ./*; do
     if [ -d "$task" ]; then
-        cp -r "$task" /srv/deikstra/tasks
+        (cd $task;./compile.sh)
+        cp -r "$task"/result /srv/deikstra/tasks/$task
+        rm -r $task/result
     fi
 done

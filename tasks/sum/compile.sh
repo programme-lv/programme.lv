@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # clean previous build
 rm -fr build
 rm -fr result
