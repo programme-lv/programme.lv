@@ -4,7 +4,7 @@
 // - protoc             v3.21.9
 // source: grpc/deikstra.proto
 
-package grpc
+package __
 
 import (
 	context "context"

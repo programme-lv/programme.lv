@@ -10,7 +10,7 @@ import (
 	"net"
 	"net/http"
 
-	pb "github.com/KrisjanisP/deikstra/grpc"
+	pb "github.com/KrisjanisP/deikstra/tree/main/grpc"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 )
