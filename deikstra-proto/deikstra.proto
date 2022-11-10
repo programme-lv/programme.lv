@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "deikstra/deikstra-proto";
+option go_package = "github.com/KrisjanisP/deikstra/tree/main/deikstra-proto";
 
 // import "google/protobuf/empty.proto";
 
