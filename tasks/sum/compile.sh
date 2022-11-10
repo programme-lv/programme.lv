@@ -27,5 +27,8 @@ done
 # generate answers for the tests
 ls result/tests | parallel -t "build/solution < result/tests/{} > result/tests/{}.a"
 
+# copy problem.json
+cp ./source/problem.json ./result/problem.json
+
 # remove build folder
 rm -r build
