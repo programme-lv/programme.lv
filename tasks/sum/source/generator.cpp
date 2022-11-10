@@ -12,6 +12,6 @@ void write_test(int test) {
 int main(int argc, char* argv[]) {
     registerGen(argc, argv, 1);
 
-    for(int i=1;i<=10;i++)
+    for(int i=1;i<=20;i++)
         write_test(i);
 }

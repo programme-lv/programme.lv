@@ -25,11 +25,17 @@ for task in ./*; do
             continue
         fi
         
+        if [ -d "$dest" ]
+        then
+            echo "erasing task \"$(basename -- $task)\" is outdated"
+            rm -r "$dest"
+        fi
+
         echo "copying task \"$(basename -- $task)\" into $tasks_dir"
         if [ ! -d "$task/result" ]; then
             (cd $task;./compile.sh)
         fi
-        cp -r $task/result $dest
+        cp -r "$task/result" "$dest"
         # rm -r $task/result
     fi
 done
