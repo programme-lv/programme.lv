@@ -19,6 +19,11 @@ mkdir result
 mkdir result/tests
 (cd ./result/tests && ../../build/generator)
 
+# rename tests
+for t in result/tests/*; do
+    mv $t result/tests/"$(printf '%03d' "$(basename -- $t)")"
+done
+
 # generate answers for the tests
 ls result/tests | parallel -t "build/solution < result/tests/{} > result/tests/{}.a"
 
