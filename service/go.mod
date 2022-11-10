@@ -1,4 +1,4 @@
-module deikstra-service
+module github.com/KrisjanisP/deikstra/tree/main/service
 
 go 1.19
 
