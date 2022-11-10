@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-option go_package = "github.com/KrisjanisP/deikstra/tree/main/deikstra-proto";
+option go_package = "github.com/KrisjanisP/deikstra/tree/main/grpc";
 
 // import "google/protobuf/empty.proto";
 
-package deikstra_proto;
+package grpc;
 
 service Scheduler {
     rpc GetJobs(RegisterWorker) returns (stream Job) {}

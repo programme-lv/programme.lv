@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.9
-// source: deikstra-proto/deikstra.proto
+// source: grpc/deikstra.proto
 
-package deikstra_proto
+package grpc
 
 import (
 	context "context"
@@ -34,7 +34,7 @@ func NewSchedulerClient(cc grpc.ClientConnInterface) SchedulerClient {
 }
 
 func (c *schedulerClient) GetJobs(ctx context.Context, in *RegisterWorker, opts ...grpc.CallOption) (Scheduler_GetJobsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[0], "/deikstra_proto.Scheduler/GetJobs", opts...)
+	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[0], "/grpc.Scheduler/GetJobs", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -118,7 +118,7 @@ func (x *schedulerGetJobsServer) Send(m *Job) error {
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Scheduler_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "deikstra_proto.Scheduler",
+	ServiceName: "grpc.Scheduler",
 	HandlerType: (*SchedulerServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
@@ -128,5 +128,5 @@ var Scheduler_ServiceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "deikstra-proto/deikstra.proto",
+	Metadata: "grpc/deikstra.proto",
 }
