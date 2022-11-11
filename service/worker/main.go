@@ -2,10 +2,8 @@ package main
 
 import (
 	"context"
-	"flag"
 	"io"
 	"log"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,25 +11,22 @@ import (
 	pb "github.com/KrisjanisP/deikstra/service/protofiles"
 )
 
-var (
-	serverAddr = flag.String("addr", "localhost:50051", "The server address in the format of host:port")
-)
-
 func main() {
-	flag.Parse()
+	config := LoadAppConfig()
 
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	conn, err := grpc.Dial(*serverAddr, opts...)
+	conn, err := grpc.Dial(config.SchedulerAddr, opts...)
 	if err != nil {
 		log.Fatalf("fail to dial: %v", err)
 	}
+
 	defer conn.Close()
 
 	client := pb.NewSchedulerClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	stream, err := client.GetJobs(ctx, &pb.RegisterWorker{WorkerName: "teest"})

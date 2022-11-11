@@ -1,0 +1,2 @@
+scheduler_address = "localhost:50051"
+worker_count = 8

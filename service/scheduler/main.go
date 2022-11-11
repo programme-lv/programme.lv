@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-func RegisterProductRoutes(router *mux.Router) {
+func registerAPIRoutes(router *mux.Router) {
 	// tasks
 	router.HandleFunc("/tasks/list", controllers.ListTasks).Methods("GET")
 	router.HandleFunc("/tasks/info/{task_id}", controllers.GetTask).Methods("GET")
@@ -36,10 +36,6 @@ func RegisterProductRoutes(router *mux.Router) {
 	router.HandleFunc("/execute/info/{execution_id}", controllers.GetExecution).Methods("GET")
 }
 
-var (
-	port = flag.Int("port", 50051, "The server port")
-)
-
 type server struct {
 	pb.UnimplementedSchedulerServer
 }
@@ -50,6 +46,10 @@ func (s *server) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsS
 	}
 	return nil
 }
+
+var (
+	port = flag.Int("port", 50051, "The server port")
+)
 
 func main() {
 	flag.Parse()
@@ -75,7 +75,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	// register routes
-	RegisterProductRoutes(router)
+	registerAPIRoutes(router)
 
 	// start the server
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", AppConfig.Port), router))
