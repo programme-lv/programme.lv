@@ -1,8 +1,9 @@
 package database
 
 import (
-	"deikstra-service/models"
 	"log"
+
+	"github.com/KrisjanisP/deikstra/service/scheduler/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"

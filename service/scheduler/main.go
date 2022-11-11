@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	"deikstra-service/controllers"
-	"deikstra-service/database"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 
-	pb "github.com/KrisjanisP/deikstra/protofiles"
+	"github.com/KrisjanisP/deikstra/service/scheduler/controllers"
+	"github.com/KrisjanisP/deikstra/service/scheduler/database"
+
+	pb "github.com/KrisjanisP/deikstra/service/protofiles"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 )

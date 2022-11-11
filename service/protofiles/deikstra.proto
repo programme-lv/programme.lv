@@ -1,6 +1,6 @@
 syntax = "proto3";
 package protofiles;
-option go_package = "github.com/KrisjanisP/deikstra/protofiles";
+option go_package = "github.com/KrisjanisP/deikstra/service/protofiles";
 
 // import "google/protobuf/empty.proto";
 
