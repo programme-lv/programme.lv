@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"strconv"
 
 	"github.com/KrisjanisP/deikstra/service/scheduler/controllers"
 	"github.com/KrisjanisP/deikstra/service/scheduler/database"
@@ -40,15 +40,15 @@ var (
 	port = flag.Int("port", 50051, "The server port")
 )
 
-// server is used to implement helloworld.GreeterServer.
 type server struct {
-	pb.UnimplementedGreeterServer
+	pb.UnimplementedSchedulerServer
 }
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+func (s *server) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
+	for i := 0; i < 100000; i++ {
+		stream.Send(&pb.Job{JobId: strconv.Itoa(i), TaskName: "sum"})
+	}
+	return nil
 }
 
 func main() {
@@ -58,7 +58,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
+	pb.RegisterSchedulerServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -78,6 +78,5 @@ func main() {
 	RegisterProductRoutes(router)
 
 	// start the server
-	log.Println(fmt.Sprintf("Starting Server on port %s", AppConfig.Port))
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", AppConfig.Port), router))
 }
