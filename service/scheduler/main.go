@@ -13,6 +13,6 @@ func main() {
 	config := LoadAppConfig()
 
 	initDatabase(config)
-	startSchedulerServer(config)
+	go startWorkerServer(config)
 	startAPIServer(config)
 }

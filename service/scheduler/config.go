@@ -35,7 +35,8 @@ func LoadAppConfig() WorkerConfig {
 		log.Fatal(err)
 	}
 
-	log.Printf("scheduler's open port: %v", res)
+	log.Printf("scheduler's API port: %v", res.APIPort)
+	log.Printf("scheduler's WORKER port: %v", res.WorkerPort)
 	log.Printf("DB connection string: %v", res.DBConnString)
 
 	return res

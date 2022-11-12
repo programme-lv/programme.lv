@@ -23,7 +23,7 @@ func (s *server) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsS
 	return nil
 }
 
-func startSchedulerServer(config WorkerConfig) {
+func startWorkerServer(config WorkerConfig) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.WorkerPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

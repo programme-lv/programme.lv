@@ -22,7 +22,7 @@ func Connect(connectionString string) {
 }
 
 func Migrate() {
-	err = Instance.AutoMigrate(&models.Product{})
+	err = Instance.AutoMigrate(&models.TaskSubmission{})
 	if err != nil {
 		log.Fatal(err)
 		panic("Couldnt migrate DB")

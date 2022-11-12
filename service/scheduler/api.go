@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 
 	"github.com/KrisjanisP/deikstra/service/scheduler/controllers"
@@ -30,7 +31,14 @@ func registerAPIRoutes(router *mux.Router) {
 }
 
 func startAPIServer(config WorkerConfig) {
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.APIPort))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
 	router := mux.NewRouter().StrictSlash(true)
 	registerAPIRoutes(router)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", config.APIPort), router))
+	log.Printf("rest server listening at %v", lis.Addr())
+	if err := http.Serve(lis, router); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
