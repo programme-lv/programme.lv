@@ -6,24 +6,37 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Port             string `mapstructure:"port"`
-	ConnectionString string `mapstructure:"connection_string"`
+type WorkerConfig struct {
+	APIPort      int    `mapstructure:"api_port"`
+	WorkerPort   int    `mapstructure:"worker_port"`
+	DBConnString string `mapstructure:"db_conn_string"`
 }
 
-var AppConfig *Config
+func LoadAppConfig() WorkerConfig {
+	res := WorkerConfig{}
 
-func LoadAppConfig() {
-	log.Println("Loading Server Configurations...")
+	log.Println("Loading worker configurations...")
+
+	viper.SetDefault("api_port", 8080)
+	viper.SetDefault("worker_port", 50051)
+	viper.SetDefault("db_conn_string", "data.db")
+
+	viper.SetConfigFile("config.toml")
+	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = viper.Unmarshal(&AppConfig)
+
+	err = viper.Unmarshal(&res)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("scheduler's open port: %v", res)
+	log.Printf("DB connection string: %v", res.DBConnString)
+
+	return res
 }
