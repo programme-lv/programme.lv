@@ -10,7 +10,6 @@ mkdir result
 
 # compile generator, solution, checker
 (
-    echo "g++ source/checker.cpp -o result/checker"; 
     echo "g++ source/solution.cpp -o build/solution";
     echo "g++ source/generator.cpp -o build/generator";
 ) | parallel -t
@@ -21,11 +20,11 @@ mkdir result/tests
 
 # rename tests
 for t in result/tests/*; do
-    mv $t result/tests/"$(printf '%03d' "$(basename -- $t)")"
+    mv $t result/tests/"$(printf '%03d.in' "$(basename -- $t)")"
 done
 
 # generate answers for the tests
-ls result/tests | parallel -t "build/solution < result/tests/{} > result/tests/{}.a"
+ls result/tests | parallel -t "build/solution < result/tests/{} > result/tests/{.}.out"
 
 # copy problem.json
 cp ./source/problem.json ./result/problem.json
