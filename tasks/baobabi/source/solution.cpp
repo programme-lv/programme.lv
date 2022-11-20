@@ -97,12 +97,8 @@ int main() {
     vector<ll> primes;
     primes.reserve(7e5); // there are 664579 primes in [1;1e7]
     get_primes(primes, 1e7);
-    for(ll p=2;;p+=2) {
-        ll l = pow(a,1.0/p)-1;
-        l = max(l, 2ll);
-        auto it = lower_bound(primes.begin(),primes.end(),l);
-        if(it==primes.end()) break;
-        ll j = it-primes.begin();
+    for(ll p=2;p<40;p+=2) {
+        ll j = 0;
         while(binpower(primes[j],p)<a) j++;
         ll iters = 0;
         while(binpower(primes[j],p)<=b) {
@@ -114,7 +110,7 @@ int main() {
                 res++;
             j++;
         }
-        if(iters==0) break;
+        //if(iters==0) break;
     }
     cout<<res<<endl;
 }
