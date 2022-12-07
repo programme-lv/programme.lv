@@ -20,8 +20,6 @@ func LoadAppConfig() WorkerConfig {
 	viper.SetDefault("worker_count", 4)
 
 	viper.SetConfigFile("config.toml")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
 	if err != nil {

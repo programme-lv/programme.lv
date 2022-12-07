@@ -22,8 +22,6 @@ func LoadAppConfig() WorkerConfig {
 	viper.SetDefault("db_conn_string", "data.db")
 
 	viper.SetConfigFile("config.toml")
-	viper.SetConfigType("toml")
-	viper.AddConfigPath(".")
 
 	err := viper.ReadInConfig()
 	if err != nil {
