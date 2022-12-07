@@ -30,7 +30,7 @@ func registerAPIRoutes(router *mux.Router) {
 	router.HandleFunc("/execute/info/{execution_id}", controllers.GetExecution).Methods("GET")
 }
 
-func startAPIServer(config WorkerConfig) {
+func startAPIServer(config SchedulerConfig) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", config.APIPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

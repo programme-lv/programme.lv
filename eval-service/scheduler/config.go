@@ -6,19 +6,19 @@ import (
 	"github.com/spf13/viper"
 )
 
-type WorkerConfig struct {
-	APIPort      int    `mapstructure:"api_port"`
-	WorkerPort   int    `mapstructure:"worker_port"`
-	DBConnString string `mapstructure:"db_conn_string"`
+type SchedulerConfig struct {
+	APIPort       int    `mapstructure:"api_port"`
+	SchedulerPort int    `mapstructure:"scheduler_port"`
+	DBConnString  string `mapstructure:"db_conn_string"`
 }
 
-func LoadAppConfig() WorkerConfig {
-	res := WorkerConfig{}
+func LoadAppConfig() SchedulerConfig {
+	res := SchedulerConfig{}
 
 	log.Println("Loading worker configurations...")
 
 	viper.SetDefault("api_port", 8080)
-	viper.SetDefault("worker_port", 50051)
+	viper.SetDefault("scheduler_port", 50051)
 	viper.SetDefault("db_conn_string", "data.db")
 
 	viper.SetConfigFile("config.toml")
@@ -34,7 +34,7 @@ func LoadAppConfig() WorkerConfig {
 	}
 
 	log.Printf("scheduler's API port: %v", res.APIPort)
-	log.Printf("scheduler's WORKER port: %v", res.WorkerPort)
+	log.Printf("scheduler's port: %v", res.SchedulerPort)
 	log.Printf("DB connection string: %v", res.DBConnString)
 
 	return res
