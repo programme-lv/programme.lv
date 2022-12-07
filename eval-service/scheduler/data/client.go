@@ -1,9 +1,7 @@
-package database
+package data
 
 import (
 	"log"
-
-	"github.com/KrisjanisP/deikstra/service/scheduler/models"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -22,7 +20,7 @@ func Connect(connectionString string) {
 }
 
 func Migrate() {
-	err = Instance.AutoMigrate(&models.TaskSubmission{})
+	err = Instance.AutoMigrate(&TaskSubmission{})
 	if err != nil {
 		log.Fatal(err)
 		panic("Couldnt migrate DB")

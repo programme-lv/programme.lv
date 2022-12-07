@@ -1,4 +1,4 @@
-package controllers
+package api
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ type Execution struct {
 	StdIn   string
 }
 
-func EnqueueExecution(w http.ResponseWriter, r *http.Request) {
+func enqueueExecution(w http.ResponseWriter, r *http.Request) {
 	// TODO read https://www.alexedwards.net/blog/how-to-properly-parse-a-json-request-body
 	var e Execution
 	err := json.NewDecoder(r.Body).Decode(&e)
@@ -24,10 +24,10 @@ func EnqueueExecution(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Execution: %+v", e)
 }
 
-func ListExecutions(w http.ResponseWriter, r *http.Request) {
+func listExecutions(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }
 
-func GetExecution(w http.ResponseWriter, r *http.Request) {
+func getExecution(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }

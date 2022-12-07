@@ -1,22 +1,24 @@
 package main
 
 import (
-	"github.com/KrisjanisP/deikstra/service/scheduler/database"
-	"google.golang.org/grpc"
+	"github.com/KrisjanisP/deikstra/service/scheduler/api"
+	"github.com/KrisjanisP/deikstra/service/scheduler/data"
+	"github.com/KrisjanisP/deikstra/service/scheduler/logic"
 )
 
-func initDatabase(config SchedulerConfig) {
-	database.Connect(config.DBConnString)
-	database.Migrate()
+func initDatabase(DBConnString string) {
+	data.Connect(DBConnString)
+	data.Migrate()
 }
 
 func main() {
 	config := LoadAppConfig()
-	initDatabase(config)
+	initDatabase(config.DBConnString)
 
-	server := grpc.NewServer()
+	apiRouter := api.CreateAPIRouter()
+	server, scheduler := logic.CreateSchedulerServer()
 
-	go startSchedulerServer(config)
+	go logic.StartSchedulerServer(config.SchedulerPort, server)
 
-	startAPIServer(config)
+	api.StartAPIServer(config.APIPort, apiRouter, scheduler)
 }
