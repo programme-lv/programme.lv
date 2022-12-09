@@ -28,13 +28,13 @@ func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request
 }
 
 func (c *APIController) listSubmissions(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func (c *APIController) getSubmission(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func (c *APIController) subscribeToResults(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }

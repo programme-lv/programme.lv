@@ -3,17 +3,17 @@ package api
 import "net/http"
 
 func listTasks(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func getTask(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func createTask(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 func deleteTask(w http.ResponseWriter, r *http.Request) {
-	// TODO
+	w.WriteHeader(http.StatusNotImplemented)
 }
