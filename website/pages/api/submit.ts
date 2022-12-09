@@ -1,37 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import axios from 'axios'
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
-    console.log(req.body)
-    res.status(200).json("{}")
-
-    var options = {
-        host: 'localhost',
-        path: '/submissions/enqueue',
-        port: '8080',
-        method: 'POST'
-    };
-    
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     var data = {
         task_name: "hello",
         user_code: req.body.code,
         lang_id: "cpp"
     }
+    
+    let scheduler_res = await axios.post('http://localhost:8080/submissions/enqueue', data)
+    console.log(scheduler_res.data)
 
-    let cback = function(response) {
-        var str = ''
-        response.on('data', function (chunk) {
-            str += chunk;
-        });
-    
-        response.on('end', function () {
-            console.log(str);
-        });
-    }
-
-    var http = require('http');
-    var http_req = http.request(options, cback);
-    
-    
-    http_req.write(JSON.stringify(data));
-    http_req.end();
+    res.status(200).json(scheduler_res.data)
 }
