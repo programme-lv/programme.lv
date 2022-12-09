@@ -21,7 +21,7 @@ function execute_code() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: written_code })
   };
-  fetch('/api/execute', requestOptions)
+  fetch('/api/submit', requestOptions)
       .then(response => response.json())
 }
 

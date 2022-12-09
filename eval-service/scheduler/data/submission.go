@@ -7,5 +7,5 @@ type TaskSubmission struct {
 	CreatedAt time.Time `json:"created_time"`
 	TaskName  string    `json:"task_name"`
 	UserCode  string    `json:"user_code"`
-	LangId    string    `json:"language_id"`
+	LangId    string    `json:"lang_id"`
 }
