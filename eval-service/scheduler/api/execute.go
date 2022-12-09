@@ -12,7 +12,7 @@ type Execution struct {
 	StdIn   string
 }
 
-func enqueueExecution(w http.ResponseWriter, r *http.Request) {
+func (c *APIController) enqueueExecution(w http.ResponseWriter, r *http.Request) {
 	var e Execution
 	err := json.NewDecoder(r.Body).Decode(&e)
 	if err != nil {

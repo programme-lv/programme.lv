@@ -15,10 +15,10 @@ func main() {
 	config := LoadAppConfig()
 	initDatabase(config.DBConnString)
 
-	apiRouter := api.CreateAPIRouter()
 	server, scheduler := logic.CreateSchedulerServer()
 
 	go logic.StartSchedulerServer(config.SchedulerPort, server)
 
-	api.StartAPIServer(config.APIPort, apiRouter, scheduler)
+	apiController := api.CreateAPIController(scheduler)
+	apiController.StartAPIServer(config.APIPort)
 }

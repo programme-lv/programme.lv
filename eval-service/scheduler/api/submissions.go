@@ -8,7 +8,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/scheduler/data"
 )
 
-func enqueueSubmission(w http.ResponseWriter, r *http.Request) {
+func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 	var submission data.TaskSubmission
 	err := json.NewDecoder(r.Body).Decode(&submission)
 	if err != nil {
@@ -24,6 +24,7 @@ func enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Write(resp)
+	c.scheduler.TaskQueue <- submission
 }
 
 func listSubmissions(w http.ResponseWriter, r *http.Request) {

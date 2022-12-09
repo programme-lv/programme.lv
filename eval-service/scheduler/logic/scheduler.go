@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"strconv"
-	"time"
 
 	pb "github.com/KrisjanisP/deikstra/service/protofiles"
+	"github.com/KrisjanisP/deikstra/service/scheduler/data"
 	"google.golang.org/grpc"
 )
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
+	TaskQueue chan data.TaskSubmission
 }
 
 func (s *Scheduler) RegisterWorker(worker *pb.RegisterWorker) {
@@ -22,16 +22,15 @@ func (s *Scheduler) RegisterWorker(worker *pb.RegisterWorker) {
 // function is called by the worker
 func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
 	s.RegisterWorker(worker)
-	for i := 0; i < 10; i++ {
-		stream.Send(&pb.Job{JobId: strconv.Itoa(i), TaskName: "sum"})
-		time.Sleep(time.Second)
+	for {
+		task := <-s.TaskQueue
+		stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName})
 	}
-	return nil
 }
 
 func CreateSchedulerServer() (*grpc.Server, *Scheduler) {
 	server := grpc.NewServer()
-	var scheduler *Scheduler
+	var scheduler *Scheduler = &Scheduler{TaskQueue: make(chan data.TaskSubmission, 100)}
 	pb.RegisterSchedulerServer(server, scheduler)
 	return server, scheduler
 }
