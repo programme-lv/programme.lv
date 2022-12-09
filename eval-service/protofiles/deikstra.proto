@@ -19,6 +19,8 @@ message RegisterWorker {
 message Job {
     string job_id = 1;
     string task_name = 2;
+    string land_id = 3;
+    string user_code = 4;
 }
 
 // message ReportWorkerStatusRequest {

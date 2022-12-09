@@ -15,6 +15,10 @@ type Scheduler struct {
 	TaskQueue chan data.TaskSubmission
 }
 
+func (s *Scheduler) EnqueueSubmission(submission data.TaskSubmission) {
+	s.TaskQueue <- submission
+}
+
 func (s *Scheduler) RegisterWorker(worker *pb.RegisterWorker) {
 
 }

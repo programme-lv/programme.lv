@@ -23,8 +23,8 @@ func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	w.Write(resp)
-	c.scheduler.TaskQueue <- submission
+	w.Write(resp) // echo back the submission
+	c.scheduler.EnqueueSubmission(submission)
 }
 
 func (c *APIController) listSubmissions(w http.ResponseWriter, r *http.Request) {
