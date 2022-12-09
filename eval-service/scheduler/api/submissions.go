@@ -27,10 +27,14 @@ func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request
 	c.scheduler.TaskQueue <- submission
 }
 
-func listSubmissions(w http.ResponseWriter, r *http.Request) {
+func (c *APIController) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }
 
-func getSubmission(w http.ResponseWriter, r *http.Request) {
+func (c *APIController) getSubmission(w http.ResponseWriter, r *http.Request) {
+	// TODO
+}
+
+func (c *APIController) subscribeToResults(w http.ResponseWriter, r *http.Request) {
 	// TODO
 }
