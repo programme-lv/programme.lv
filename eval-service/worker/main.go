@@ -42,6 +42,6 @@ func main() {
 		if err != nil {
 			log.Fatalf("client.GetJobs failed: %v", err)
 		}
-		log.Printf("job: %v %v", job.GetJobId(), job.GetTaskName())
+		log.Printf("job: %v %v %v", job.GetJobId(), job.GetTaskName(), job.GetUserCode())
 	}
 }

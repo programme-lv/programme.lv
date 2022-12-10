@@ -28,7 +28,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 	s.RegisterWorker(worker)
 	for {
 		task := <-s.TaskQueue
-		stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName})
+		stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName, UserCode: task.UserCode})
 	}
 }
 
