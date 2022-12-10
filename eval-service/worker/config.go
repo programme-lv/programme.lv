@@ -14,7 +14,7 @@ type WorkerConfig struct {
 func LoadAppConfig() WorkerConfig {
 	res := WorkerConfig{}
 
-	log.Println("Loading worker configurations...")
+	log.Println("loading worker configurations...")
 
 	viper.SetDefault("scheduler_address", "localhost:50051")
 	viper.SetDefault("worker_count", 4)

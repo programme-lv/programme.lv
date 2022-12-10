@@ -27,8 +27,12 @@ func (s *Scheduler) RegisterWorker(worker *pb.RegisterWorker) {
 func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
 	s.RegisterWorker(worker)
 	for {
-		task := <-s.TaskQueue
-		stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName, UserCode: task.UserCode})
+		select {
+		case <-stream.Context().Done():
+			return stream.Context().Err()
+		case task := <-s.TaskQueue:
+			stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName, UserCode: task.UserCode})
+		}
 	}
 }
 
