@@ -1,2 +1,3 @@
 scheduler_address = "localhost:50051"
 worker_count = 8
+worker_name = "worker 1"
