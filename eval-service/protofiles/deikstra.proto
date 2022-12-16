@@ -8,7 +8,7 @@ option go_package = "github.com/KrisjanisP/deikstra/service/protofiles";
 service Scheduler {
     rpc GetJobs(RegisterWorker) returns (stream Job) {}
     // rpc ReportWorkerStatus(stream ReportWorkerStatusRequest) returns (google.protobuf.Empty) {}
-    // rpc ReportJobStatus(stream JobStatus) returns (stream JobAction) {}
+    rpc ReportJobStatus(stream JobStatusUpdate) {}
 }
 
 
@@ -23,13 +23,45 @@ message Job {
     string user_code = 4;
 }
 
-// message ReportWorkerStatusRequest {
-//     float cpuLoad = 0;
-//     uint64 availableDiskSpace = 1;
-//     uint64 availableMemory = 2;
-//     // etc.
+message JobStatus {
 
-//     // List of filenames or file hashes, or whatever else you need to precisely
-//     // report the presence of files.
-//     repeated string haveFiles = 2;
-// }
+}
+
+enum TestStatus {
+    TLE = 0;  // Time Limit Exceeded
+    MLE = 1;  // Memory Limit Exceeded
+    OK  = 2;  // Accepted
+    PT  = 3;  // Partial solution
+    WA  = 4;  // Wrong Answer
+    RE  = 5;  // Runtime Error
+    PE  = 6;  // Presentation Error
+    ILE = 7;  // Idleness limit exceeded
+    IG  = 8;  // Ignored
+    SV  = 9;  // Security violation
+    CF  = 10; // Check Failed
+}
+
+enum JobStatus {
+    IQS = 0;  // In Queue State
+    ICS = 1;  // In Compilation State
+    ITS = 2;  // In Testing State
+    CE  = 3;  // Compilation Error
+    TLE = 4;  // Time Limit Exceeded
+    MLE = 5;  // Memory Limit Exceed
+    OK  = 6;  // Accepted
+    PT  = 7;  // Partial solution
+    WA  = 8;  // Wrong Answer
+    RE  = 9;  // Runtime Error
+    PE  = 10; // Presentation Error
+    ILE = 11; // Idleness Limit Exceeded
+    CF  = 12; // Check Failed
+    SV  = 13; // Security Violation
+    RJ  = 14; // Rejected
+    DQ  = 15; // Disqualified
+}
+
+message JobStatusUpdate {
+    int32 job_id = 1;
+    int32 job_status = 2;
+    int32 test_result = 3;
+}
