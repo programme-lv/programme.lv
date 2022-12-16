@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -21,8 +20,8 @@ func (e *Executable) Execute(stdin io.ReadCloser) (stdout string, stderr string,
 	if err = cmd.Start(); err != nil {
 		return
 	}
-	stdoutBytes, _ := ioutil.ReadAll(stdoutPipe)
-	stderrBytes, _ := ioutil.ReadAll(stderrPipe)
+	stdoutBytes, _ := io.ReadAll(stdoutPipe)
+	stderrBytes, _ := io.ReadAll(stderrPipe)
 	stdout = string(stdoutBytes)
 	stderr = string(stderrBytes)
 	err = cmd.Wait()
@@ -35,7 +34,13 @@ func (e *Executable) Execute(stdin io.ReadCloser) (stdout string, stderr string,
 func CreateExecutable(srcCode string, langId string) (*Executable, error) {
 	exe := &Executable{}
 
-	exeDir, err := os.MkdirTemp("/tmp/deikstra/", "")
+	dirPath := filepath.Join("/tmp", "deikstra")
+	err := os.MkdirAll(dirPath, os.ModePerm)
+	if err != nil {
+		return exe, err
+	}
+
+	exeDir, err := os.MkdirTemp(dirPath, "")
 	if err != nil {
 		return exe, err
 	}
@@ -63,8 +68,8 @@ func CreateExecutable(srcCode string, langId string) (*Executable, error) {
 		return exe, nil
 	}
 
-	stdoutStr, _ := ioutil.ReadAll(stdout)
-	stderrStr, _ := ioutil.ReadAll(stderr)
+	stdoutStr, _ := io.ReadAll(stdout)
+	stderrStr, _ := io.ReadAll(stderr)
 	if err := cmd.Wait(); err != nil {
 		log.Printf("stdout: %v\n", string(stdoutStr))
 		log.Printf("stderr: %v\n", string(stderrStr))
