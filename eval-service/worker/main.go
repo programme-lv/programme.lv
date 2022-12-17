@@ -84,12 +84,26 @@ func work(schedulerAddr string, workerName string) error {
 			langId := job.GetExecSubmission().LangId
 			stdIn := job.GetExecSubmission().Stdin
 			log.Printf("%v %v %v", userCode, langId, stdIn)
+			exe, err := CreateExecutable(userCode, langId)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			log.Printf("exe src path: %v\n", exe.srcPath)
+			log.Printf("exe path: %v\n", exe.exePath)
+
+			stdout, stderr, err := exe.Execute(nil)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+
 			resStream.Send(&pb.JobStatusUpdate{
 				JobId: jobId,
 				Update: &pb.JobStatusUpdate_ExecRes{
 					ExecRes: &pb.ExecResult{
-						Stdout: "1234",
-						Stderr: "5678",
+						Stdout: stdout,
+						Stderr: stderr,
 					},
 				},
 			})
