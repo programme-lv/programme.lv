@@ -43,9 +43,14 @@ func main() {
 			log.Fatalf("client.GetJobs failed: %v", err)
 		}
 
-		log.Printf("job: %v %v %v", job.GetJobId(), job.GetTaskName(), job.GetUserCode())
+		jobId := job.GetJobId()
+		taskName := job.GetTaskSubmission().GetTaskName()
+		taskVersion := job.GetTaskSubmission().GetTaskVersion()
+		userCode := job.GetTaskSubmission().GetUserCode()
+		langId := job.GetTaskSubmission().GetLangId()
+		log.Printf("job: %v %v %v %v", jobId, taskName, taskVersion, userCode)
 
-		exe, err := CreateExecutable(job.GetUserCode(), job.GetLangId())
+		exe, err := CreateExecutable(userCode, langId)
 		if err != nil {
 			log.Println(err)
 			continue

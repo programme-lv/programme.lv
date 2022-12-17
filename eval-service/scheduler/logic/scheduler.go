@@ -31,7 +31,16 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 		case <-stream.Context().Done():
 			return stream.Context().Err()
 		case task := <-s.TaskQueue:
-			stream.Send(&pb.Job{JobId: "1", TaskName: task.TaskName, UserCode: task.UserCode})
+			request := &pb.Job{}
+			request.JobId = "1"
+			taskSubmission := &pb.TaskSubmission{
+				TaskName:    task.TaskName,
+				TaskVersion: 1,
+				LangId:      task.LangId,
+				UserCode:    task.UserCode,
+			}
+			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
+			stream.Send(request)
 		}
 	}
 }
