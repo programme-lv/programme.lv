@@ -11,4 +11,6 @@ type TaskSubmission struct {
 }
 
 type ExecSubmission struct {
+	UserCode string `json:"user_code"`
+	LangId   string `json:"lang_id"`
 }

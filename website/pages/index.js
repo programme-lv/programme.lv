@@ -1,10 +1,9 @@
 import Sidebar from '../components/sidebar'
 import CodeMirror from '@uiw/react-codemirror';
 import { sublime } from '@uiw/codemirror-theme-sublime'
-import { javascript } from '@codemirror/lang-javascript'
 import { cpp } from '@codemirror/lang-cpp'
 
-const hello_cpp = `#include <bits/stdc++.h>
+const hello_cpp = `#include <iostream>
 
 using namespace std;
 
@@ -21,7 +20,7 @@ function execute_code() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: written_code })
   };
-  fetch('/api/submit', requestOptions)
+  fetch('/api/execute', requestOptions)
       .then(response => response.json())
 }
 
@@ -39,7 +38,7 @@ export default function Home() {
               theme={sublime}
               height='100%'
               extensions={[cpp()]}
-              onChange={(value, viewUpdate) => {
+              onChange={(value) => {
                 written_code = value;
               }}
             />

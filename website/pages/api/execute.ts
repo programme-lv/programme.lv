@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-    var data = {
-        task_name: "hello",
+export default async function execute(req: NextApiRequest, res: NextApiResponse) {
+    let data = {
         user_code: req.body.code,
         lang_id: "cpp"
     }

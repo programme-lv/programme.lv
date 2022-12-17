@@ -25,10 +25,10 @@ func (s *Scheduler) EnqueueExecution(submission data.ExecSubmission) {
 }
 
 func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
-
+	log.Printf("worker %v is ready for duty", worker.WorkerName)
 }
 
-// function is called by the worker
+// GetJobs function is called by the worker
 func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
 	s.registerWorker(worker)
 	for {
@@ -45,14 +45,29 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 				UserCode:    task.UserCode,
 			}
 			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
-			stream.Send(request)
+			err := stream.Send(request)
+			if err != nil {
+				return err
+			}
+		case execution := <-s.executionQueue:
+			request := &pb.Job{}
+			request.JobId = "1"
+			execSubmission := &pb.ExecSubmission{
+				LangId:   execution.LangId,
+				UserCode: execution.UserCode,
+			}
+			request.Job = &pb.Job_ExecSubmission{ExecSubmission: execSubmission}
+			err := stream.Send(request)
+			if err != nil {
+				return err
+			}
 		}
 	}
 }
 
 func CreateSchedulerServer() (*grpc.Server, *Scheduler) {
 	server := grpc.NewServer()
-	var scheduler *Scheduler = &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100)}
+	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100)}
 	pb.RegisterSchedulerServer(server, scheduler)
 	return server, scheduler
 }
