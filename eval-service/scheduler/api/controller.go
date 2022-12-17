@@ -27,6 +27,9 @@ func (c *APIController) registerAPIRoutes() {
 	c.router.HandleFunc("/submissions/list", c.listSubmissions).Methods("GET")
 	c.router.HandleFunc("/submissions/info/{subm_id}", c.getSubmission).Methods("GET")
 	c.router.HandleFunc("/submissions/subscribe", c.subscribeToResults).Methods("GET")
+
+	// execute
+	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST")
 }
 
 func CreateAPIController(scheduler *logic.Scheduler) *APIController {

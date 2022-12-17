@@ -44,26 +44,35 @@ func main() {
 		}
 
 		jobId := job.GetJobId()
-		taskName := job.GetTaskSubmission().GetTaskName()
-		taskVersion := job.GetTaskSubmission().GetTaskVersion()
-		userCode := job.GetTaskSubmission().GetUserCode()
-		langId := job.GetTaskSubmission().GetLangId()
-		log.Printf("job: %v %v %v %v", jobId, taskName, taskVersion, userCode)
+		switch job.Job.(type) {
+		case *pb.Job_TaskSubmission:
+			taskName := job.GetTaskSubmission().GetTaskName()
+			taskVersion := job.GetTaskSubmission().GetTaskVersion()
+			userCode := job.GetTaskSubmission().GetUserCode()
+			langId := job.GetTaskSubmission().GetLangId()
+			log.Printf("job: %v %v %v %v", jobId, taskName, taskVersion, userCode)
 
-		exe, err := CreateExecutable(userCode, langId)
-		if err != nil {
-			log.Println(err)
-			continue
-		}
-		log.Printf("exe src path: %v\n", exe.srcPath)
-		log.Printf("exe path: %v\n", exe.exePath)
+			exe, err := CreateExecutable(userCode, langId)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			log.Printf("exe src path: %v\n", exe.srcPath)
+			log.Printf("exe path: %v\n", exe.exePath)
 
-		stdout, stderr, err := exe.Execute(nil)
-		if err != nil {
-			log.Println(err)
-			continue
+			stdout, stderr, err := exe.Execute(nil)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			log.Printf("stdout: %v\n", stdout)
+			log.Printf("stderr: %v\n", stderr)
+		case *pb.Job_ExecSubmission:
+			userCode := job.GetExecSubmission().UserCode
+			langId := job.GetExecSubmission().LangId
+			stdIn := job.GetExecSubmission().Stdin
+			log.Printf("%v %v %v", userCode, langId, stdIn)
+
 		}
-		log.Printf("stdout: %v\n", stdout)
-		log.Printf("stderr: %v\n", stderr)
 	}
 }

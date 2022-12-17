@@ -12,25 +12,30 @@ import (
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
-	TaskQueue chan data.TaskSubmission
+	submissionQueue chan data.TaskSubmission
+	executionQueue  chan data.ExecSubmission
 }
 
 func (s *Scheduler) EnqueueSubmission(submission data.TaskSubmission) {
-	s.TaskQueue <- submission
+	s.submissionQueue <- submission
 }
 
-func (s *Scheduler) RegisterWorker(worker *pb.RegisterWorker) {
+func (s *Scheduler) EnqueueExecution(submission data.ExecSubmission) {
+	s.executionQueue <- submission
+}
+
+func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
 
 }
 
 // function is called by the worker
 func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
-	s.RegisterWorker(worker)
+	s.registerWorker(worker)
 	for {
 		select {
 		case <-stream.Context().Done():
 			return stream.Context().Err()
-		case task := <-s.TaskQueue:
+		case task := <-s.submissionQueue:
 			request := &pb.Job{}
 			request.JobId = "1"
 			taskSubmission := &pb.TaskSubmission{
@@ -47,7 +52,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 
 func CreateSchedulerServer() (*grpc.Server, *Scheduler) {
 	server := grpc.NewServer()
-	var scheduler *Scheduler = &Scheduler{TaskQueue: make(chan data.TaskSubmission, 100)}
+	var scheduler *Scheduler = &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100)}
 	pb.RegisterSchedulerServer(server, scheduler)
 	return server, scheduler
 }
