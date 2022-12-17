@@ -36,6 +36,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 		case <-stream.Context().Done():
 			return stream.Context().Err()
 		case task := <-s.submissionQueue:
+			log.Printf("sending submission to %v", worker.WorkerName)
 			request := &pb.Job{}
 			request.JobId = "1"
 			taskSubmission := &pb.TaskSubmission{
@@ -50,6 +51,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 				return err
 			}
 		case execution := <-s.executionQueue:
+			log.Printf("sending execution to %v", worker.WorkerName)
 			request := &pb.Job{}
 			request.JobId = "1"
 			execSubmission := &pb.ExecSubmission{
@@ -67,7 +69,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 
 func CreateSchedulerServer() (*grpc.Server, *Scheduler) {
 	server := grpc.NewServer()
-	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100)}
+	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100), executionQueue: make(chan data.ExecSubmission, 100)}
 	pb.RegisterSchedulerServer(server, scheduler)
 	return server, scheduler
 }

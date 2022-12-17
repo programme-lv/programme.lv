@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -11,15 +13,13 @@ import (
 	pb "github.com/KrisjanisP/deikstra/service/protofiles"
 )
 
-func main() {
-	config := LoadAppConfig()
-
+func work(schedulerAddr string, workerName string) error {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	conn, err := grpc.Dial(config.SchedulerAddr, opts...)
+	conn, err := grpc.Dial(schedulerAddr, opts...)
 	if err != nil {
-		log.Fatalf("fail to dial: %v", err)
+		return fmt.Errorf("fail to dial: %v", err)
 	}
 
 	defer conn.Close()
@@ -29,18 +29,19 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	stream, err := client.GetJobs(ctx, &pb.RegisterWorker{WorkerName: config.WorkerName})
+	stream, err := client.GetJobs(ctx, &pb.RegisterWorker{WorkerName: workerName})
 	if err != nil {
-		log.Fatalf("client.GetJobs failed: %v", err)
+		return err
 	}
 
+	log.Println("connected to scheduler")
 	for {
 		job, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
-			log.Fatalf("client.GetJobs failed: %v", err)
+			return err
 		}
 
 		jobId := job.GetJobId()
@@ -50,7 +51,11 @@ func main() {
 			taskVersion := job.GetTaskSubmission().GetTaskVersion()
 			userCode := job.GetTaskSubmission().GetUserCode()
 			langId := job.GetTaskSubmission().GetLangId()
-			log.Printf("job: %v %v %v %v", jobId, taskName, taskVersion, userCode)
+			log.Println("jobId: ", jobId)
+			log.Println("taskName: ", taskName)
+			log.Println("taskVersion: ", taskVersion)
+			log.Println("userCode: ", userCode)
+			log.Println("langId: ", langId)
 
 			exe, err := CreateExecutable(userCode, langId)
 			if err != nil {
@@ -74,5 +79,20 @@ func main() {
 			log.Printf("%v %v %v", userCode, langId, stdIn)
 
 		}
+	}
+	return nil
+}
+
+func main() {
+	config := LoadAppConfig()
+
+	// restart worker if it fails
+	for {
+		log.Println("connecting to scheduler")
+		err := work(config.SchedulerAddr, config.WorkerName)
+		if err != nil {
+			log.Println(err)
+		}
+		time.Sleep(time.Millisecond * 500)
 	}
 }
