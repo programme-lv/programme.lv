@@ -33,7 +33,7 @@ message ExecSubmission {
 }
 
 message Job {
-    string job_id = 1;
+    int32 job_id = 1;
     oneof job {
         TaskSubmission task_submission = 2;
         ExecSubmission exec_submission = 3;

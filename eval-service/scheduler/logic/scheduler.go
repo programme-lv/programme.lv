@@ -38,7 +38,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 		case task := <-s.submissionQueue:
 			log.Printf("sending submission to %v", worker.WorkerName)
 			request := &pb.Job{}
-			request.JobId = "1"
+			request.JobId = 1
 			taskSubmission := &pb.TaskSubmission{
 				TaskName:    task.TaskName,
 				TaskVersion: 1,
@@ -53,7 +53,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 		case execution := <-s.executionQueue:
 			log.Printf("sending execution to %v", worker.WorkerName)
 			request := &pb.Job{}
-			request.JobId = "1"
+			request.JobId = 1
 			execSubmission := &pb.ExecSubmission{
 				LangId:   execution.LangId,
 				UserCode: execution.UserCode,

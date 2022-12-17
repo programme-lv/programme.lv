@@ -29,14 +29,21 @@ func work(schedulerAddr string, workerName string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	stream, err := client.GetJobs(ctx, &pb.RegisterWorker{WorkerName: workerName})
+	jobStream, err := client.GetJobs(ctx, &pb.RegisterWorker{WorkerName: workerName})
 	if err != nil {
 		return err
 	}
+	defer jobStream.CloseSend()
+
+	resStream, err := client.ReportJobStatus(ctx)
+	if err != nil {
+		return err
+	}
+	defer resStream.CloseSend()
 
 	log.Println("connected to scheduler")
 	for {
-		job, err := stream.Recv()
+		job, err := jobStream.Recv()
 		if err == io.EOF {
 			break
 		}
@@ -77,7 +84,15 @@ func work(schedulerAddr string, workerName string) error {
 			langId := job.GetExecSubmission().LangId
 			stdIn := job.GetExecSubmission().Stdin
 			log.Printf("%v %v %v", userCode, langId, stdIn)
-
+			resStream.Send(&pb.JobStatusUpdate{
+				JobId: jobId,
+				Update: &pb.JobStatusUpdate_ExecRes{
+					ExecRes: &pb.ExecResult{
+						Stdout: "1234",
+						Stderr: "5678",
+					},
+				},
+			})
 		}
 	}
 	return nil
