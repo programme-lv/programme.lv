@@ -48,11 +48,17 @@ message TaskTestResult {
     TaskTestStatus test_status = 1;
 }
 
+message ExecResult {
+    string stdout = 1;
+    string stderr = 2;
+}
+
 message JobStatusUpdate {
     int32 job_id = 1;
     oneof update {
         TaskSubmResult task_res = 2;
         TaskTestResult test_res = 3;
+        ExecResult exec_res = 4;
     }
 }
 
