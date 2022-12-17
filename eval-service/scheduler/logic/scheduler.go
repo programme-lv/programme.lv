@@ -2,6 +2,7 @@ package logic
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net"
 
@@ -26,6 +27,26 @@ func (s *Scheduler) EnqueueExecution(submission data.ExecSubmission) {
 
 func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
 	log.Printf("worker %v is ready for duty", worker.WorkerName)
+}
+
+func (s *Scheduler) ReportJobStatus(stream pb.Scheduler_ReportJobStatusServer) error {
+	for {
+		update, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		log.Println("jobId: ", update.GetJobId())
+		switch update.Update.(type) {
+		case *pb.JobStatusUpdate_ExecRes:
+			log.Println("stdout: ", update.GetExecRes().GetStdout())
+			log.Println("stderr: ", update.GetExecRes().GetStderr())
+
+		}
+	}
+	return nil
 }
 
 // GetJobs function is called by the worker
