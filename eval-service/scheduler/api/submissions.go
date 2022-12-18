@@ -8,7 +8,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/scheduler/data"
 )
 
-func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 	var submission data.TaskSubmission
 	err := json.NewDecoder(r.Body).Decode(&submission)
 	if err != nil {
@@ -27,14 +27,14 @@ func (c *APIController) enqueueSubmission(w http.ResponseWriter, r *http.Request
 	c.scheduler.EnqueueSubmission(submission)
 }
 
-func (c *APIController) listSubmissions(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func (c *APIController) getSubmission(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) getSubmission(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-func (c *APIController) subscribeToResults(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) subscribeToResults(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

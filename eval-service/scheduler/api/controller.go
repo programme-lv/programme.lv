@@ -10,12 +10,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type APIController struct {
+type Controller struct {
 	scheduler *logic.Scheduler
 	router    *mux.Router
 }
 
-func (c *APIController) registerAPIRoutes() {
+func (c *Controller) registerAPIRoutes() {
 	// tasks
 	c.router.HandleFunc("/tasks/list", listTasks).Methods("GET")
 	c.router.HandleFunc("/tasks/info/{task_id}", getTask).Methods("GET")
@@ -30,16 +30,17 @@ func (c *APIController) registerAPIRoutes() {
 
 	// execute
 	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST")
+	c.router.HandleFunc("/execute/communicate/{exec_id}", c.communicateWithExec)
 }
 
-func CreateAPIController(scheduler *logic.Scheduler) *APIController {
+func CreateAPIController(scheduler *logic.Scheduler) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
-	controller := APIController{scheduler: scheduler, router: router}
+	controller := Controller{scheduler: scheduler, router: router}
 	controller.registerAPIRoutes()
 	return &controller
 }
 
-func (c *APIController) StartAPIServer(APIPort int) {
+func (c *Controller) StartAPIServer(APIPort int) {
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", APIPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
