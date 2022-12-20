@@ -1,20 +1,37 @@
-package logic
+package scheduler
 
 import (
 	"fmt"
+	"github.com/KrisjanisP/deikstra/service/data"
+	pb "github.com/KrisjanisP/deikstra/service/protofiles"
+	"google.golang.org/grpc"
 	"io"
 	"log"
 	"net"
-
-	pb "github.com/KrisjanisP/deikstra/service/protofiles"
-	"github.com/KrisjanisP/deikstra/service/scheduler/data"
-	"google.golang.org/grpc"
 )
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
 	submissionQueue chan data.TaskSubmission
 	executionQueue  chan data.ExecSubmission
+}
+
+func CreateSchedulerServer() *Scheduler {
+	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100), executionQueue: make(chan data.ExecSubmission, 100)}
+	return scheduler
+}
+
+func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
+	server := grpc.NewServer()
+	pb.RegisterSchedulerServer(server, s)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", schedulerPort))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	log.Printf("grpc server listening at %v", lis.Addr())
+	if err := server.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }
 
 func (s *Scheduler) EnqueueSubmission(submission data.TaskSubmission) {
@@ -86,23 +103,4 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 			}
 		}
 	}
-}
-
-func CreateSchedulerServer() (*grpc.Server, *Scheduler) {
-	server := grpc.NewServer()
-	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100), executionQueue: make(chan data.ExecSubmission, 100)}
-	pb.RegisterSchedulerServer(server, scheduler)
-	return server, scheduler
-}
-
-func StartSchedulerServer(schedulerPort int, s *grpc.Server) {
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", schedulerPort))
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-	}
-	log.Printf("grpc server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
-
 }

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/KrisjanisP/deikstra/service/scheduler/api"
-	"github.com/KrisjanisP/deikstra/service/scheduler/data"
-	"github.com/KrisjanisP/deikstra/service/scheduler/logic"
+	"github.com/KrisjanisP/deikstra/service/api"
+	"github.com/KrisjanisP/deikstra/service/data"
+	"github.com/KrisjanisP/deikstra/service/scheduler"
 )
 
 func initDatabase(DBConnString string) {
@@ -15,9 +15,9 @@ func main() {
 	config := LoadAppConfig()
 	initDatabase(config.DBConnString)
 
-	server, scheduler := logic.CreateSchedulerServer()
+	scheduler := scheduler.CreateSchedulerServer()
 
-	go logic.StartSchedulerServer(config.SchedulerPort, server)
+	go scheduler.StartSchedulerServer(config.SchedulerPort)
 
 	apiController := api.CreateAPIController(scheduler)
 	apiController.StartAPIServer(config.APIPort)

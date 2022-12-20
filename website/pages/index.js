@@ -20,7 +20,7 @@ function execute_code() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: written_code })
   };
-  fetch('/api/execute', requestOptions)
+  fetch('http://localhost:8080/execute/enqueue', requestOptions)
       .then(response => response.json())
 }
 

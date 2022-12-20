@@ -2,16 +2,16 @@ package api
 
 import (
 	"fmt"
+	"github.com/KrisjanisP/deikstra/service/scheduler"
 	"log"
 	"net"
 	"net/http"
 
-	"github.com/KrisjanisP/deikstra/service/scheduler/logic"
 	"github.com/gorilla/mux"
 )
 
 type Controller struct {
-	scheduler *logic.Scheduler
+	scheduler *scheduler.Scheduler
 	router    *mux.Router
 }
 
@@ -29,11 +29,13 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.HandleFunc("/submissions/subscribe", c.subscribeToResults).Methods("GET")
 
 	// execute
-	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST")
+	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST", "OPTIONS")
 	c.router.HandleFunc("/execute/communicate/{exec_id}", c.communicateWithExec)
+
+	c.router.Use(mux.CORSMethodMiddleware(c.router))
 }
 
-func CreateAPIController(scheduler *logic.Scheduler) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	controller := Controller{scheduler: scheduler, router: router}
 	controller.registerAPIRoutes()
