@@ -1,28 +1,30 @@
+import Link from 'next/link'
+
 export default function Home() {
     return (
         <div>
             <nav className="navbar bg-white fixed-top">
                 <div className="navbar-expand-md container">
-                    <a className="navbar-brand" href="#">programme.lv</a>
+                    <Link href="#"><a className="navbar-brand">programme.lv</a></Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar-offcanvas">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbar-main">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/tasks">uzdevumi</a>
+                                <Link href="/tasks"><a className='nav-link'>uzdevumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/results">rezultāti</a>
+                                <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/submissions">iesūtījumi</a>
+                                <Link href="/submissions"><a className='nav-link disabled'>iesūtījumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/competitions">sacensības</a>
+                                <Link href="/competitions"><a className='nav-link disabled'>sacensības</a></Link>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/editor">redaktors</a>
+                                <Link href="/editor"><a className='nav-link disabled'>redaktors</a></Link>
                             </li>
                         </ul>
                     </div>
@@ -31,19 +33,19 @@ export default function Home() {
                     <div className="offcanvas-body">
                         <ul className="navbar-nav me-auto">
                             <li className="nav-item">
-                                <a className="nav-link disabled" href="/tasks">uzdevumi</a>
+                                <Link href="/tasks"><a className='nav-link'>uzdevumi</a></Link>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link disabled" href="/results">rezultāti</a>
+                                <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link disabled" href="/submissions">iesūtījumi</a>
+                                <Link href="/submissions"><a className='nav-link disabled'>iesūtījumi</a></Link>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link disabled" href="/competitions">sacensības</a>
+                                <Link href="/competitions"><a className='nav-link disabled'>sacensības</a></Link>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link disabled" href="/editor">redaktors</a>
+                                <Link href="/editor"><a className='nav-link disabled'>redaktors</a></Link>
                             </li>
                         </ul>
                     </div>
