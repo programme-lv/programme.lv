@@ -10,19 +10,19 @@ export default function Home() {
                     <div className="collapse navbar-collapse" id="navbar-main">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <a className="nav-link" href="#">uzdevumi</a>
+                                <a className="nav-link disabled" href="/tasks">uzdevumi</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">rezultāti</a>
+                                <a className="nav-link disabled" href="/results">rezultāti</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">iesūtījumi</a>
+                                <a className="nav-link disabled" href="/submissions">iesūtījumi</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">sacensības</a>
+                                <a className="nav-link disabled" href="/competitions">sacensības</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link" href="#">redaktors</a>
+                                <a className="nav-link disabled" href="/editor">redaktors</a>
                             </li>
                         </ul>
                     </div>
@@ -31,19 +31,19 @@ export default function Home() {
                     <div className="offcanvas-body">
                         <ul className="navbar-nav me-auto">
                             <li className="nav-item">
-                                <a className="nav-link" href="#">uzdevumi</a>
+                                <a className="nav-link disabled" href="/tasks">uzdevumi</a>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link" href="#">rezultāti</a>
+                                <a className="nav-link disabled" href="/results">rezultāti</a>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link" href="#">iesūtījumi</a>
+                                <a className="nav-link disabled" href="/submissions">iesūtījumi</a>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link" href="#">sacensības</a>
+                                <a className="nav-link disabled" href="/competitions">sacensības</a>
                             </li>
                             <li className="nav-item mt-2">
-                                <a className="nav-link" href="#">redaktors</a>
+                                <a className="nav-link disabled" href="/editor">redaktors</a>
                             </li>
                         </ul>
                     </div>
