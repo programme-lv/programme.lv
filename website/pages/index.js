@@ -1,7 +1,7 @@
 export default function Home() {
     return (
         <div>
-            <nav className="navbar bg-white">
+            <nav className="navbar bg-white fixed-top">
                 <div className="navbar-expand-md container">
                     <a className="navbar-brand" href="#">programme.lv</a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar-offcanvas">
@@ -49,6 +49,13 @@ export default function Home() {
                     </div>
                 </div>
             </nav>
+            <main style={{ backgroundImage: "url(space1.jpg)", height: "100vh", backgroundSize: "contain"}}>
+                <div className="container text-white py-5 mt-4">
+                <h2 className="my-5">jauns nostūris informātikas un matemātikas cienītājiem</h2>
+                </div>
+            </main>
+            <footer>
+            </footer>
         </div>
     )
 }
