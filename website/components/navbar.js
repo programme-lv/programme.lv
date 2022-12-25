@@ -25,6 +25,9 @@ export default function NavBar({ active_page }) {
                         <li className="nav-item">
                             <Link href="/editor"><a className='nav-link disabled'>redaktors</a></Link>
                         </li>
+                        <li className="nav-item">
+                            <Link href="/theory"><a className='nav-link disabled'>teorija</a></Link>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -45,6 +48,9 @@ export default function NavBar({ active_page }) {
                         </li>
                         <li className="nav-item mt-2">
                             <Link href="/editor"><a className='nav-link disabled'>redaktors</a></Link>
+                        </li>
+                        <li className="nav-item mt-2">
+                            <Link href="/theory"><a className='nav-link disabled'>teorija</a></Link>
                         </li>
                     </ul>
                 </div>
