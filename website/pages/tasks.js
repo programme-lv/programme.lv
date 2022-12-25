@@ -1,7 +1,9 @@
+import NavBar from "../components/navbar";
+
 export default function Tasks() {
     return (
         <div>
-            hello
+            <NavBar active_page={"tasks"}/>
         </div>
     )
 }
