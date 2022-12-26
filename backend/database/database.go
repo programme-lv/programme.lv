@@ -12,16 +12,12 @@ func ConnectAndMigrate(connectionString string) (*gorm.DB, error) {
 	instance, err := gorm.Open(sqlite.Open(connectionString), &gorm.Config{})
 	if err != nil {
 		return nil, err
-		log.Fatal(err)
-		panic("Couldnt connect to DB")
 	}
-	log.Println("Connected to Database...")
+	log.Println("connected to database")
 	err = instance.AutoMigrate(&models.TaskSubmission{})
 	if err != nil {
 		return nil, err
-		log.Fatal(err)
-		panic("Couldnt migrate DB")
 	}
-	log.Println("Database Migration Completed...")
+	log.Println("database migration completed")
 	return instance, nil
 }
