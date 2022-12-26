@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function NavBar({ active_page }) {
     return (
-        <nav className="navbar bg-white fixed-top">
+        <nav className="navbar bg-white">
             <div className="navbar-expand-md container">
                 <Link href="/"><a className="navbar-brand">programme.lv</a></Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar-offcanvas">
