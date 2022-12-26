@@ -37,7 +37,6 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	log.Println("id: ", task.ID)
 	log.Println("code: ", task.Code)
 	log.Println("name: ", task.Name)
 

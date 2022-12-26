@@ -14,7 +14,11 @@ func ConnectAndMigrate(connectionString string) (*gorm.DB, error) {
 		return nil, err
 	}
 	log.Println("connected to database")
-	err = instance.AutoMigrate(&models.TaskSubmission{}, &models.Task{})
+	err = instance.AutoMigrate(
+		&models.TaskSubmission{},
+		&models.Task{},
+		&models.TaskStatement{},
+	)
 	if err != nil {
 		return nil, err
 	}
