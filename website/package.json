@@ -9,11 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@codemirror/lang-cpp": "^6.0.1",
-    "@codemirror/lang-javascript": "^6.1.0",
-    "@popperjs/core": "^2.11.6",
-    "@uiw/codemirror-theme-sublime": "^4.12.4",
-    "@uiw/react-codemirror": "^4.12.4",
     "axios": "^1.2.1",
     "bootstrap": "^5.2.2",
     "next": "12.3.1",
