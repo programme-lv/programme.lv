@@ -1,4 +1,5 @@
 import NavBar from "../components/navbar";
+import Link from 'next/link'
 
 export default function Tasks() {
     return (
@@ -19,8 +20,8 @@ export default function Tasks() {
                     </thead>
                     <tbody>
                         <tr>
-                            <th scope="row">baobabi</th>
-                            <td>baobabi</td>
+                            <th scope="row"><Link href="/tasks/baobabi"><a className="nav-link">baobabi</a></Link></th>
+                            <td><Link href="/tasks/baobabi"><a className="nav-link">baobabi</a></Link></td>
                             <td><span className="badge bg-primary">ProblemCon++</span></td>
                             <td><span className="badge bg-danger">6.9</span></td>
                             <td>2</td>
