@@ -2,20 +2,21 @@ package api
 
 import (
 	"encoding/json"
-	data2 "github.com/KrisjanisP/deikstra/service/data"
 	"log"
 	"net/http"
+
+	"github.com/KrisjanisP/deikstra/service/models"
 )
 
 func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
-	var submission data2.TaskSubmission
+	var submission models.TaskSubmission
 	err := json.NewDecoder(r.Body).Decode(&submission)
 	if err != nil {
 		log.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	data2.Instance.Create(&submission)
+	c.database.Create(&submission)
 	resp, err := json.Marshal(submission)
 	if err != nil {
 		log.Printf("HTTP %s", err.Error())

@@ -1,24 +1,25 @@
 package main
 
 import (
+	"log"
+
 	"github.com/KrisjanisP/deikstra/service/api"
-	"github.com/KrisjanisP/deikstra/service/data"
+	"github.com/KrisjanisP/deikstra/service/database"
 	"github.com/KrisjanisP/deikstra/service/scheduler"
 )
 
-func initDatabase(DBConnString string) {
-	data.Connect(DBConnString)
-	data.Migrate()
-}
-
 func main() {
 	config := LoadAppConfig()
-	initDatabase(config.DBConnString)
 
-	scheduler := scheduler.CreateSchedulerServer()
+	db, err := database.ConnectAndMigrate(config.DBConnString)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	go scheduler.StartSchedulerServer(config.SchedulerPort)
+	sched := scheduler.CreateSchedulerServer()
 
-	apiController := api.CreateAPIController(scheduler)
-	apiController.StartAPIServer(config.APIPort)
+	go sched.StartSchedulerServer(config.SchedulerPort)
+
+	a := api.CreateAPIController(sched, db)
+	a.StartAPIServer(config.APIPort)
 }

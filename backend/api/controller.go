@@ -2,16 +2,19 @@ package api
 
 import (
 	"fmt"
-	"github.com/KrisjanisP/deikstra/service/scheduler"
 	"log"
 	"net"
 	"net/http"
+
+	"github.com/KrisjanisP/deikstra/service/scheduler"
+	"gorm.io/gorm"
 
 	"github.com/gorilla/mux"
 )
 
 type Controller struct {
 	scheduler *scheduler.Scheduler
+	database  *gorm.DB
 	router    *mux.Router
 }
 
@@ -35,9 +38,13 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.Use(mux.CORSMethodMiddleware(c.router))
 }
 
-func CreateAPIController(scheduler *scheduler.Scheduler) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
-	controller := Controller{scheduler: scheduler, router: router}
+	controller := Controller{
+		scheduler: scheduler,
+		router:    router,
+		database:  database,
+	}
 	controller.registerAPIRoutes()
 	return &controller
 }

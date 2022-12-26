@@ -2,22 +2,26 @@ package scheduler
 
 import (
 	"fmt"
-	"github.com/KrisjanisP/deikstra/service/data"
-	pb "github.com/KrisjanisP/deikstra/service/protofiles"
-	"google.golang.org/grpc"
 	"io"
 	"log"
 	"net"
+
+	"github.com/KrisjanisP/deikstra/service/models"
+	pb "github.com/KrisjanisP/deikstra/service/protofiles"
+	"google.golang.org/grpc"
 )
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
-	submissionQueue chan data.TaskSubmission
-	executionQueue  chan data.ExecSubmission
+	submissionQueue chan models.TaskSubmission
+	executionQueue  chan models.ExecSubmission
 }
 
 func CreateSchedulerServer() *Scheduler {
-	scheduler := &Scheduler{submissionQueue: make(chan data.TaskSubmission, 100), executionQueue: make(chan data.ExecSubmission, 100)}
+	scheduler := &Scheduler{
+		submissionQueue: make(chan models.TaskSubmission, 100),
+		executionQueue:  make(chan models.ExecSubmission, 100),
+	}
 	return scheduler
 }
 
@@ -34,11 +38,11 @@ func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
 	}
 }
 
-func (s *Scheduler) EnqueueSubmission(submission data.TaskSubmission) {
+func (s *Scheduler) EnqueueSubmission(submission models.TaskSubmission) {
 	s.submissionQueue <- submission
 }
 
-func (s *Scheduler) EnqueueExecution(submission data.ExecSubmission) {
+func (s *Scheduler) EnqueueExecution(submission models.ExecSubmission) {
 	s.executionQueue <- submission
 }
 
