@@ -7,7 +7,7 @@ export default function Tasks() {
             <NavBar active_page={"tasks"} />
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
-                <table class="table table-hover" style={{ tableLayout: "fixed" }}>
+                <table className="table table-hover" style={{ tableLayout: "fixed" }}>
                     <thead>
                         <tr>
                             <th scope="col">kods</th>
