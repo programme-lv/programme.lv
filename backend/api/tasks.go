@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -17,7 +18,12 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.Body)
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
 
 	// decode the request
 	var task models.Task
@@ -31,6 +37,12 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// process the request
+	if len(task.Code) == 0 || len(task.Name) == 0 {
+		err = fmt.Errorf("neither task_code nor task_name can be empty")
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	err = c.database.Create(&task).Error
 	if err != nil {
 		log.Printf("HTTP %s", err.Error())

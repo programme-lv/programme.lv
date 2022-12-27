@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function NavBar({ active_page }) {
+export default function NavBar({ active_page, admin}) {
     return (
         <nav className="navbar bg-white">
             <div className="navbar-expand-md container">
@@ -27,6 +27,9 @@ export default function NavBar({ active_page }) {
                         </li>
                         <li className="nav-item">
                             <Link href="/theory"><a className='nav-link disabled'>teorija</a></Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link href="/admin"><a className={'nav-link ' + (active_page == 'admin' ? 'active' : '')}>administrācija</a></Link>
                         </li>
                     </ul>
                 </div>
