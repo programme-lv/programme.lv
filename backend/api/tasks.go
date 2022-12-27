@@ -92,6 +92,47 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func deleteTask(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+func (c *Controller) deleteTask(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	log.Println(r.Body)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
+	// decode the request
+	var task models.Task
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&task)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = c.database.Delete(&task).Error
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	log.Println("deleted code: ", task.Code)
+	log.Println("deleted name: ", task.Name)
+
+	// echo back the task
+	resp, err := json.Marshal(task)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// send the response
+	_, err = w.Write(resp)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 }

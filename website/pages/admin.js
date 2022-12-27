@@ -32,10 +32,48 @@ async function createTask(e) {
     console.log({responseData})
 }
 
+async function deleteTask(task_code) {
+    console.log(task_code)
+    const fetchOptions = {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({task_code: task_code}),
+    };
+
+    const response = await fetch("http://localhost:8080/tasks/delete/"+task_code, fetchOptions);
+
+    if (!response.ok) {
+        const errorMessage = await response.text();
+        console.log(errorMessage)
+        return
+    }
+
+    const responseData = response.json();
+    console.log({responseData})
+}
+
 export default function Admin(props) {
 
     const [tasks, setTasks] = useState(props.tasks)
     let admin_table_entries = []
+
+    let refreshTable = async () => {
+        const res = await fetch(`http://localhost:8080/tasks/list`)
+        const tasks = await res.json()
+        setTasks(tasks)
+
+    }
+    let createTaskAndRefreshTable = async (e) => {
+        await createTask(e);
+        await refreshTable();
+    }
+    let deleteTaskAndRefreshTabble = async (task_code) => {
+        await deleteTask(task_code);
+        await refreshTable();
+    }
 
     tasks.forEach((task) => {
         admin_table_entries.push(
@@ -48,16 +86,13 @@ export default function Admin(props) {
                 <td><span className="badge bg-danger">6.9</span></td>
                 <td>2</td>
                 <td>13</td>
+                <td>
+                    <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
+                    <button type="button" className="btn btn-sm btn-danger ms-1" onClick={()=>deleteTaskAndRefreshTabble(task["task_code"])}>Izdzēst</button>
+                </td>
             </tr>
         )
     })
-
-    let createTaskAndRefreshTable = async (e) => {
-        await createTask(e);
-        const res = await fetch(`http://localhost:8080/tasks/list`)
-        const tasks = await res.json()
-        setTasks(tasks)
-    }
 
     return (
         <div>
@@ -73,7 +108,7 @@ export default function Admin(props) {
                             <input type="text" className="form-control" id="task-name" name="task_name" placeholder={"nosaukums"}/>
                         </div>
                         <div className={"col"}>
-                            <button type="submit" className="btn btn-primary">pievienot uzdevumu</button>
+                            <button type="submit" className="btn btn-success">pievienot uzdevumu</button>
                         </div>
                     </div>
                 </form>
@@ -86,6 +121,7 @@ export default function Admin(props) {
                         <th scope="col">grūtība</th>
                         <th scope="col">atrisinājumi</th>
                         <th scope="col">iesūtījumi</th>
+                        <th scope={"col"}>darbības</th>
                     </tr>
                     </thead>
                     <tbody>
