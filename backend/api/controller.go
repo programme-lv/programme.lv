@@ -20,7 +20,7 @@ type Controller struct {
 
 func (c *Controller) registerAPIRoutes() {
 	// tasks
-	c.router.HandleFunc("/tasks/list", listTasks).Methods("GET")
+	c.router.HandleFunc("/tasks/list", c.listTasks).Methods("GET")
 	c.router.HandleFunc("/tasks/info/{task_id}", getTask).Methods("GET")
 	c.router.HandleFunc("/tasks/create", c.createTask).Methods("POST", "OPTIONS")
 	c.router.HandleFunc("/tasks/delete/{task_id}", deleteTask).Methods("DELETE")
