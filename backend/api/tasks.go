@@ -9,7 +9,14 @@ import (
 	"github.com/KrisjanisP/deikstra/service/models"
 )
 
-func (c *Controller) listTasks(w http.ResponseWriter, _ *http.Request) {
+func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	var tasks []models.Task
 	result := c.database.Find(&tasks)
 	log.Println(result)
