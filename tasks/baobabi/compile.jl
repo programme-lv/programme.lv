@@ -2,9 +2,8 @@ tmp_path = mktempdir()
 gen_dir = joinpath("test-source","subtask-gen")
 
 test_dir = joinpath("testing-dst","tests")
-mkpath(test_dir)
 
-for gen_filename in readdir(gen_dir)
+Threads.@threads for gen_filename in readdir(gen_dir)
     generator = splitext(gen_filename)[1]
     gen_exe = joinpath(tmp_path, generator)
     gen_src = joinpath(gen_dir, gen_filename)
@@ -26,10 +25,15 @@ sol_src = joinpath("test-source","solution.cpp")
 
 run(`g++ -o $sol_exe $sol_src`)
 
-for test_filename in readdir(test_dir)
+Threads.@threads for test_filename in readdir(test_dir)
     test_path = joinpath(test_dir, test_filename)
     test_name = splitext(test_filename)[1]
     ans_path = joinpath(test_dir, "$test_name.ans")
     println("generating $ans_path")
     open(f->write(f, read(pipeline(`cat $test_path`,`$sol_exe`),String)), ans_path,"w")
 end
+
+chk_exe = joinpath("testing-dst", "checker")
+chk_src = joinpath("test-source","checker.cpp")
+
+run(`g++ -o $chk_exe $chk_src`)
