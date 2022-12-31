@@ -5,7 +5,7 @@ version = 2
 author = "Krišjānis Petručeņa"
 tags = ["brute-force","math","number-theory"]
 
-type = "batchV1"
+type = "batch"
 time_lim= 1.0
 mem_lim = 256
 
