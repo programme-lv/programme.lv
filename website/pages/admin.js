@@ -66,34 +66,43 @@ export default function Admin(props) {
     }
 
     let admin_table_entries = []
-    tasks.forEach((task) => {
-        admin_table_entries.push(
-            <tr key={task["task_code"]}>
-                <th scope="row">
-                    <Link href={"/tasks/" + task["task_code"]}>
-                        <a className="nav-link">{task["task_code"]}</a>
-                    </Link>
-                </th>
-                <td>
-                    <Link href={"/tasks/" + task["task_code"]}>
-                        <a className="nav-link">{task["task_name"]}</a>
-                    </Link>
-                </td>
-                <td><span className="badge bg-primary">ProblemCon++</span></td>
-                <td><span className="badge bg-danger">6.9</span></td>
-                <td>2</td>
-                <td>13</td>
-                <td>
-                    <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
-                    <button type="button" className="btn btn-sm btn-danger ms-1"
-                            onClick={() => displayTaskDeleteModal(task["task_name"], task["task_code"])}>Izdzēst
-                    </button>
-                </td>
-            </tr>
-        )
-    })
+    if(props.tasks) {
+        tasks.forEach((task) => {
+            admin_table_entries.push(
+                <tr key={task["task_code"]}>
+                    <th scope="row">
+                        <Link href={"/tasks/" + task["task_code"]}>
+                            <a className="nav-link">{task["task_code"]}</a>
+                        </Link>
+                    </th>
+                    <td>
+                        <Link href={"/tasks/" + task["task_code"]}>
+                            <a className="nav-link">{task["task_name"]}</a>
+                        </Link>
+                    </td>
+                    <td><span className="badge bg-primary">ProblemCon++</span></td>
+                    <td><span className="badge bg-danger">6.9</span></td>
+                    <td>2</td>
+                    <td>13</td>
+                    <td>
+                        <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
+                        <button type="button" className="btn btn-sm btn-danger ms-1"
+                                onClick={() => displayTaskDeleteModal(task["task_name"], task["task_code"])}>Izdzēst
+                        </button>
+                    </td>
+                </tr>
+            )
+        })
+    }
 
 
+    let ErrorAlert = ({ msg }) => {
+        if (msg) return (
+            <div className="alert alert-danger text-center" role="alert">
+                {msg}
+            </div>)
+        else return <></>
+    }
 
     return (
         <div>
@@ -104,7 +113,7 @@ export default function Admin(props) {
                 <form action={`${props.apiURL}/tasks/create`} onSubmit={createTaskSubmit}>
                     <div className="row">
                         <div className="mb-3 col">
-                            <input className="form-control" type="file" name="task-file"/>
+                            <input className="form-control" type="file" name="task-file" accept={".zip"}/>
                         </div>
                         <div className={"col"}>
                             <button type="submit" className="btn btn-success">pievienot uzdevumu</button>
@@ -112,6 +121,7 @@ export default function Admin(props) {
                     </div>
                 </form>
 
+                <ErrorAlert msg={props.error}/>
                 <table className="table table-hover" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>
