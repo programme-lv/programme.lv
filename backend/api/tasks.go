@@ -3,8 +3,10 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/KrisjanisP/deikstra/service/models"
 )
@@ -49,47 +51,53 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// decode the request
-	var task models.Task
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-	err := decoder.Decode(&task)
+	err := r.ParseMultipartForm(50 * (1 << 20)) // ~ 50 MB
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println(err)
 		return
+	}
+	mForm := r.MultipartForm
+	for k := range mForm.File {
+		file, fileHeader, err := r.FormFile(k)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Println(err)
+			return
+		}
+		fmt.Printf("the uploaded file: name[%s], size[%d], header[%#v]\n",
+			fileHeader.Filename, fileHeader.Size, fileHeader.Header)
+
+		localFileName := "/srv/deikstra/tasks/" + fileHeader.Filename
+		out, err := os.Create(localFileName)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		_, err = io.Copy(out, file)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		fmt.Printf("file %s uploaded ok\n", fileHeader.Filename)
+
+		err = file.Close()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+		err = out.Close()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 	}
 
-	// process the request
-	if len(task.Code) == 0 || len(task.Name) == 0 {
-		err = fmt.Errorf("neither task_code nor task_name can be empty")
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	err = c.database.Create(&task).Error
-	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	log.Println("code: ", task.Code)
-	log.Println("name: ", task.Name)
-
-	// echo back the task
-	resp, err := json.Marshal(task)
-	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	// send the response
-	_, err = w.Write(resp)
-	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	w.WriteHeader(200)
 }
 
 func (c *Controller) deleteTask(w http.ResponseWriter, r *http.Request) {

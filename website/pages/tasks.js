@@ -52,9 +52,7 @@ export default function Tasks(props) {
 }
 
 
-// This gets called on every request
 export async function getServerSideProps() {
-    // Fetch data from external API
     try {
         const res = await fetch(`${process.env.API_URL}/tasks/list`)
         const tasks = await res.json()
