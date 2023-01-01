@@ -37,4 +37,4 @@ pattern = "5_"
 [[subtasks]]
 name = "MAX"
 score = 20
-pattern = "[0-6]_"
+pattern = "[1-6]_"
