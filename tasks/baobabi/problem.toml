@@ -12,23 +12,29 @@ mem_lim = 256
 [[subtasks]]
 name = "A=1,B<=10^3"
 score = 12
+pattern = "1_"
 
 [[subtasks]]
 name = "B<=10^5"
 score = 14
+pattern = "2_"
 
 [[subtasks]]
 name = "(B-A)<=10^5"
 score = 16
+pattern = "3_"
 
 [[subtasks]]
 name = "B<=10^9"
 score = 18
+pattern = "4_"
 
 [[subtasks]]
 name = "B<=10^11"
 score = 20
+pattern = "5_"
 
 [[subtasks]]
 name = "MAX"
 score = 20
+pattern = "[0-6]_"

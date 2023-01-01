@@ -2,6 +2,7 @@ tmp_path = mktempdir()
 gen_dir = joinpath("test-source","subtask-gen")
 
 test_dir = joinpath("testing-dst","tests")
+mkpath(test_dir)
 
 Threads.@threads for gen_filename in readdir(gen_dir)
     generator = splitext(gen_filename)[1]
