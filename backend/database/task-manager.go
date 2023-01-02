@@ -1,18 +1,22 @@
 package database
 
 import (
+	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/KrisjanisP/deikstra/service/utils"
 	"mime/multipart"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
 )
 
 type TaskManager struct {
+	TasksDir string `mapstructure:"tasks_folder"`
 }
 
-func CreateTaskManager() *TaskManager {
-	return &TaskManager{}
+func CreateTaskManager(tasksDir string) *TaskManager {
+	return &TaskManager{TasksDir: tasksDir}
 }
 
 type Subtask struct {
@@ -59,7 +63,20 @@ func (tm *TaskManager) CreateTask(taskFile multipart.File) error {
 	problem := ProblemTOML{}
 	_, err = toml.Decode(string(problemTOMLBytes), &problem)
 	if err != nil {
-		return nil
+		return err
+	}
+
+	taskFileName := problem.Name + "V" + strconv.Itoa(problem.Version)
+	taskPath := filepath.Join(tm.TasksDir, taskFileName)
+
+	if _, err := os.Stat(taskPath); err == nil {
+		return fmt.Errorf("task %v (version %v) already exists", problem.Name, problem.Version)
+	}
+
+	cmd := exec.Command("mv", decompPath, taskPath)
+	err = cmd.Run()
+	if err != nil {
+		return err
 	}
 
 	return nil

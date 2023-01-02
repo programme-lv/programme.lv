@@ -65,8 +65,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 		}
 		err = c.taskManager.CreateTask(file)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 	}
