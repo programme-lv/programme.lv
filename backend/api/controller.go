@@ -14,10 +14,10 @@ import (
 )
 
 type Controller struct {
-	scheduler   *scheduler.Scheduler
-	database    *gorm.DB
-	router      *mux.Router
-	taskManager *database.TaskFS
+	scheduler *scheduler.Scheduler
+	database  *gorm.DB
+	router    *mux.Router
+	taskFS    *database.TaskFS
 }
 
 func (c *Controller) registerAPIRoutes() {
@@ -43,10 +43,10 @@ func (c *Controller) registerAPIRoutes() {
 func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskFS) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	controller := Controller{
-		scheduler:   scheduler,
-		router:      router,
-		database:    database,
-		taskManager: taskManager,
+		scheduler: scheduler,
+		router:    router,
+		database:  database,
+		taskFS:    taskManager,
 	}
 	controller.registerAPIRoutes()
 	return &controller

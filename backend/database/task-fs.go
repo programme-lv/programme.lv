@@ -22,6 +22,54 @@ func CreateTaskManager(tasksDir string) *TaskFS {
 	return &TaskFS{TasksDir: tasksDir}
 }
 
+func (tfs *TaskFS) ReadFilenameTask(filename string) (models.Task, error) {
+	res := models.Task{}
+
+	problemTOMLPath := filepath.Join(tfs.TasksDir, filename, "problem.toml")
+	problemTOMLBytes, err := os.ReadFile(problemTOMLPath)
+	if err != nil {
+		return res, err
+	}
+
+	_, err = toml.Decode(string(problemTOMLBytes), &res)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (tfs *TaskFS) GetTaskVersionPath(code string, version int) string {
+	filename := code + "V" + strconv.Itoa(version)
+	return filepath.Join(tfs.TasksDir, filename)
+}
+
+func (tfs *TaskFS) GetTaskList() ([]models.Task, error) {
+	files, err := os.ReadDir(tfs.TasksDir)
+	if err != nil {
+		return nil, err
+	}
+	tasks := make(map[string]models.Task)
+	for _, file := range files {
+		task, err := tfs.ReadFilenameTask(file.Name())
+		if err != nil {
+			return nil, err
+		}
+		val, exists := tasks[task.Code]
+		if !exists {
+			tasks[task.Code] = task
+		} else if task.Version > val.Version {
+			tasks[task.Code] = task
+		}
+		log.Println(task)
+	}
+	res := make([]models.Task, len(tasks))
+	for _, v := range tasks {
+		res = append(res, v)
+	}
+	return res, nil
+}
+
 // CreateTaskVersion creates the task, validates it, names it
 func (tfs *TaskFS) CreateTaskVersion(taskFile multipart.File) error {
 	dirPath := filepath.Join("/tmp", "deikstra")
@@ -53,7 +101,7 @@ func (tfs *TaskFS) CreateTaskVersion(taskFile multipart.File) error {
 	problem.CreatedAt = time.Now()
 	log.Printf("received %v", problem)
 
-	taskFileName := problem.Name + "V" + strconv.Itoa(problem.Version)
+	taskFileName := problem.Code + "V" + strconv.Itoa(problem.Version)
 	taskPath := filepath.Join(tfs.TasksDir, taskFileName)
 
 	if _, err := os.Stat(taskPath); err == nil {

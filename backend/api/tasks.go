@@ -15,9 +15,11 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var tasks []models.Task
-	result := c.database.Find(&tasks)
-	log.Println(result)
+	tasks, err := c.taskFS.GetTaskList()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// echo back the task
 	resp, err := json.Marshal(tasks)
@@ -59,7 +61,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err = c.taskManager.CreateTaskVersion(file)
+		err = c.taskFS.CreateTaskVersion(file)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
