@@ -23,9 +23,9 @@ type Task struct {
 
 type TaskStatement struct {
 	TaskCode string `json:"task_code"`
-	Desc     string `json:"statement_desc"`
-	Input    string `json:"statement_input"`
-	Output   string `json:"statement_output"`
-	Notes    string `json:"statement_notes"`
-	Scoring  string `json:"statement_scoring"`
+	Desc     string `json:"desc"`
+	Input    string `json:"input"`
+	Output   string `json:"output"`
+	Notes    string `json:"notes"`
+	Scoring  string `json:"scoring"`
 }
