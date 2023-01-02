@@ -3,12 +3,15 @@ package database
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/KrisjanisP/deikstra/service/utils"
+	"log"
 	"mime/multipart"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type TaskFS struct {
@@ -19,26 +22,8 @@ func CreateTaskManager(tasksDir string) *TaskFS {
 	return &TaskFS{TasksDir: tasksDir}
 }
 
-type Subtask struct {
-	Name    string
-	Score   int
-	Pattern string
-}
-
-type ProblemTOML struct {
-	Code     string
-	Name     string
-	Version  int
-	Author   string
-	Tags     []string
-	Type     string
-	TimeLim  float32 `toml:"time_lim"`
-	MemLim   int     `toml:"mem_lim"`
-	Subtasks []Subtask
-}
-
-// CreateTask creates the task, validates it, names it
-func (tfs *TaskFS) CreateTask(taskFile multipart.File) error {
+// CreateTaskVersion creates the task, validates it, names it
+func (tfs *TaskFS) CreateTaskVersion(taskFile multipart.File) error {
 	dirPath := filepath.Join("/tmp", "deikstra")
 	_ = os.MkdirAll(dirPath, os.ModePerm)
 	tmpDir, _ := os.MkdirTemp(dirPath, "")
@@ -60,11 +45,13 @@ func (tfs *TaskFS) CreateTask(taskFile multipart.File) error {
 		return err
 	}
 
-	problem := ProblemTOML{}
+	problem := models.Task{}
 	_, err = toml.Decode(string(problemTOMLBytes), &problem)
 	if err != nil {
 		return err
 	}
+	problem.CreatedAt = time.Now()
+	log.Printf("received %v", problem)
 
 	taskFileName := problem.Name + "V" + strconv.Itoa(problem.Version)
 	taskPath := filepath.Join(tfs.TasksDir, taskFileName)

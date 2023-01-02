@@ -18,7 +18,6 @@ func DecompressZIP(src string, dst string) error {
 
 	for _, f := range r.File {
 		filePath := filepath.Join(dst, f.Name)
-		log.Println("unzipping file ", filePath)
 
 		if f.FileInfo().IsDir() {
 			_ = os.MkdirAll(filePath, os.ModePerm)

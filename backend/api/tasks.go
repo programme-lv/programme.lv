@@ -59,7 +59,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err = c.taskManager.CreateTask(file)
+		err = c.taskManager.CreateTaskVersion(file)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
