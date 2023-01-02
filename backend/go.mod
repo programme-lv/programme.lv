@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

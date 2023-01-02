@@ -1,9 +1,8 @@
 package database
 
 import (
-	"archive/zip"
-	"io"
-	"log"
+	"github.com/BurntSushi/toml"
+	"github.com/KrisjanisP/deikstra/service/utils"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -16,67 +15,52 @@ func CreateTaskManager() *TaskManager {
 	return &TaskManager{}
 }
 
+type Subtask struct {
+	Name    string
+	Score   int
+	Pattern string
+}
+
+type ProblemTOML struct {
+	Code     string
+	Name     string
+	Version  int
+	Author   string
+	Tags     []string
+	Type     string
+	TimeLim  float32 `toml:"time_lim"`
+	MemLim   int     `toml:"mem_lim"`
+	Subtasks []Subtask
+}
+
 // CreateTask creates the task, validates it, names it
 func (tm *TaskManager) CreateTask(taskFile multipart.File) error {
 	dirPath := filepath.Join("/tmp", "deikstra")
 	_ = os.MkdirAll(dirPath, os.ModePerm)
 	tmpDir, _ := os.MkdirTemp(dirPath, "")
-	download := filepath.Join(tmpDir, "download")
+	downPath := filepath.Join(tmpDir, "download.zip")
 
-	out, err := os.Create(download)
+	err := utils.SaveMultiPartFile(taskFile, downPath)
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(out, taskFile)
+	decompPath := filepath.Join(tmpDir, "decompressed")
+	err = utils.DecompressZIP(downPath, decompPath)
 	if err != nil {
 		return err
 	}
 
-	err = taskFile.Close()
-	if err != nil {
-		return err
-	}
-	err = out.Close()
+	problemTOMLBytes, err := os.ReadFile(filepath.Join(decompPath, "problem.toml"))
 	if err != nil {
 		return err
 	}
 
-	r, err := zip.OpenReader(download)
+	problem := ProblemTOML{}
+	_, err = toml.Decode(string(problemTOMLBytes), &problem)
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 
-	for _, f := range r.File {
-		filePath := filepath.Join(tmpDir, "unzipped", f.Name)
-		log.Println("unzipping file ", filePath)
-
-		if f.FileInfo().IsDir() {
-			os.MkdirAll(filePath, os.ModePerm)
-			continue
-		}
-
-		if err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm); err != nil {
-			return err
-		}
-
-		dstFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		if err != nil {
-			return err
-		}
-
-		fileInArchive, err := f.Open()
-		if err != nil {
-			panic(err)
-		}
-
-		if _, err := io.Copy(dstFile, fileInArchive); err != nil {
-			panic(err)
-		}
-
-		dstFile.Close()
-		fileInArchive.Close()
-	}
-	_ = r.Close()
 	return nil
 }
