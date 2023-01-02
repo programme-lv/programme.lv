@@ -71,7 +71,7 @@ export default function Admin(props) {
         let tags = props.tags;
         for(let tag of tags) {
             let bg = "bg-secondary"
-            if(tag=="ProblemCon++") bg = "bg-primary"
+            if(tag==="ProblemCon++") bg = "bg-primary"
             tag_entries.push(<span className={`badge ${bg} m-1`}>{tag}</span>)
         }
         return (
