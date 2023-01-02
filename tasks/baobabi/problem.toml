@@ -1,9 +1,9 @@
 code = "baobabi"
 name = "baobabi"
-version = 2
+version = 3
 
 author = "Krišjānis Petručeņa"
-tags = ["brute-force","math","number-theory"]
+tags = ["brute-force","math","number-theory","ProblemCon++"]
 
 type = "batch"
 time_lim= 1.0
