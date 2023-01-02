@@ -3,6 +3,21 @@ import Link from 'next/link'
 
 export default function Tasks(props) {
     let task_table_entries = []
+
+    let TagList = (props)=> {
+        let tag_entries = []
+        let tags = props.tags;
+        for(let tag of tags) {
+            let bg = "bg-secondary"
+            if(tag=="ProblemCon++") bg = "bg-primary"
+            tag_entries.push(<span className={`badge ${bg} m-1`}>{tag}</span>)
+        }
+        return (
+            <>
+                {tag_entries}
+            </>
+        )
+    }
     if (props.tasks) {
         let tasks = props.tasks
         tasks.forEach((task) => {
@@ -10,7 +25,7 @@ export default function Tasks(props) {
                 <tr key={task["code"]}>
                     <th scope="row"><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["code"]}</a></Link></th>
                     <td><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["name"]}</a></Link></td>
-                    <td><span className="badge bg-primary">ProblemCon++</span></td>
+                    <td><TagList tags={task["tags"]}/></td>
                     <td><span className="badge bg-danger">6.9</span></td>
                     <td>2</td>
                     <td>13</td>

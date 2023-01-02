@@ -66,6 +66,20 @@ export default function Admin(props) {
     }
 
     let admin_table_entries = []
+    let TagList = (props)=> {
+        let tag_entries = []
+        let tags = props.tags;
+        for(let tag of tags) {
+            let bg = "bg-secondary"
+            if(tag=="ProblemCon++") bg = "bg-primary"
+            tag_entries.push(<span className={`badge ${bg} m-1`}>{tag}</span>)
+        }
+        return (
+            <>
+                {tag_entries}
+            </>
+        )
+    }
     if(props.tasks) {
         tasks.forEach((task) => {
             admin_table_entries.push(
@@ -81,7 +95,7 @@ export default function Admin(props) {
                         </Link>
                     </td>
                     <td>{task["version"]}</td>
-                    <td><span className="badge bg-primary">ProblemCon++</span></td>
+                    <td><TagList tags={task["tags"]}/></td>
                     <td><span className="badge bg-danger">6.9</span></td>
                     <td>2</td>
                     <td>13</td>
