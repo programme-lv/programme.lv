@@ -11,12 +11,12 @@ import (
 	"strconv"
 )
 
-type TaskManager struct {
+type TaskFS struct {
 	TasksDir string `mapstructure:"tasks_folder"`
 }
 
-func CreateTaskManager(tasksDir string) *TaskManager {
-	return &TaskManager{TasksDir: tasksDir}
+func CreateTaskManager(tasksDir string) *TaskFS {
+	return &TaskFS{TasksDir: tasksDir}
 }
 
 type Subtask struct {
@@ -38,7 +38,7 @@ type ProblemTOML struct {
 }
 
 // CreateTask creates the task, validates it, names it
-func (tm *TaskManager) CreateTask(taskFile multipart.File) error {
+func (tfs *TaskFS) CreateTask(taskFile multipart.File) error {
 	dirPath := filepath.Join("/tmp", "deikstra")
 	_ = os.MkdirAll(dirPath, os.ModePerm)
 	tmpDir, _ := os.MkdirTemp(dirPath, "")
@@ -67,7 +67,7 @@ func (tm *TaskManager) CreateTask(taskFile multipart.File) error {
 	}
 
 	taskFileName := problem.Name + "V" + strconv.Itoa(problem.Version)
-	taskPath := filepath.Join(tm.TasksDir, taskFileName)
+	taskPath := filepath.Join(tfs.TasksDir, taskFileName)
 
 	if _, err := os.Stat(taskPath); err == nil {
 		return fmt.Errorf("task %v (version %v) already exists", problem.Name, problem.Version)

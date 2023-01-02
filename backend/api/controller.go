@@ -17,7 +17,7 @@ type Controller struct {
 	scheduler   *scheduler.Scheduler
 	database    *gorm.DB
 	router      *mux.Router
-	taskManager *database.TaskManager
+	taskManager *database.TaskFS
 }
 
 func (c *Controller) registerAPIRoutes() {
@@ -40,7 +40,7 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.Use(mux.CORSMethodMiddleware(c.router))
 }
 
-func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskManager) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskFS) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	controller := Controller{
 		scheduler:   scheduler,

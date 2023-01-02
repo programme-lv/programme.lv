@@ -22,7 +22,6 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	// echo back the task
 	resp, err := json.Marshal(tasks)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -30,8 +29,7 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	// send the response
 	_, err = w.Write(resp)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 }
@@ -50,8 +48,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseMultipartForm(50 * (1 << 20)) // ~ 50 MB
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -59,8 +56,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 	for k := range mForm.File {
 		file, _, err := r.FormFile(k)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		err = c.taskManager.CreateTask(file)
