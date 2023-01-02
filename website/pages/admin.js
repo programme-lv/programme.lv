@@ -64,6 +64,10 @@ export default function Admin(props) {
         }
         document.getElementById("delete-task-modal-show").click()
     }
+    let createTaskSubmitAndRefresh = async (form_event) => {
+        await createTaskSubmit(form_event)
+        await refreshTable()
+    }
 
     let admin_table_entries = []
     let TagList = (props)=> {
@@ -72,7 +76,7 @@ export default function Admin(props) {
         for(let tag of tags) {
             let bg = "bg-secondary"
             if(tag==="ProblemCon++") bg = "bg-primary"
-            tag_entries.push(<span className={`badge ${bg} m-1`}>{tag}</span>)
+            tag_entries.push(<span className={`badge ${bg} m-1`} key={tag}>{tag}</span>)
         }
         return (
             <>
@@ -125,7 +129,7 @@ export default function Admin(props) {
             <main className="container">
                 <h1 className="my-4 text-center">administrācija</h1>
 
-                <form action={`${props.apiURL}/tasks/create`} onSubmit={createTaskSubmit}>
+                <form action={`${props.apiURL}/tasks/create`} onSubmit={createTaskSubmitAndRefresh}>
                     <div className="row">
                         <div className="mb-3 col">
                             <input className="form-control" type="file" name="task-file" accept={".zip"}/>
