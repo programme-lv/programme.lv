@@ -7,9 +7,9 @@ export default function Tasks(props) {
         let tasks = props.tasks
         tasks.forEach((task) => {
             task_table_entries.push(
-                <tr key={task["task_code"]}>
-                    <th scope="row"><Link href={"/tasks/" + task["task_code"]}><a className="nav-link">{task["task_code"]}</a></Link></th>
-                    <td><Link href={"/tasks/" + task["task_code"]}><a className="nav-link">{task["task_name"]}</a></Link></td>
+                <tr key={task["code"]}>
+                    <th scope="row"><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["code"]}</a></Link></th>
+                    <td><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["name"]}</a></Link></td>
                     <td><span className="badge bg-primary">ProblemCon++</span></td>
                     <td><span className="badge bg-danger">6.9</span></td>
                     <td>2</td>

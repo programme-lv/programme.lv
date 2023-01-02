@@ -61,10 +61,10 @@ func (tfs *TaskFS) GetTaskList() ([]models.Task, error) {
 		} else if task.Version > val.Version {
 			tasks[task.Code] = task
 		}
-		log.Println(task)
 	}
-	res := make([]models.Task, len(tasks))
+	res := make([]models.Task, 0)
 	for _, v := range tasks {
+		log.Println(v)
 		res = append(res, v)
 	}
 	return res, nil

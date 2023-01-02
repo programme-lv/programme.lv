@@ -2,17 +2,17 @@ import NavBar from '../components/navbar'
 import Link from "next/link";
 import {useState} from 'react'
 
-async function deleteTask(task_code, apiURL) {
+async function deleteTask(code, apiURL) {
     const fetchOptions = {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
         },
-        body: JSON.stringify({task_code: task_code}),
+        body: JSON.stringify({code: code}),
     };
 
-    const response = await fetch(`${apiURL}/tasks/delete/` + task_code, fetchOptions);
+    const response = await fetch(`${apiURL}/tasks/delete/` + code, fetchOptions);
 
     if (!response.ok) {
         const errorMessage = await response.text();
@@ -52,14 +52,14 @@ export default function Admin(props) {
         const tasks = await res.json()
         setTasks(tasks)
     }
-    let deleteTaskAndRefreshTable = async (task_code) => {
-        await deleteTask(task_code,props.apiURL);
+    let deleteTaskAndRefreshTable = async (code) => {
+        await deleteTask(code,props.apiURL);
         await refreshTable();
     }
-    let displayTaskDeleteModal = async (task_name, task_code) => {
-        document.getElementById("delete-task-modal-header").innerHTML = task_name
+    let displayTaskDeleteModal = async (name, code) => {
+        document.getElementById("delete-task-modal-header").innerHTML = name
         document.getElementById("delete-task-modal-confirm").onclick = async () => {
-            await deleteTaskAndRefreshTable(task_code);
+            await deleteTaskAndRefreshTable(code);
             document.getElementById("delete-task-modal-close").click()
         }
         document.getElementById("delete-task-modal-show").click()
@@ -69,17 +69,18 @@ export default function Admin(props) {
     if(props.tasks) {
         tasks.forEach((task) => {
             admin_table_entries.push(
-                <tr key={task["task_code"]}>
+                <tr key={task["code"]}>
                     <th scope="row">
-                        <Link href={"/tasks/" + task["task_code"]}>
-                            <a className="nav-link">{task["task_code"]}</a>
+                        <Link href={"/tasks/" + task["code"]}>
+                            <a className="nav-link">{task["code"]}</a>
                         </Link>
                     </th>
                     <td>
-                        <Link href={"/tasks/" + task["task_code"]}>
-                            <a className="nav-link">{task["task_name"]}</a>
+                        <Link href={"/tasks/" + task["code"]}>
+                            <a className="nav-link">{task["name"]}</a>
                         </Link>
                     </td>
+                    <td>{task["version"]}</td>
                     <td><span className="badge bg-primary">ProblemCon++</span></td>
                     <td><span className="badge bg-danger">6.9</span></td>
                     <td>2</td>
@@ -87,7 +88,7 @@ export default function Admin(props) {
                     <td>
                         <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
                         <button type="button" className="btn btn-sm btn-danger ms-1"
-                                onClick={() => displayTaskDeleteModal(task["task_name"], task["task_code"])}>Izdzēst
+                                onClick={() => displayTaskDeleteModal(task["name"], task["code"])}>Izdzēst
                         </button>
                     </td>
                 </tr>
@@ -127,6 +128,7 @@ export default function Admin(props) {
                     <tr>
                         <th scope="col">kods</th>
                         <th scope="col">nosaukums</th>
+                        <th scope={"col"}>versija</th>
                         <th scope="col">birkas</th>
                         <th scope="col">grūtība</th>
                         <th scope="col">atrisinājumi</th>

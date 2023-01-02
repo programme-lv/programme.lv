@@ -21,6 +21,8 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(tasks)
+
 	// echo back the task
 	resp, err := json.Marshal(tasks)
 	if err != nil {
