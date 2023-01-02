@@ -1,3 +1,4 @@
 api_port = 8080
 worker_port = 50051
 db_conn_string = "data.db"
+tasks_folder = "/srv/deikstra/tasks"

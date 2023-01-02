@@ -2,13 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
+	"github.com/KrisjanisP/deikstra/service/models"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/KrisjanisP/deikstra/service/models"
 )
 
 func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
@@ -30,11 +26,12 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
 	// send the response
 	_, err = w.Write(resp)
 	if err != nil {
 		log.Printf("HTTP %s", err.Error())
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
@@ -57,39 +54,16 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
 	mForm := r.MultipartForm
 	for k := range mForm.File {
-		file, fileHeader, err := r.FormFile(k)
+		file, _, err := r.FormFile(k)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Println(err)
 			return
 		}
-		fmt.Printf("the uploaded file: name[%s], size[%d], header[%#v]\n",
-			fileHeader.Filename, fileHeader.Size, fileHeader.Header)
-
-		localFileName := "/srv/deikstra/tasks/" + fileHeader.Filename
-		out, err := os.Create(localFileName)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-		_, err = io.Copy(out, file)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-		fmt.Printf("file %s uploaded ok\n", fileHeader.Filename)
-
-		err = file.Close()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-		err = out.Close()
+		err = c.taskManager.CreateTask(file)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Println(err)

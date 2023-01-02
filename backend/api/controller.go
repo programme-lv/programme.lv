@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/KrisjanisP/deikstra/service/database"
 	"log"
 	"net"
 	"net/http"
@@ -13,9 +14,10 @@ import (
 )
 
 type Controller struct {
-	scheduler *scheduler.Scheduler
-	database  *gorm.DB
-	router    *mux.Router
+	scheduler   *scheduler.Scheduler
+	database    *gorm.DB
+	router      *mux.Router
+	taskManager *database.TaskManager
 }
 
 func (c *Controller) registerAPIRoutes() {
@@ -38,12 +40,13 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.Use(mux.CORSMethodMiddleware(c.router))
 }
 
-func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskManager) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	controller := Controller{
-		scheduler: scheduler,
-		router:    router,
-		database:  database,
+		scheduler:   scheduler,
+		router:      router,
+		database:    database,
+		taskManager: taskManager,
 	}
 	controller.registerAPIRoutes()
 	return &controller

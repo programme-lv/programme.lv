@@ -20,6 +20,8 @@ func main() {
 
 	go sched.StartSchedulerServer(config.SchedulerPort)
 
-	a := api.CreateAPIController(sched, db)
+	tm := database.CreateTaskManager()
+
+	a := api.CreateAPIController(sched, db, tm)
 	a.StartAPIServer(config.APIPort)
 }
