@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/KrisjanisP/deikstra/service/api"
+	"github.com/KrisjanisP/deikstra/service/controller"
 	"github.com/KrisjanisP/deikstra/service/database"
 	"github.com/KrisjanisP/deikstra/service/scheduler"
 )
@@ -22,6 +22,6 @@ func main() {
 
 	tm := database.CreateTaskManager(config.TasksDir)
 
-	a := api.CreateAPIController(sched, db, tm)
-	a.StartAPIServer(config.APIPort)
+	c := controller.CreateAPIController(sched, db, tm)
+	c.StartAPIServer(config.APIPort)
 }

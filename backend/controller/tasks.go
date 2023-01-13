@@ -1,10 +1,11 @@
-package api
+package controller
 
 import (
 	"encoding/json"
-	"github.com/KrisjanisP/deikstra/service/models"
 	"log"
 	"net/http"
+
+	"github.com/KrisjanisP/deikstra/service/models"
 )
 
 func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
