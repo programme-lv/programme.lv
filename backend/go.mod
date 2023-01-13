@@ -3,6 +3,7 @@ module github.com/KrisjanisP/deikstra/service
 go 1.19
 
 require (
+	github.com/BurntSushi/toml v1.2.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/spf13/viper v1.14.0
@@ -13,7 +14,6 @@ require (
 )
 
 require (
-	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
