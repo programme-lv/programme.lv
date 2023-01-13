@@ -2,9 +2,6 @@ package database
 
 import (
 	"fmt"
-	"github.com/BurntSushi/toml"
-	"github.com/KrisjanisP/deikstra/service/models"
-	"github.com/KrisjanisP/deikstra/service/utils"
 	"log"
 	"mime/multipart"
 	"os"
@@ -12,6 +9,10 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"github.com/BurntSushi/toml"
+	"github.com/KrisjanisP/deikstra/service/models"
+	"github.com/KrisjanisP/deikstra/service/utils"
 )
 
 type TaskFS struct {
