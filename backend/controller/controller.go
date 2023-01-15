@@ -6,7 +6,7 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/KrisjanisP/deikstra/service/database"
+	"github.com/KrisjanisP/deikstra/service/data"
 
 	"github.com/KrisjanisP/deikstra/service/scheduler"
 	"gorm.io/gorm"
@@ -18,10 +18,10 @@ type Controller struct {
 	scheduler *scheduler.Scheduler
 	database  *gorm.DB
 	router    *mux.Router
-	taskFS    *database.TaskFS
+	taskFS    *data.TaskFS
 }
 
-func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskFS) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *data.TaskFS) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	controller := Controller{
 		scheduler: scheduler,
