@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 
@@ -23,9 +24,6 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println(tasks)
-
-	// echo back the task
 	resp, err := json.Marshal(tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -40,6 +38,7 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// c.router.HandleFunc("/tasks/view/{task_code}", c.getTask).Methods("GET", "OPTIONS")
 func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
 	// CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -48,6 +47,47 @@ func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	taskCode := mux.Vars(r)["task_code"]
+	task, err := c.taskFS.GetTaskWithStatements(taskCode)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	resp, err := json.Marshal(task)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// send the response
+	_, err = w.Write(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+}
+
+// c.router.HandleFunc("/tasks/statement/{task_code}/{filename}", c.getPDFStatement).Methods("GET", "OPTIONS")
+func (c *Controller) getPDFStatement(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/pdf")
+
+	taskCode := mux.Vars(r)["task_code"]
+	filename := mux.Vars(r)["filename"]
+	statement, err := c.taskFS.GetTaskPDFStatementBytes(taskCode, filename)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, _ = w.Write(statement)
 }
 
 func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {

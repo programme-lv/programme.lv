@@ -1,12 +1,12 @@
 import NavBar from "../../components/navbar";
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 export default function Task(props) {
     console.log(props)
     const router = useRouter()
     const { id } = router.query
-  
+
+
     return (
         <div>
             <NavBar active_page={"tasks"} />
@@ -18,7 +18,12 @@ export default function Task(props) {
 }
 
 export async function getServerSideProps(context) {
-    return {
-        props: {data:1234}, // will be passed to the page component as props
+    try {
+        const reqRes = await fetch(`${process.env.API_URL}/tasks/view/${context.params.id}`)
+        const task = await reqRes.json()
+        return { props: { task } }
+    } catch (err) {
+        console.log(err)
+        return { props: { error: "failed to fetch task info from the API :(" } }
     }
 }

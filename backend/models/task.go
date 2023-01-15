@@ -36,5 +36,5 @@ type MarkdownStatement struct {
 }
 
 type PDFStatement struct {
-	Filename string `json:"filename"`
+	Name string `json:"filename"`
 }

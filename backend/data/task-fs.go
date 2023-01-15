@@ -62,21 +62,60 @@ func (tfs *TaskFS) getTaskNewestVersion(taskCode string) (models.Task, error) {
 	return res, nil
 }
 
-// GetTaskStatements returns all task (newest version) statements
-func (tfs *TaskFS) GetTaskStatements(taskCode string) ([]string, error) {
-	version, err := tfs.getTaskNewestVersion(taskCode)
+// getTaskPath returns the path to the task newest version
+func (tfs *TaskFS) getTaskPath(taskCode string) (string, error) {
+	task, err := tfs.getTaskNewestVersion(taskCode)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(tfs.TasksDir, task.Code+"V"+strconv.Itoa(task.Version)), nil
+}
+
+// GetTaskMDStatements returns task (newest version) markdown statements
+func (tfs *TaskFS) GetTaskMDStatements(taskCode string) ([]models.MarkdownStatement, error) {
+	taskPath, err := tfs.getTaskPath(taskCode)
 	if err != nil {
 		return nil, err
 	}
-	taskPath := filepath.Join(tfs.TasksDir, version.Code+"V"+strconv.Itoa(version.Version))
 	statementsPath := filepath.Join(taskPath, "statements")
-	statementDirEntries, err := os.ReadDir(statementsPath)
+	statementEntries, err := os.ReadDir(statementsPath)
 	if err != nil {
 		return nil, err
 	}
-	statements := make([]string, 0)
-	for _, statementDirEntry := range statementDirEntries {
-		statements = append(statements, statementDirEntry.Name())
+	statements := make([]models.MarkdownStatement, 0)
+	for _, statementDirEntry := range statementEntries {
+		if !statementDirEntry.IsDir() { // markdown statements are in directories
+			continue
+		}
+		statement := models.MarkdownStatement{}
+		descPath := filepath.Join(statementsPath, statementDirEntry.Name(), "description.md")
+		description, _ := os.ReadFile(descPath)
+		statement.Desc = string(description)
+		statements = append(statements, statement)
+	}
+	return statements, nil
+
+}
+
+// GetTaskPDFStatements returns task (newest version) pdf statements
+func (tfs *TaskFS) GetTaskPDFStatements(taskCode string) ([]models.PDFStatement, error) {
+	taskPath, err := tfs.getTaskPath(taskCode)
+	if err != nil {
+		return nil, err
+	}
+	statementsPath := filepath.Join(taskPath, "statements")
+	statementEntries, err := os.ReadDir(statementsPath)
+	if err != nil {
+		return nil, err
+	}
+	statements := make([]models.PDFStatement, 0)
+	for _, statementDirEntry := range statementEntries {
+		if statementDirEntry.IsDir() { // pdf statements are not in directories
+			continue
+		}
+		statement := models.PDFStatement{}
+		statement.Name = statementDirEntry.Name()
+		statements = append(statements, statement)
 	}
 	return statements, nil
 }
@@ -153,4 +192,31 @@ func (tfs *TaskFS) CreateTaskVersion(taskFile multipart.File) error {
 	}
 
 	return nil
+}
+
+// GetTaskWithStatements returns task (newest version) with statements
+func (tfs *TaskFS) GetTaskWithStatements(taskCode string) (models.TaskWithStatements, error) {
+	res := models.TaskWithStatements{}
+	task, err := tfs.getTaskNewestVersion(taskCode)
+	if err != nil {
+		return res, err
+	}
+	res.Task = task
+	res.MDStatements, err = tfs.GetTaskMDStatements(taskCode)
+	res.PDFStatements, err = tfs.GetTaskPDFStatements(taskCode)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
+// GetTaskPDFStatementBytes returns task (newest version) pdf statement
+func (tfs *TaskFS) GetTaskPDFStatementBytes(taskCode string, filename string) ([]byte, error) {
+	taskPath, err := tfs.getTaskPath(taskCode)
+	if err != nil {
+		return nil, err
+	}
+	statementsPath := filepath.Join(taskPath, "statements")
+	statementPath := filepath.Join(statementsPath, filename)
+	return os.ReadFile(statementPath)
 }
