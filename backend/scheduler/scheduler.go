@@ -85,7 +85,7 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 				TaskCode:    task.TaskCode,
 				TaskVersion: task.TaskVersion,
 				LangCode:    task.LangCode,
-				UserId:      task.UserId,
+				SubmSrcCode: task.SubmSrcCode,
 			}
 			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
 			err := stream.Send(request)
@@ -97,8 +97,8 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 			request := &pb.Job{}
 			request.JobId = 1
 			execSubmission := &pb.ExecSubmission{
-				LangCode: execution.LangCode,
-				UserId:   execution.UserId,
+				LangCode:    execution.LangCode,
+				SubmSrcCode: execution.SubmSrcCode,
 			}
 			request.Job = &pb.Job_ExecSubmission{ExecSubmission: execSubmission}
 			err := stream.Send(request)

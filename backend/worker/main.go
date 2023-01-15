@@ -54,17 +54,17 @@ func work(schedulerAddr string, workerName string) error {
 		jobId := job.GetJobId()
 		switch job.Job.(type) {
 		case *pb.Job_TaskSubmission:
-			taskName := job.GetTaskSubmission().GetTaskName()
+			taskCode := job.GetTaskSubmission().GetTaskCode()
 			taskVersion := job.GetTaskSubmission().GetTaskVersion()
-			userCode := job.GetTaskSubmission().GetUserCode()
-			langId := job.GetTaskSubmission().GetLangId()
+			langCode := job.GetTaskSubmission().GetLangCode()
+			submSrcCode := job.GetTaskSubmission().GetSubmSrcCode()
 			log.Println("jobId: ", jobId)
-			log.Println("taskName: ", taskName)
+			log.Println("taskName: ", taskCode)
 			log.Println("taskVersion: ", taskVersion)
-			log.Println("userCode: ", userCode)
-			log.Println("langId: ", langId)
+			log.Println("submSrcCode: ", submSrcCode)
+			log.Println("langId: ", langCode)
 
-			exe, err := CreateExecutable(userCode, langId)
+			exe, err := CreateExecutable(submSrcCode, langCode)
 			if err != nil {
 				log.Println(err)
 				continue
@@ -79,34 +79,6 @@ func work(schedulerAddr string, workerName string) error {
 			}
 			log.Printf("stdout: %v\n", stdout)
 			log.Printf("stderr: %v\n", stderr)
-		case *pb.Job_ExecSubmission:
-			userCode := job.GetExecSubmission().UserCode
-			langId := job.GetExecSubmission().LangId
-			stdIn := job.GetExecSubmission().Stdin
-			log.Printf("%v %v %v", userCode, langId, stdIn)
-			exe, err := CreateExecutable(userCode, langId)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-			log.Printf("exe src path: %v\n", exe.srcPath)
-			log.Printf("exe path: %v\n", exe.exePath)
-
-			stdout, stderr, err := exe.Execute(nil)
-			if err != nil {
-				log.Println(err)
-				continue
-			}
-
-			resStream.Send(&pb.JobStatusUpdate{
-				JobId: jobId,
-				Update: &pb.JobStatusUpdate_ExecRes{
-					ExecRes: &pb.ExecResult{
-						Stdout: stdout,
-						Stderr: stderr,
-					},
-				},
-			})
 		}
 	}
 	return nil
