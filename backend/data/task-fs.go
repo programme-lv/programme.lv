@@ -23,7 +23,8 @@ func CreateTaskManager(tasksDir string) *TaskFS {
 	return &TaskFS{TasksDir: tasksDir}
 }
 
-func (tfs *TaskFS) ReadFilenameTask(filename string) (models.Task, error) {
+// readTaskByFilename reads task from problem.toml file
+func (tfs *TaskFS) readTaskByFilename(filename string) (models.Task, error) {
 	res := models.Task{}
 
 	problemTOMLPath := filepath.Join(tfs.TasksDir, filename, "problem.toml")
@@ -40,11 +41,47 @@ func (tfs *TaskFS) ReadFilenameTask(filename string) (models.Task, error) {
 	return res, nil
 }
 
-func (tfs *TaskFS) GetTaskVersionPath(code string, version int) string {
-	filename := code + "V" + strconv.Itoa(version)
-	return filepath.Join(tfs.TasksDir, filename)
+// GetTaskNewestVersion returns the newest version of the task
+func (tfs *TaskFS) getTaskNewestVersion(taskCode string) (models.Task, error) {
+	res := models.Task{}
+	files, err := os.ReadDir(tfs.TasksDir)
+	if err != nil {
+		return res, err
+	}
+	for _, file := range files {
+		task, err := tfs.readTaskByFilename(file.Name())
+		if err != nil {
+			return res, err
+		}
+		if task.Code == taskCode {
+			if task.Version > res.Version {
+				res = task
+			}
+		}
+	}
+	return res, nil
 }
 
+// GetTaskStatements returns all task (newest version) statements
+func (tfs *TaskFS) GetTaskStatements(taskCode string) ([]string, error) {
+	version, err := tfs.getTaskNewestVersion(taskCode)
+	if err != nil {
+		return nil, err
+	}
+	taskPath := filepath.Join(tfs.TasksDir, version.Code+"V"+strconv.Itoa(version.Version))
+	statementsPath := filepath.Join(taskPath, "statements")
+	statementDirEntries, err := os.ReadDir(statementsPath)
+	if err != nil {
+		return nil, err
+	}
+	statements := make([]string, 0)
+	for _, statementDirEntry := range statementDirEntries {
+		statements = append(statements, statementDirEntry.Name())
+	}
+	return statements, nil
+}
+
+// GetTaskList returns task newest versions
 func (tfs *TaskFS) GetTaskList() ([]models.Task, error) {
 	files, err := os.ReadDir(tfs.TasksDir)
 	if err != nil {
@@ -52,7 +89,7 @@ func (tfs *TaskFS) GetTaskList() ([]models.Task, error) {
 	}
 	tasks := make(map[string]models.Task)
 	for _, file := range files {
-		task, err := tfs.ReadFilenameTask(file.Name())
+		task, err := tfs.readTaskByFilename(file.Name())
 		if err != nil {
 			return nil, err
 		}

@@ -21,11 +21,20 @@ type Task struct {
 	CreatedAt time.Time `json:"created"`
 }
 
-type TaskStatement struct {
-	TaskCode string `json:"task_code"`
-	Desc     string `json:"desc"`
-	Input    string `json:"input"`
-	Output   string `json:"output"`
-	Notes    string `json:"notes"`
-	Scoring  string `json:"scoring"`
+type TaskWithStatements struct {
+	Task
+	MDStatements  []MarkdownStatement `json:"md_statements"`
+	PDFStatements []PDFStatement      `json:"pdf_statements"`
+}
+
+type MarkdownStatement struct {
+	Desc    string `json:"desc"`
+	Input   string `json:"input"`
+	Output  string `json:"output"`
+	Notes   string `json:"notes"`
+	Scoring string `json:"scoring"`
+}
+
+type PDFStatement struct {
+	Filename string `json:"filename"`
 }

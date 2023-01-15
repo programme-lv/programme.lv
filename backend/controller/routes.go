@@ -5,7 +5,7 @@ import "github.com/gorilla/mux"
 func (c *Controller) registerAPIRoutes() {
 	// tasks
 	c.router.HandleFunc("/tasks/list", c.listTasks).Methods("GET", "OPTIONS")
-	c.router.HandleFunc("/tasks/info/{task_id}", getTask).Methods("GET")
+	c.router.HandleFunc("/tasks/info/{task_id}", c.getTask).Methods("GET")
 	c.router.HandleFunc("/tasks/create", c.createTask).Methods("POST", "OPTIONS")
 	c.router.HandleFunc("/tasks/delete/{task_id}", c.deleteTask).Methods("DELETE", "OPTIONS")
 

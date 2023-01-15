@@ -8,6 +8,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/models"
 )
 
+// c.router.HandleFunc("/tasks/list", c.listTasks).Methods("GET", "OPTIONS")
 func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	// CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -39,8 +40,14 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getTask(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 }
 
 func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
