@@ -2,6 +2,8 @@ import Link from 'next/link'
 import NavBar from '../components/navbar'
 
 export default function Home() {
+    // generate a landing page
+
     return (
         <div>
             <NavBar />
