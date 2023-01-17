@@ -5,15 +5,25 @@ import TagList from "../../components/taglist";
 export default function Task(props) {
     let pdfURL = props.apiURL + "/tasks/statement/" + props.task["code"] + "/" + props.task["pdf_statements"][0].filename
 
+    let mdStatement = props.task["md_statements"][0]
+
+    console.log(props)
     return (
         <>
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <div className={"row my-5"}>
-                    <div className="col-9">asdf</div>
-                    <div className="col-3 card">
+                    <div className="col-9">
+                        <h2>{props.task["name"]}</h2>
+                        <hr></hr>
+                        <section className="my-4">
+                            <h3>formulējums</h3>
+                            <p>{mdStatement["desc"]}</p>
+                        </section>
+                    </div>
+                    <div className="col-3 card shadow-sm">
                         <div className="card-body">
-                            <h5 className="card-title text-center">Uzd. Informācija</h5>
+                            <h5 className="card-title text-center">uzd. Informācija</h5>
                             <p className="card-text"></p>
                             <table className={"table table-hover"}>
                                 <tbody>
@@ -39,9 +49,9 @@ export default function Task(props) {
                                 </tr>
                                 </tbody>
                             </table>
-                            <h6 className="card-subtitle mb-2">Birkas</h6>
+                            <h6 className="card-subtitle mt-3 mb-2">birkas</h6>
                             <TagList tags={props.task["tags"]}/>
-                            <h6 className="card-subtitle my-2">Statistika</h6>
+                            <h6 className="card-subtitle mt-3 mb-2">statistika</h6>
                             <table className={"table table-hover"}>
                                 <tbody>
                                 <tr>
@@ -58,10 +68,11 @@ export default function Task(props) {
                                 </tr>
                                 </tbody>
                             </table>
-                            <h5 className="card-title text-center">Iesūtīšana</h5>
+                            <h5 className="card-title text-center">iesūtīšana</h5>
 
                             <div className="my-3 text-center">
-                                <button type="button" className="btn btn-sm btn-primary">atvērt sūtījuma redaktoru</button>
+                                <button type="button" className="btn btn-sm btn-primary">atvērt sūtījuma redaktoru
+                                </button>
                             </div>
                         </div>
                     </div>
