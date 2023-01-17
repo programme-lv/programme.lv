@@ -1,25 +1,58 @@
 import NavBar from "../../components/navbar";
 import TagList from "../../components/taglist";
-
+import katex from "katex";
+import {useEffect} from "react";
 
 export default function Task(props) {
     let pdfURL = props.apiURL + "/tasks/statement/" + props.task["code"] + "/" + props.task["pdf_statements"][0].filename
 
     let mdStatement = props.task["md_statements"][0]
+    let x = katex.renderToString("1234\\leq 3", {throwOnError: true, strict: false, delimeters: [
+            {left: "$", right: "$", display: true},
+        ],displayMode:true})
+    useEffect(()=> {
+        if (typeof window !== undefined) {
+            // append x to document.body
+            let div = document.getElementById("test-1234")
+            div.innerHTML = x
+        }
+    },[]);
+    console.log(x)
 
     console.log(props)
-    return (
-        <>
+    return (<>
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <div className={"row my-5"}>
-                    <div className="col-9">
+                    <div className="col-9 pe-4">
                         <h2>{props.task["name"]}</h2>
                         <hr></hr>
                         <section className="my-4">
-                            <h3>formulējums</h3>
+                            <h5>formulējums</h5>
+                            <div id={"test-1234"}></div>
                             <p>{mdStatement["desc"]}</p>
                         </section>
+                        <section className="my-4">
+                            <h5>ievaddati</h5>
+                            <p>{mdStatement["input"]}</p>
+                        </section>
+                        <section className="my-4">
+                            <h5>izvaddati</h5>
+                            <p>{mdStatement["output"]}</p>
+                        </section>
+                        <section className="my-4">
+                            <h5>piemēri</h5>
+                            <p>{mdStatement["examples"]}</p>
+                        </section>
+                        <section className="my-4">
+                            <h5>vērtēšana</h5>
+                            <p>{mdStatement["scoring"]}</p>
+                        </section>
+                        <section className="my-4">
+                            <h5>piezīmes</h5>
+                            <p>{mdStatement["notes"]}</p>
+                        </section>
+
                     </div>
                     <div className="col-3 card shadow-sm">
                         <div className="card-body">
@@ -78,8 +111,7 @@ export default function Task(props) {
                     </div>
                 </div>
             </main>
-        </>
-    )
+        </>)
 }
 
 /*
@@ -96,8 +128,7 @@ export async function getServerSideProps(context) {
         const task = await reqRes.json()
         return {
             props: {
-                task: task,
-                apiURL: process.env.API_URL
+                task: task, apiURL: process.env.API_URL
             }
         }
     } catch (err) {
