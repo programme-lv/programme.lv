@@ -13,7 +13,7 @@ export default function Task(props) {
                     <div className="col-9">asdf</div>
                     <div className="col-3 card">
                         <div className="card-body">
-                            <h5 className="card-title">Uzd. Informācija</h5>
+                            <h5 className="card-title text-center">Uzd. Informācija</h5>
                             <p className="card-text"></p>
                             <table className={"table table-hover"}>
                                 <tbody>
@@ -58,7 +58,11 @@ export default function Task(props) {
                                 </tr>
                                 </tbody>
                             </table>
+                            <h5 className="card-title text-center">Iesūtīšana</h5>
 
+                            <div className="my-3 text-center">
+                                <button type="button" className="btn btn-sm btn-primary">atvērt sūtījuma redaktoru</button>
+                            </div>
                         </div>
                     </div>
                 </div>
