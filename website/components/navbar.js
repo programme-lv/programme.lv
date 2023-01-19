@@ -15,10 +15,10 @@ export default function NavBar({ active_page, admin}) {
                                 <Link href="/tasks"><a className={'nav-link ' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
+                                <Link href="/submissions"><a className={'nav-link ' + (active_page === 'submissions' ? 'active' : '')}>iesūtījumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/submissions"><a className='nav-link disabled'>iesūtījumi</a></Link>
+                                <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/competitions"><a className='nav-link disabled'>sacensības</a></Link>
