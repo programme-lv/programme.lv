@@ -40,43 +40,36 @@ export default function Task(props) {
                     <section className="my-4">
                         <h5>piemēri</h5>
                         <div className={"row"}>
-                        {
-                            mdStatement["examples"].map((example, index) => {
-                                return (
-                                    <table className={"table table-bordered col m-3"} key={index}>
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">ievaddati</th>
-                                            <th scope="col">izvaddati</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>
-                                                <code>{example["input"]}</code>
-                                            </td>
-                                            <td>
-                                                <code>{example["output"]}</code>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                )
-                            })
-                        }
+                            {mdStatement["examples"].map((example, index) => {
+                                return (<table className={"table table-bordered col m-3"} key={index}>
+                                    <thead>
+                                    <tr>
+                                        <th>ievaddati</th>
+                                        <th>izvaddati</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <code>{example["input"]}</code>
+                                        </td>
+                                        <td>
+                                            <code>{example["output"]}</code>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>)
+                            })}
                         </div>
                     </section>
                     <section className="my-4 md-statement-scoring">
                         <h5>vērtēšana</h5>
                         <div dangerouslySetInnerHTML={{__html: mdStatement["scoring"]}}></div>
                     </section>
-                    {mdStatement["notes"] ?
-                        <section className="my-4">
-                            <h5>piezīmes</h5>
-                            <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
-                        </section>
-                        : <></>
-                    }
+                    {mdStatement["notes"] ? <section className="my-4">
+                        <h5>piezīmes</h5>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
+                    </section> : <></>}
 
                 </div>
                 <div className="col-3 card shadow-sm h-100">
