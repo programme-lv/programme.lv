@@ -1,23 +1,10 @@
 import NavBar from "../components/navbar";
 import Link from 'next/link'
+import TagList from "../components/taglist";
 
 export default function Tasks(props) {
     let task_table_entries = []
 
-    let TagList = (props)=> {
-        let tag_entries = []
-        let tags = props.tags;
-        for(let tag of tags) {
-            let bg = "bg-secondary"
-            if(tag==="ProblemCon++") bg = "bg-primary"
-            tag_entries.push(<span className={`badge ${bg} m-1`} key={tag}>{tag}</span>)
-        }
-        return (
-            <>
-                {tag_entries}
-            </>
-        )
-    }
     if (props.tasks) {
         let tasks = props.tasks
         tasks.forEach((task) => {
