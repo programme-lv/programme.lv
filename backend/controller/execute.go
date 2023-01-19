@@ -17,7 +17,7 @@ func (c *Controller) enqueueExecution(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// decode submission data
+	// decode submission database
 	var submission models.ExecSubmission
 	err := json.NewDecoder(r.Body).Decode(&submission)
 	if err != nil {

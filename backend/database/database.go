@@ -1,4 +1,4 @@
-package data
+package database
 
 import (
 	"log"
@@ -13,13 +13,13 @@ func ConnectAndMigrate(connectionString string) (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Println("connected to data")
+	log.Println("connected to database")
 	err = instance.AutoMigrate(
 		&models.TaskSubmission{},
 	)
 	if err != nil {
 		return nil, err
 	}
-	log.Println("data migration completed")
+	log.Println("database migration completed")
 	return instance, nil
 }

@@ -20,7 +20,7 @@ func LoadAppConfig() SchedulerConfig {
 
 	viper.SetDefault("api_port", 8080)
 	viper.SetDefault("scheduler_port", 50051)
-	viper.SetDefault("db_conn_string", "data.db")
+	viper.SetDefault("db_conn_string", "database.db")
 	viper.SetDefault("tasks_dir", "/srv/deikstra/tasks")
 
 	viper.SetConfigFile("config.toml")
