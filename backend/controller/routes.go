@@ -7,7 +7,6 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.HandleFunc("/tasks/list", c.listTasks).Methods("GET", "OPTIONS")
 	c.router.HandleFunc("/tasks/view/{task_code}", c.getTask).Methods("GET", "OPTIONS")
 	c.router.HandleFunc("/tasks/create", c.createTask).Methods("POST", "OPTIONS")
-	c.router.HandleFunc("/tasks/delete/{task_code}", c.deleteTask).Methods("DELETE", "OPTIONS")
 	c.router.HandleFunc("/tasks/statement/{task_code}/{filename}", c.getPDFStatement).Methods("GET", "OPTIONS")
 
 	// submissions
