@@ -1,8 +1,8 @@
-Nr. Testu apraksts Punkti
-1. A=1, B ≤ 103 12
-2. B ≤ 105 14
-3. (B – A) ≤ 103 16
-4. B ≤ 109 18
-5. B ≤ 1011 20
-6. bez papildus ierobežojumiem 20
-Kopā: 100
+| nr. | apakšuzdevuma apraksts      | punkti |
+|-----|-----------------------------|--------|
+| 1.  | $A=1, B\leq 10^3$           | 12     |
+| 2.  | $B \leq 10^5$               | 14     |
+| 3.  | $(B-A)\leq 10^3$            | 16     |
+| 4.  | $B \leq 10^9$               | 18     |
+| 5   | $B \leq 10^{11}$            | 20     |
+| 6.  | bez papildus ierobežojumiem | 20     |
