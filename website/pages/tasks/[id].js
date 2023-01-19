@@ -27,32 +27,56 @@ export default function Task(props) {
                     <hr></hr>
                     <section className="my-4">
                         <h5 className={"my-3"}>formulējums</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["desc"] }} ></div>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["desc"]}}></div>
                     </section>
                     <section className="my-4">
                         <h5>ievaddati</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["input"] }}></div>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["input"]}}></div>
                     </section>
                     <section className="my-4">
                         <h5>izvaddati</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["output"] }}></div>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["output"]}}></div>
                     </section>
                     <section className="my-4">
                         <h5>piemēri</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["examples"] }}></div>
-                        <p>{mdStatement["examples"]}</p>
+                        <div className={"row"}>
+                        {
+                            mdStatement["examples"].map((example, index) => {
+                                return (
+                                    <table className={"table table-bordered col m-3"} key={index}>
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">ievaddati</th>
+                                            <th scope="col">izvaddati</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <code>{example["input"]}</code>
+                                            </td>
+                                            <td>
+                                                <code>{example["output"]}</code>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                )
+                            })
+                        }
+                        </div>
                     </section>
                     <section className="my-4">
                         <h5>vērtēšana</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["scoring"] }}></div>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["scoring"]}}></div>
                     </section>
                     <section className="my-4">
                         <h5>piezīmes</h5>
-                        <div dangerouslySetInnerHTML={{ __html: mdStatement["notes"] }}></div>
+                        <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
                     </section>
 
                 </div>
-                <div className="col-3 card shadow-sm">
+                <div className="col-3 card shadow-sm h-100">
                     <div className="card-body">
                         <h5 className="card-title text-center">uzd. Informācija</h5>
                         <p className="card-text"></p>
@@ -117,9 +141,9 @@ export async function getServerSideProps(context) {
         const reqRes = await fetch(`${process.env.API_URL}/tasks/view/${context.params.id}`)
         const task = await reqRes.json()
 
-        for(let statement in task["md_statements"]){
+        for (let statement in task["md_statements"]) {
             task["md_statements"][statement] = await parseStatement(task["md_statements"][statement])
-
+            console.log(task["md_statements"][statement])
         }
         return {
             props: {

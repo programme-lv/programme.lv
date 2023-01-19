@@ -1,1 +1,1 @@
-Ievaddatu vienīgajā rindā doti divi naturāli skaitļi $A$, $B$ ( $0 < A < B < 10^{14}$ ).
+Ievaddatu vienīgajā rindā doti divi naturāli skaitļi $A$, $B$ ( $0 < A < B \leq 10^{14}$ ).

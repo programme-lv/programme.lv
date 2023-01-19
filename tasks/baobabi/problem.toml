@@ -1,6 +1,6 @@
 code = "baobabi"
 name = "baobabi"
-version = 5
+version = 6
 
 author = "Krišjānis Petručeņa"
 tags = ["brute-force","math","number-theory","ProblemCon++"]

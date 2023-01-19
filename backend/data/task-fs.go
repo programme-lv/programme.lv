@@ -93,32 +93,56 @@ func (tfs *TaskFS) GetTaskMDStatements(taskCode string) ([]models.MarkdownStatem
 
 		descPath := filepath.Join(statementsPath, statementDirEntry.Name(), "description.md")
 		description, err := os.ReadFile(descPath)
-		if err != nil {
+		if err == nil {
 			statement.Desc = string(description)
 		}
-		statement.Desc = string(description)
 
 		inputPath := filepath.Join(statementsPath, statementDirEntry.Name(), "input.md")
 		input, err := os.ReadFile(inputPath)
-		if err != nil {
+		if err == nil {
 			statement.Input = string(input)
 		}
-		statement.Input = string(input)
 
 		outputPath := filepath.Join(statementsPath, statementDirEntry.Name(), "output.md")
 		output, err := os.ReadFile(outputPath)
-		if err != nil {
+		if err == nil {
 			statement.Output = string(output)
 		}
-		statement.Output = string(output)
 
 		scoringPath := filepath.Join(statementsPath, statementDirEntry.Name(), "scoring.md")
 		scoring, err := os.ReadFile(scoringPath)
-		if err != nil {
+		if err == nil {
 			statement.Scoring = string(scoring)
 		}
-		statement.Scoring = string(scoring)
 
+		examplesPath := filepath.Join(statementsPath, statementDirEntry.Name(), "examples")
+		examplesEntries, err := os.ReadDir(examplesPath)
+		if err == nil {
+			statement.Examples = make([]models.MDSTatementExample, 0)
+			exampleNames := make(map[string]bool)
+			for _, exampleDirEntry := range examplesEntries {
+				if exampleDirEntry.IsDir() { // examples are not in directories
+					continue
+				}
+				name := exampleDirEntry.Name()
+				name = name[0 : len(name)-len(filepath.Ext(name))]
+				exampleNames[name] = true
+			}
+			for name := range exampleNames {
+				example := models.MDSTatementExample{}
+				InputPath := filepath.Join(examplesPath, name+".in")
+				OutputPath := filepath.Join(examplesPath, name+".out")
+				exampleInput, err := os.ReadFile(InputPath)
+				if err == nil {
+					example.Input = string(exampleInput)
+				}
+				exampleOutput, err := os.ReadFile(OutputPath)
+				if err == nil {
+					example.Output = string(exampleOutput)
+				}
+				statement.Examples = append(statement.Examples, example)
+			}
+		}
 		statements = append(statements, statement)
 	}
 	return statements, nil

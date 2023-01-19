@@ -10,7 +10,6 @@ export async function parseStatement(statement) {
     statement["desc"]=await renderMD(statement["desc"])
     statement["input"]=await renderMD(statement["input"])
     statement["output"]=await renderMD(statement["output"])
-    statement["examples"]=await renderMD(statement["examples"])
     statement["scoring"]=await renderMD(statement["scoring"])
     return statement
 }
