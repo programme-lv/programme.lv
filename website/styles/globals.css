@@ -1,0 +1,17 @@
+.md-statement-scoring table{
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 1em;
+    border-color: var(--bs-border-color);
+}
+
+.md-statement-scoring table > * > * {
+    padding: 0.5rem;
+    border-width: 1px 0;
+}
+
+.md-statement-scoring table > * > * > *{
+    padding: 0.5rem;
+    border-width: 0 1px;
+}

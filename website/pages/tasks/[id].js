@@ -66,14 +66,17 @@ export default function Task(props) {
                         }
                         </div>
                     </section>
-                    <section className="my-4">
+                    <section className="my-4 md-statement-scoring">
                         <h5>vērtēšana</h5>
                         <div dangerouslySetInnerHTML={{__html: mdStatement["scoring"]}}></div>
                     </section>
-                    <section className="my-4">
-                        <h5>piezīmes</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
-                    </section>
+                    {mdStatement["notes"] ?
+                        <section className="my-4">
+                            <h5>piezīmes</h5>
+                            <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
+                        </section>
+                        : <></>
+                    }
 
                 </div>
                 <div className="col-3 card shadow-sm h-100">
