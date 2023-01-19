@@ -28,6 +28,7 @@ type TaskWithStatements struct {
 }
 
 type MarkdownStatement struct {
+	Name    string `json:"name"`
 	Desc    string `json:"desc"`
 	Input   string `json:"input"`
 	Output  string `json:"output"`

@@ -3,9 +3,10 @@ import TagList from "../../components/taglist";
 import "katex/dist/katex.min.css";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
 import {useEffect} from "react";
+import {parseStatement} from "../../scripts/renderMD";
 
 export default function Task(props) {
-    let pdfURL = props.apiURL + "/tasks/statement/" + props.task["code"] + "/" + props.task["pdf_statements"][0].filename
+    //let pdfURL = props.apiURL + "/tasks/statement/" + props.task["code"] + "/" + props.task["pdf_statements"][0].filename
     let mdStatement = props.task["md_statements"][0]
 
     useEffect(() => {
@@ -25,29 +26,29 @@ export default function Task(props) {
                     <h2>{props.task["name"]}</h2>
                     <hr></hr>
                     <section className="my-4">
-                        <h5>formulējums</h5>
-                        <div id={"test-1234"}></div>
-                        <p>{mdStatement["desc"]}</p>
+                        <h5 className={"my-3"}>formulējums</h5>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["desc"] }} ></div>
                     </section>
                     <section className="my-4">
                         <h5>ievaddati</h5>
-                        <p>{mdStatement["input"]}</p>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["input"] }}></div>
                     </section>
                     <section className="my-4">
                         <h5>izvaddati</h5>
-                        <p>{mdStatement["output"]}</p>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["output"] }}></div>
                     </section>
                     <section className="my-4">
                         <h5>piemēri</h5>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["examples"] }}></div>
                         <p>{mdStatement["examples"]}</p>
                     </section>
                     <section className="my-4">
                         <h5>vērtēšana</h5>
-                        <p>{mdStatement["scoring"]}</p>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["scoring"] }}></div>
                     </section>
                     <section className="my-4">
                         <h5>piezīmes</h5>
-                        <p>{mdStatement["notes"]}</p>
+                        <div dangerouslySetInnerHTML={{ __html: mdStatement["notes"] }}></div>
                     </section>
 
                 </div>
@@ -115,7 +116,11 @@ export async function getServerSideProps(context) {
     try {
         const reqRes = await fetch(`${process.env.API_URL}/tasks/view/${context.params.id}`)
         const task = await reqRes.json()
-        task["md_statements"][0].desc += "$$L' = {L}{\\sqrt{1-\\frac{v^2}{c^2}}}$$";
+
+        for(let statement in task["md_statements"]){
+            task["md_statements"][statement] = await parseStatement(task["md_statements"][statement])
+
+        }
         return {
             props: {
                 task: task, apiURL: process.env.API_URL

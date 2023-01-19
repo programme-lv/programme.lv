@@ -88,9 +88,37 @@ func (tfs *TaskFS) GetTaskMDStatements(taskCode string) ([]models.MarkdownStatem
 			continue
 		}
 		statement := models.MarkdownStatement{}
+
+		statement.Name = statementDirEntry.Name()
+
 		descPath := filepath.Join(statementsPath, statementDirEntry.Name(), "description.md")
-		description, _ := os.ReadFile(descPath)
+		description, err := os.ReadFile(descPath)
+		if err != nil {
+			statement.Desc = string(description)
+		}
 		statement.Desc = string(description)
+
+		inputPath := filepath.Join(statementsPath, statementDirEntry.Name(), "input.md")
+		input, err := os.ReadFile(inputPath)
+		if err != nil {
+			statement.Input = string(input)
+		}
+		statement.Input = string(input)
+
+		outputPath := filepath.Join(statementsPath, statementDirEntry.Name(), "output.md")
+		output, err := os.ReadFile(outputPath)
+		if err != nil {
+			statement.Output = string(output)
+		}
+		statement.Output = string(output)
+
+		scoringPath := filepath.Join(statementsPath, statementDirEntry.Name(), "scoring.md")
+		scoring, err := os.ReadFile(scoringPath)
+		if err != nil {
+			statement.Scoring = string(scoring)
+		}
+		statement.Scoring = string(scoring)
+
 		statements = append(statements, statement)
 	}
 	return statements, nil
