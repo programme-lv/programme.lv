@@ -1,43 +1,54 @@
 import Link from 'next/link'
 
-export default function NavBar({ active_page, admin}) {
+export default function NavBar({active_page, admin}) {
+    admin = true; // TODO: this is a temporary hack to make the admin page show up
     return (
         <nav className="navbar bg-white shadow-sm">
             <div className="navbar-expand-md container">
                 <div className="d-flex">
                     <Link href="/"><a className="navbar-brand">programme.lv</a></Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navbar-offcanvas">
+                    <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#navbar-offcanvas">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbar-main">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <Link href="/tasks"><a className={'nav-link ' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
+                                <Link href="/tasks"><a
+                                    className={'nav-link ' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/submissions"><a className={'nav-link ' + (active_page === 'submissions' ? 'active' : '')}>iesūtījumi</a></Link>
+                                <Link href="/submissions"><a
+                                    className={'nav-link ' + (active_page === 'submissions' ? 'active' : '')}>iesūtījumi</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
+                                <Link href="/results"><a
+                                    className={'nav-link disabled ' + (active_page === 'results' ? 'active' : '')}>rezultāti</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/competitions"><a className='nav-link disabled'>sacensības</a></Link>
+                                <Link href="/competitions"><a
+                                    className={'nav-link disabled ' + (active_page === 'competitions' ? 'active' : '')}>sacensības</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/editor"><a className='nav-link disabled'>redaktors</a></Link>
+                                <Link href="/editor"><a
+                                    className={'nav-link disabled ' + (active_page === 'editor' ? 'active' : '')}>redaktors</a></Link>
                             </li>
                             <li className="nav-item">
-                                <Link href="/theory"><a className='nav-link disabled'>teorija</a></Link>
+                                <Link href="/theory"><a
+                                    className={'nav-link disabled ' + (active_page === 'theory' ? 'active' : '')}>teorija</a></Link>
                             </li>
-                            <li className="nav-item">
-                                <Link href="/admin"><a className={'nav-link ' + (active_page === 'admin' ? 'active' : '')}>administrācija</a></Link>
-                            </li>
+                            {admin ? <li className="nav-item">
+                                <Link href="/admin"><a
+                                    className={'nav-link ' + (active_page === 'admin' ? 'active' : '')}>administrācija</a></Link>
+                            </li> : <></>}
+
                         </ul>
                     </div>
                 </div>
                 <div className="navbar-nav">
                     <li className="nav-item">
-                        <Link href="#"><a className='nav-link active'>pierakstīties <i className="bi bi-box-arrow-in-right"></i></a></Link>
+                        <Link href="#"><a className='nav-link active'>pierakstīties <i
+                            className="bi bi-box-arrow-in-right"></i></a></Link>
                     </li>
 
                 </div>
@@ -50,10 +61,10 @@ export default function NavBar({ active_page, admin}) {
                             <Link href="/tasks"><a className='nav-link'>uzdevumi</a></Link>
                         </li>
                         <li className="nav-item mt-2">
-                            <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
+                            <Link href="/submissions"><a className='nav-link'>iesūtījumi</a></Link>
                         </li>
                         <li className="nav-item mt-2">
-                            <Link href="/submissions"><a className='nav-link disabled'>iesūtījumi</a></Link>
+                            <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>
                         </li>
                         <li className="nav-item mt-2">
                             <Link href="/competitions"><a className='nav-link disabled'>sacensības</a></Link>
