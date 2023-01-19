@@ -1,51 +1,41 @@
 import NavBar from "../components/navbar";
 import Link from 'next/link'
 import TagList from "../components/taglist";
+import ErrorAlert from "../components/error_alert";
 
-export default function Tasks(props) {
-    let task_table_entries = []
-
-    if (props.tasks) {
-        let tasks = props.tasks
-        tasks.forEach((task) => {
-            task_table_entries.push(
-                <tr key={task["code"]}>
-                    <th scope="row"><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["code"]}</a></Link></th>
-                    <td><Link href={"/tasks/" + task["code"]}><a className="nav-link">{task["name"]}</a></Link></td>
-                    <td><TagList tags={task["tags"]}/></td>
-                    <td><span className="badge bg-danger">6.9</span></td>
-                    <td>2</td>
-                    <td>13</td>
-                </tr>
-            )
-        })
-    }
-    let ErrorAlert = ({ msg }) => {
-        if (msg) return (
-            <div className="alert alert-danger text-center" role="alert">
-                {msg}
-            </div>)
-        else return <></>
-    }
+export default function Tasks({tasks, error}) {
     return (
         <div>
-            <NavBar active_page={"tasks"} />
+            <NavBar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
-                <ErrorAlert msg={props.error}/>
-                <table className="table table-hover" style={{ tableLayout: "fixed" }}>
+                <ErrorAlert msg={error}/>
+                <table className="table table-hover" style={{tableLayout: "fixed"}}>
                     <thead>
-                        <tr>
-                            <th scope="col">kods</th>
-                            <th scope="col">nosaukums</th>
-                            <th scope="col">birkas</th>
-                            <th scope="col">grūtība</th>
-                            <th scope="col">atrisinājumi</th>
-                            <th scope="col">iesūtījumi</th>
-                        </tr>
+                    <tr>
+                        <th scope="col">kods</th>
+                        <th scope="col">nosaukums</th>
+                        <th scope="col">birkas</th>
+                        <th scope="col">grūtība</th>
+                        <th scope="col">atrisinājumi</th>
+                        <th scope="col">iesūtījumi</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {task_table_entries}
+                    {tasks.map((task, index) => {
+                        return (
+                            <tr key={index}>
+                                <th scope="row"><Link href={"/tasks/" + task["code"]}><a
+                                    className="nav-link">{task["code"]}</a></Link></th>
+                                <td><Link href={"/tasks/" + task["code"]}><a
+                                    className="nav-link">{task["name"]}</a></Link></td>
+                                <td><TagList tags={task["tags"]}/></td>
+                                <td><span className="badge bg-danger">6.9</span></td>
+                                <td>2</td>
+                                <td>13</td>
+                            </tr>
+                        )
+                    })}
                     </tbody>
                 </table>
             </main>
@@ -59,8 +49,8 @@ export async function getServerSideProps() {
         const res = await fetch(`${process.env.API_URL}/tasks/list`)
         const tasks = await res.json()
         // Pass data to the page via props
-        return { props: { tasks } }
+        return {props: {tasks: tasks, error: ""}}
     } catch (err) {
-        return { props: { error: "failed to fetch tasks from the API :(" } }
+        return {props: {tasks: [], error: "failed to fetch tasks from the API :("}}
     }
 }
