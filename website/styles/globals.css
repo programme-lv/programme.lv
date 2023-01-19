@@ -7,11 +7,10 @@
 }
 
 .md-statement-scoring table > * > * {
-    padding: 0.5rem;
     border-width: 1px 0;
 }
 
 .md-statement-scoring table > * > * > *{
-    padding: 0.5rem;
+    padding: 0.4rem 0.5rem;
     border-width: 0 1px;
 }
