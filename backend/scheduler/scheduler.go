@@ -83,7 +83,6 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 			request.JobId = 1
 			taskSubmission := &pb.TaskSubmission{
 				TaskCode:    task.TaskCode,
-				TaskVersion: task.TaskVersion,
 				LangCode:    task.LangCode,
 				SubmSrcCode: task.SubmSrcCode,
 			}
