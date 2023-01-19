@@ -10,7 +10,7 @@ export default function Tasks({tasks, error}) {
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
                 <ErrorAlert msg={error}/>
-                <table className="table table-hover" style={{tableLayout: "fixed"}}>
+                <table className="table table-hover table-bordered" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>
                         <th scope="col">kods</th>
