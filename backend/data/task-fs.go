@@ -264,6 +264,7 @@ func (tfs *TaskFS) GetTaskWithStatements(taskCode string) (models.TaskWithStatem
 
 // GetTaskPDFStatementBytes returns task (newest version) pdf statement
 func (tfs *TaskFS) GetTaskPDFStatementBytes(taskCode string, filename string) ([]byte, error) {
+	// TODO: ensure that the filename is bounded to task statements directory
 	taskPath, err := tfs.getTaskPath(taskCode)
 	if err != nil {
 		return nil, err

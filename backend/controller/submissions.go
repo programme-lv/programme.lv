@@ -23,7 +23,12 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	w.Write(resp) // echo back the submission
+	_, err = w.Write(resp)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	} // echo back the submission
 	c.scheduler.EnqueueSubmission(submission)
 }
 
