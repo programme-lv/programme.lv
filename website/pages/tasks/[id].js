@@ -122,7 +122,7 @@ export default function Task(props) {
                         <h5 className="card-title text-center">iesūtīšana</h5>
 
                         <div className="my-3 text-center">
-                            <button type="button" className="btn btn-sm btn-primary">atvērt sūtījuma redaktoru
+                            <button type="button" className="btn btn-sm btn-outline-primary">atvērt sūtījuma redaktoru
                             </button>
                         </div>
                     </div>
