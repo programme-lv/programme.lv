@@ -15,7 +15,7 @@ import (
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
-	submissionQueue chan *models.TaskSubmission
+	submissionQueue chan *models.TaskSubmJob
 	executionQueue  chan *models.ExecSubmission
 	database        *gorm.DB
 	taskFS          *database.TaskFS
@@ -23,7 +23,7 @@ type Scheduler struct {
 
 func NewScheduler(database *gorm.DB, taskFS *database.TaskFS) *Scheduler {
 	scheduler := &Scheduler{
-		submissionQueue: make(chan *models.TaskSubmission, 100),
+		submissionQueue: make(chan *models.TaskSubmJob, 100),
 		executionQueue:  make(chan *models.ExecSubmission, 100),
 		database:        database,
 		taskFS:          taskFS,
@@ -48,10 +48,10 @@ func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
 	job := models.TaskSubmJob{
 		TaskSubmissionId: submission.ID,
 		TaskSubmission:   *submission,
-		Status:           "IQS2",
+		Status:           "IQS",
 	}
 	s.database.Create(&job)
-	s.submissionQueue <- submission
+	s.submissionQueue <- &job
 	return nil
 }
 
@@ -91,14 +91,14 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 		select {
 		case <-stream.Context().Done():
 			return stream.Context().Err()
-		case task := <-s.submissionQueue:
+		case taskSubmJob := <-s.submissionQueue:
 			log.Printf("sending submission to %v", worker.WorkerName)
 			request := &pb.Job{}
-			request.JobId = 1
+			request.JobId = int32(taskSubmJob.ID)
 			taskSubmission := &pb.TaskSubmission{
-				TaskCode: task.TaskCode,
-				LangId:   task.LanguageId,
-				SrcCode:  task.SrcCode,
+				TaskCode: taskSubmJob.TaskSubmission.TaskCode,
+				LangId:   taskSubmJob.TaskSubmission.LanguageId,
+				SrcCode:  taskSubmJob.TaskSubmission.SrcCode,
 			}
 			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
 			err := stream.Send(request)
