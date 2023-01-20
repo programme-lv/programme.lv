@@ -37,7 +37,7 @@ export default function Submissions({submissions, error}) {
                                     href={"/tasks/" + submission["task_code"]}><a>{submission["task_code"]}</a></Link>
                                 </td>
                                 <td>{submission["lang_id"]}</td>
-                                <td>IQS</td>
+                                <td>{submission["status"]}</td>
                                 <td>?</td>
                                 <td>?</td>
                             </tr>

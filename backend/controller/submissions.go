@@ -75,13 +75,32 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var submissions []models.TaskSubmission
-	result := c.database.Order("created_at desc").Find(&submissions)
-	if result.Error != nil {
-		http.Error(w, result.Error.Error(), http.StatusBadRequest)
+	err := c.database.Model(&models.TaskSubmission{}).Preload("TaskSubmJobs").Order("created_at desc").Find(&submissions).Error
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	resp, err := json.Marshal(submissions)
+	type submWithStatus struct {
+		models.TaskSubmission
+		Status string `json:"status"`
+	}
+
+	var submsWithStatus []submWithStatus
+	for _, subm := range submissions {
+		status := ""
+		for _, job := range subm.TaskSubmJobs {
+			status = job.Status
+		}
+		submWithStatus := submWithStatus{
+			TaskSubmission: subm,
+			Status:         status,
+		}
+		submWithStatus.TaskSubmJobs = nil // don't send data that isn't required
+		submsWithStatus = append(submsWithStatus, submWithStatus)
+	}
+
+	resp, err := json.Marshal(submsWithStatus)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
