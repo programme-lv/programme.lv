@@ -16,7 +16,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	sched := scheduler.CreateSchedulerServer()
+	sched := scheduler.NewScheduler()
 
 	go sched.StartSchedulerServer(config.SchedulerPort)
 

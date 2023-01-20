@@ -17,7 +17,7 @@ type Scheduler struct {
 	executionQueue  chan models.ExecSubmission
 }
 
-func CreateSchedulerServer() *Scheduler {
+func NewScheduler() *Scheduler {
 	scheduler := &Scheduler{
 		submissionQueue: make(chan models.TaskSubmission, 100),
 		executionQueue:  make(chan models.ExecSubmission, 100),
@@ -47,9 +47,10 @@ func (s *Scheduler) EnqueueExecution(submission models.ExecSubmission) {
 }
 
 func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
-	log.Printf("worker %v is ready for duty", worker.WorkerName)
+	log.Printf("%v is ready for duty", worker.WorkerName)
 }
 
+// ReportJobStatus function is called by the worker
 func (s *Scheduler) ReportJobStatus(stream pb.Scheduler_ReportJobStatusServer) error {
 	for {
 		update, err := stream.Recv()
