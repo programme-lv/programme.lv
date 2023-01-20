@@ -8,13 +8,13 @@ function formatDateTime(dateTime) {
     date = date.replace("-", ".");
     date = date.replace("-", ".");
     let time = d.toTimeString().split(" ")[0];
-    return date+" "+time;
+    return date + " " + time;
 }
 
 export default function Submissions({submissions, error}) {
     console.log(submissions)
     return (
-        <>
+        <div className="vw-100">
             <NavBar active_page={"submissions"}/>
             <main className="container">
                 <h1 className="my-4 text-center">iesūtījumi</h1>
@@ -49,7 +49,7 @@ export default function Submissions({submissions, error}) {
                     </tbody>
                 </table>
             </main>
-        </>
+        </div>
     )
 }
 

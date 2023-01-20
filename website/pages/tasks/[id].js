@@ -153,7 +153,9 @@ export default function Task({task, error}) {
                                     data-bs-dismiss="modal">Aizvērt
                             </button>
                             <button type="button" className="btn btn-success" onClick={() => {
-                                document.getElementById("submission-modal-toggle").click(); // hide the modal :d
+                                // remove modal background
+                                document.getElementsByClassName("modal-backdrop")[0].remove();
+
                                 router.push("/submissions").then(() => {
                                 });
                             }}>Iesūtīt

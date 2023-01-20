@@ -11,13 +11,13 @@ function MyApp({Component, pageProps}) {
     }, [])
 
     return (
-        <>
+        <div className="vw-100">
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <title>programme.lv</title>
             </Head>
             <Component {...pageProps} />
-        </>
+        </div>
     );
 }
 

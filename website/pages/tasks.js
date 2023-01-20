@@ -5,7 +5,7 @@ import ErrorAlert from "../components/error_alert";
 
 export default function Tasks({tasks, error}) {
     return (
-        <>
+        <div className="vw-100">
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
@@ -39,7 +39,7 @@ export default function Tasks({tasks, error}) {
                     </tbody>
                 </table>
             </main>
-        </>
+        </div>
     )
 }
 
