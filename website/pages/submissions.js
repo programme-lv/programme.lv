@@ -34,7 +34,7 @@ export default function Submissions({submissions, error}) {
                     {submissions.map((submission, index) => {
                         return (
                             <tr key={index}>
-                                <th scope="row"><Link href={"/submissions/" + submission["id"]}><a
+                                <th scope="row"><Link href={"/submissions/" + submission["submission_id"]}><a
                                     className="nav-link">{submission["submission_id"]}</a></Link></th>
                                 <td><Link href={"/users/" + submission["user_id"]}><a
                                     className="nav-link">{submission["user_id"]}</a></Link></td>
