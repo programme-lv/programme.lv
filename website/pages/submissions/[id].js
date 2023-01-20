@@ -1,10 +1,9 @@
 import NavBar from "../../components/navbar";
 import Editor from "@monaco-editor/react";
-import {parseStatement} from "../../scripts/renderMD";
 import Link from "next/link";
 import {formatDateTime} from "../../scripts/format_datetime.js";
 
-export default function Submission({submission, error}) {
+export default function Submission({submission}) {
     return (
         <div className="vw-100">
             <NavBar active_page={"submissions"}/>
@@ -20,20 +19,21 @@ export default function Submission({submission, error}) {
                         <th scope="col">statuss</th>
                         <th scope="col">izpildes laiks</th>
                         <th scope="col">izmantotā atmiņa</th>
+                        <th scope="col">tiesāšanas laiks</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <th scope="row"><Link href={"/submissions/" + submission["submission_id"]}><a
-                        >{submission["submission_id"]}</a></Link></th>
+                        <th scope="row"><a>{submission["subm_id"]}</a></th>
                         <td>{formatDateTime(submission["created_time"])}</td>
                         <td><Link href={"/users/" + submission["user_id"]}><a
                             className="nav-link">{submission["user_id"]}</a></Link></td>
                         <td><Link
                             href={"/tasks/" + submission["task_code"]}><a>{submission["task_code"]}</a></Link>
                         </td>
-                        <td>{submission["lang_code"]}</td>
+                        <td>{submission["lang_id"]}</td>
                         <td>IQS</td>
+                        <td>?</td>
                         <td>?</td>
                         <td>?</td>
                     </tr>
@@ -43,7 +43,7 @@ export default function Submission({submission, error}) {
                     className={"border"}
                     height="40vh"
                     defaultLanguage="cpp"
-                    defaultValue={submission["subm_src_code"]}
+                    defaultValue={submission["src_code"]}
                     options={{
                         readOnly: true,
                         minimap: {enabled: false}

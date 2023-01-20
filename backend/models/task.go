@@ -9,16 +9,16 @@ type Subtask struct {
 }
 
 type Task struct {
-	Code      string    `json:"code" gorm:"primarykey"`
-	Name      string    `json:"name" gorm:"unique;not null"`
-	Version   int       `json:"version" gorm:"not null"`
+	Code      string    `json:"code"`
+	Name      string    `json:"name"`
+	Version   int       `json:"version"`
 	Author    string    `json:"author"`
 	Tags      []string  `json:"tags"`
 	Type      string    `json:"type"`
 	TimeLim   float32   `json:"time_lim" toml:"time_lim"`
 	MemLim    int       `json:"mem_lim" toml:"mem_lim"`
 	Subtasks  []Subtask `json:"subtasks"`
-	CreatedAt time.Time `json:"created"`
+	CreatedAt time.Time `json:"created_time"`
 }
 
 type TaskWithStatements struct {

@@ -82,24 +82,11 @@ func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJo
 			request := &pb.Job{}
 			request.JobId = 1
 			taskSubmission := &pb.TaskSubmission{
-				TaskCode:    task.TaskCode,
-				LangCode:    task.LangCode,
-				SubmSrcCode: task.SubmSrcCode,
+				TaskCode: task.TaskCode,
+				LangId:   task.LanguageId,
+				SrcCode:  task.SrcCode,
 			}
 			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
-			err := stream.Send(request)
-			if err != nil {
-				return err
-			}
-		case execution := <-s.executionQueue:
-			log.Printf("sending execution to %v", worker.WorkerName)
-			request := &pb.Job{}
-			request.JobId = 1
-			execSubmission := &pb.ExecSubmission{
-				LangCode:    execution.LangCode,
-				SubmSrcCode: execution.SubmSrcCode,
-			}
-			request.Job = &pb.Job_ExecSubmission{ExecSubmission: execSubmission}
 			err := stream.Send(request)
 			if err != nil {
 				return err

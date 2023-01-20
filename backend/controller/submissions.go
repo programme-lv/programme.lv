@@ -16,7 +16,12 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var taskSubmReq models.TaskSubmBase
+	var taskSubmReq struct {
+		TaskCode   string `json:"task_code" validate:"required"`
+		SrcCode    string `json:"src_code" validate:"required"`
+		LanguageId string `json:"lang_id" validate:"required"`
+	}
+
 	err := json.NewDecoder(r.Body).Decode(&taskSubmReq)
 	if err != nil {
 		log.Printf("HTTP %s", err.Error())
@@ -24,28 +29,22 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if taskSubmReq.TaskCode == "" {
-		log.Printf("HTTP %s", "task_code is required")
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	if taskSubmReq.LangCode == "" {
-		log.Printf("HTTP %s", "lang_code is required")
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
-
-	if taskSubmReq.SubmSrcCode == "" {
-		log.Printf("HTTP %s", "subm_src_code is required")
+	err = c.validate.Struct(taskSubmReq)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
 	submission := models.TaskSubmission{
-		UserId:       1,
-		TaskSubmBase: taskSubmReq}
+		TaskCode:   taskSubmReq.TaskCode,
+		SrcCode:    taskSubmReq.SrcCode,
+		LanguageId: taskSubmReq.LanguageId,
+	}
+
 	c.database.Create(&submission)
+
+	c.scheduler.EnqueueSubmission(submission)
 
 	// echo back the submission
 	resp, err := json.Marshal(submission)

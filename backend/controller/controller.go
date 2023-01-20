@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"net"
 	"net/http"
@@ -19,6 +20,7 @@ type Controller struct {
 	database  *gorm.DB
 	router    *mux.Router
 	taskFS    *database.TaskFS
+	validate  *validator.Validate
 }
 
 func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, taskManager *database.TaskFS) *Controller {
@@ -28,6 +30,7 @@ func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, task
 		router:    router,
 		database:  database,
 		taskFS:    taskManager,
+		validate:  validator.New(),
 	}
 	controller.registerAPIRoutes()
 	return &controller

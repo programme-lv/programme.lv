@@ -193,7 +193,6 @@ func (tfs *TaskFS) GetTaskList() ([]models.Task, error) {
 	}
 	res := make([]models.Task, 0)
 	for _, v := range tasks {
-		log.Println(v)
 		res = append(res, v)
 	}
 	return res, nil

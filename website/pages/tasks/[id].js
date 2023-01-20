@@ -161,7 +161,7 @@ export default function Task({task, apiURL}) {
                             <Editor
                                 height="50vh"
                                 defaultLanguage="cpp"
-                                defaultValue="hello"
+                                defaultValue={defaultCode}
                                 onMount={handleSubmissionEditorDidMount}
                                 options={{
                                     minimap: {enabled: false}
@@ -177,8 +177,8 @@ export default function Task({task, apiURL}) {
                                 const submSrcCode = submissionEditorRef.current.getValue();
                                 const dataSending = {
                                     "task_code": task["code"],
-                                    "lang_code": langCode,
-                                    "subm_src_code": submSrcCode
+                                    "lang_id": langCode,
+                                    "src_code": submSrcCode
                                 }
                                 const apiEndpoint = apiURL + "/submissions/enqueue";
                                 try {
@@ -197,8 +197,11 @@ export default function Task({task, apiURL}) {
                                         document.getElementsByClassName("modal-backdrop")[0].remove();
                                         router.push("/submissions").then(() => {
                                         });
+                                    } else {
+                                        alert("Kļūda: " + response.status + " " + response.statusText);
                                     }
                                 } catch (e) {
+                                    alert("Kļūda: " + e);
                                     console.log(e);
                                 }
                             }}>Iesūtīt
@@ -210,6 +213,14 @@ export default function Task({task, apiURL}) {
         </main>
     </div>)
 }
+
+const defaultCode = `#include <iostream>
+
+using namespace std;
+
+int main() {
+    
+}`;
 
 export async function getServerSideProps(context) {
     try {

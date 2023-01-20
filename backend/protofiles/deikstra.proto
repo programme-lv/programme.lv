@@ -22,13 +22,13 @@ message RegisterWorker {
 message TaskSubmission {
     string task_code = 1;
     int32  task_version = 2;
-    string lang_code = 3;
-    string subm_src_code = 4;
+    string lang_id = 3;
+    string src_code = 4;
 }
 
 message ExecSubmission {
-    string lang_code = 1;
-    string subm_src_code = 2;
+    string lang_id = 1;
+    string src_code = 2;
     string std_input = 3;
 }
 

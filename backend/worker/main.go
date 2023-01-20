@@ -56,15 +56,15 @@ func work(schedulerAddr string, workerName string) error {
 		case *pb.Job_TaskSubmission:
 			taskCode := job.GetTaskSubmission().GetTaskCode()
 			taskVersion := job.GetTaskSubmission().GetTaskVersion()
-			langCode := job.GetTaskSubmission().GetLangCode()
-			submSrcCode := job.GetTaskSubmission().GetSubmSrcCode()
+			langId := job.GetTaskSubmission().GetLangId()
+			srcCode := job.GetTaskSubmission().GetSrcCode()
 			log.Println("jobId: ", jobId)
 			log.Println("taskName: ", taskCode)
 			log.Println("taskVersion: ", taskVersion)
-			log.Println("submSrcCode: ", submSrcCode)
-			log.Println("langId: ", langCode)
+			log.Println("srcCode: ", srcCode)
+			log.Println("langId: ", langId)
 
-			exe, err := CreateExecutable(submSrcCode, langCode)
+			exe, err := CreateExecutable(srcCode, langId)
 			if err != nil {
 				log.Println(err)
 				continue
