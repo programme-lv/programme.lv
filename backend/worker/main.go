@@ -19,7 +19,7 @@ func work(schedulerAddr string, workerName string) error {
 
 	conn, err := grpc.Dial(schedulerAddr, opts...)
 	if err != nil {
-		return fmt.Errorf("fail to dial: %v", err)
+		return fmt.Errorf("failed to dial: %v", err)
 	}
 
 	defer func(conn *grpc.ClientConn) {
@@ -57,6 +57,7 @@ func work(schedulerAddr string, workerName string) error {
 	}(resStream)
 
 	log.Println("connected to scheduler")
+
 	for {
 		job, err := jobStream.Recv()
 		if err == io.EOF {
@@ -94,6 +95,19 @@ func work(schedulerAddr string, workerName string) error {
 			}
 			log.Printf("stdout: %v\n", stdout)
 			log.Printf("stderr: %v\n", stderr)
+
+			err = resStream.Send(&pb.JobStatusUpdate{
+				JobId: jobId,
+				Update: &pb.JobStatusUpdate_TaskRes{
+					TaskRes: &pb.TaskSubmResult{
+						SubmStatus: pb.TaskSubmStatus_TSS_OK,
+					},
+				},
+			})
+			if err != nil {
+				log.Println(err)
+				continue
+			}
 		}
 	}
 	return nil
