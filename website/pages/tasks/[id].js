@@ -149,6 +149,15 @@ export default function Task({task, apiURL}) {
                                     aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
+                            <div className="row px-4">
+                                <label className="col-4">programmēšanas valoda:</label>
+                                <select className="col form-select form-select-sm mb-3" id="subm-lang-select"
+                                        defaultValue="c++17">
+                                    <option value="c++17">C++17 (GNU G++)</option>
+                                    <option value="python3">Python 3.10.9</option>
+                                    <option value="java19">Java 19.0.1 (OpenJDK)</option>
+                                </select>
+                            </div>
                             <Editor
                                 height="50vh"
                                 defaultLanguage="cpp"
@@ -161,7 +170,7 @@ export default function Task({task, apiURL}) {
                                     data-bs-dismiss="modal">Aizvērt
                             </button>
                             <button type="button" className="btn btn-success" onClick={async () => {
-                                const langCode = "cpp";
+                                const langCode = document.getElementById("subm-lang-select").value;
                                 const submSrcCode = submissionEditorRef.current.getValue();
                                 const dataSending = {
                                     "task_code": task["code"],
