@@ -10,6 +10,13 @@ import (
 )
 
 func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	var taskSubmReq models.TaskSubmBase
 	err := json.NewDecoder(r.Body).Decode(&taskSubmReq)
 	if err != nil {

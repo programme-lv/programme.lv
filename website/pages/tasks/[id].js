@@ -2,24 +2,31 @@ import NavBar from "../../components/navbar";
 import TagList from "../../components/taglist";
 import "katex/dist/katex.min.css";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
-import {useEffect} from "react";
+import {useEffect, useRef} from "react";
 import {parseStatement} from "../../scripts/renderMD";
 import Editor from "@monaco-editor/react";
 import {useRouter} from "next/router";
 
-export default function Task({task, error}) {
+export default function Task({task, apiURL}) {
     const router = useRouter();
 
     //let pdfURL = props.apiURL + "/tasks/statement/" + task["code"] + "/" + task["pdf_statements"][0].filename
     let mdStatement = task["md_statements"][0]
 
     useEffect(() => {
+        // RENDER KATEX MATH
         renderMathInElement(document.getElementById("task-statement"), {
             throwOnError: true, delimiters: [{left: '$$', right: '$$', display: true}, {
                 left: '$', right: '$', display: false
             }, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}],
         });
     }, []);
+
+    const submissionEditorRef = useRef(null);
+
+    function handleSubmissionEditorDidMount(editor, monaco) {
+        submissionEditorRef.current = editor;
+    }
 
     return (<div className="vw-100">
         <NavBar active_page={"tasks"}/>
@@ -146,18 +153,42 @@ export default function Task({task, error}) {
                                 height="50vh"
                                 defaultLanguage="cpp"
                                 defaultValue="hello"
+                                onMount={handleSubmissionEditorDidMount}
                             />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-outline-secondary"
                                     data-bs-dismiss="modal">Aizvērt
                             </button>
-                            <button type="button" className="btn btn-success" onClick={() => {
-                                // remove modal background
-                                document.getElementsByClassName("modal-backdrop")[0].remove();
+                            <button type="button" className="btn btn-success" onClick={async () => {
+                                const langCode = "cpp";
+                                const submSrcCode = submissionEditorRef.current.getValue();
+                                const dataSending = {
+                                    "task_code": task["code"],
+                                    "lang_code": langCode,
+                                    "src_code": submSrcCode
+                                }
+                                const apiEndpoint = apiURL + "/submissions/enqueue";
+                                try {
+                                    const response = await fetch(apiEndpoint, {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify(dataSending)
+                                    });
+                                    if (response.ok) {
+                                        const data = await response.json();
+                                        console.log(data);
 
-                                router.push("/submissions").then(() => {
-                                });
+                                        // remove modal background
+                                        document.getElementsByClassName("modal-backdrop")[0].remove();
+                                        router.push("/submissions").then(() => {
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.log(e);
+                                }
                             }}>Iesūtīt
                             </button>
                         </div>
