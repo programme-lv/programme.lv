@@ -84,7 +84,7 @@ export default function Task({task, apiURL}) {
                 </div>
                 <div className="col-3 card shadow-sm h-100">
                     <div className="card-body">
-                        <h5 className="card-title text-center">uzd. Informācija</h5>
+                        <h5 className="card-title text-center">uzd. informācija</h5>
                         <p className="card-text"></p>
                         <table className={"table table-hover"}>
                             <tbody>
