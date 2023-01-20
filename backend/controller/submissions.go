@@ -2,11 +2,9 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/KrisjanisP/deikstra/service/models"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/KrisjanisP/deikstra/service/models"
 )
 
 func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +24,6 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	submission := models.TaskSubmission{
-		CreatedAt:    time.Now(),
 		UserId:       1,
 		TaskSubmBase: taskSubmReq}
 	c.database.Create(&submission)
