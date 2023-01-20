@@ -22,7 +22,12 @@ func work(schedulerAddr string, workerName string) error {
 		return fmt.Errorf("fail to dial: %v", err)
 	}
 
-	defer conn.Close()
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(conn)
 
 	client := pb.NewSchedulerClient(conn)
 
@@ -33,13 +38,23 @@ func work(schedulerAddr string, workerName string) error {
 	if err != nil {
 		return err
 	}
-	defer jobStream.CloseSend()
+	defer func(jobStream pb.Scheduler_GetJobsClient) {
+		err := jobStream.CloseSend()
+		if err != nil {
+			log.Println(err)
+		}
+	}(jobStream)
 
 	resStream, err := client.ReportJobStatus(ctx)
 	if err != nil {
 		return err
 	}
-	defer resStream.CloseSend()
+	defer func(resStream pb.Scheduler_ReportJobStatusClient) {
+		err := resStream.CloseSend()
+		if err != nil {
+			log.Println(err)
+		}
+	}(resStream)
 
 	log.Println("connected to scheduler")
 	for {
