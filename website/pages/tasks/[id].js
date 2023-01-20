@@ -5,8 +5,11 @@ import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
 import {useEffect} from "react";
 import {parseStatement} from "../../scripts/renderMD";
 import Editor from "@monaco-editor/react";
+import {useRouter} from "next/router";
 
 export default function Task({task, error}) {
+    const router = useRouter();
+
     //let pdfURL = props.apiURL + "/tasks/statement/" + task["code"] + "/" + task["pdf_statements"][0].filename
     let mdStatement = task["md_statements"][0]
 
@@ -18,7 +21,7 @@ export default function Task({task, error}) {
         });
     }, []);
 
-    return (<>
+    return (<div className="vw-100">
         <NavBar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
@@ -123,7 +126,8 @@ export default function Task({task, error}) {
 
                         <div className="my-3 text-center">
                             <button type="button" className="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                    data-bs-target="#submission-modal">atvērt sūtījuma redaktoru
+                                    data-bs-target="#submission-modal" id="submission-modal-toggle">atvērt sūtījuma
+                                redaktoru
                             </button>
                         </div>
                     </div>
@@ -133,7 +137,7 @@ export default function Task({task, error}) {
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">{task["name"]+" - risinājuma iesūtīšana"}</h5>
+                            <h5 className="modal-title">{task["name"] + " - risinājuma iesūtīšana"}</h5>
                             <button type="button" className="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -145,14 +149,21 @@ export default function Task({task, error}) {
                             />
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">Aizvērt</button>
-                            <button type="button" className="btn btn-success">Iesūtīt</button>
+                            <button type="button" className="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Aizvērt
+                            </button>
+                            <button type="button" className="btn btn-success" onClick={() => {
+                                document.getElementById("submission-modal-toggle").click(); // hide the modal :d
+                                router.push("/submissions").then(() => {
+                                });
+                            }}>Iesūtīt
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-    </>)
+    </div>)
 }
 
 export async function getServerSideProps(context) {
