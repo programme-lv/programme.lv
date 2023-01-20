@@ -4,10 +4,11 @@ import "katex/dist/katex.min.css";
 import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
 import {useEffect} from "react";
 import {parseStatement} from "../../scripts/renderMD";
+import Editor from "@monaco-editor/react";
 
-export default function Task(props) {
-    //let pdfURL = props.apiURL + "/tasks/statement/" + props.task["code"] + "/" + props.task["pdf_statements"][0].filename
-    let mdStatement = props.task["md_statements"][0]
+export default function Task({task, error}) {
+    //let pdfURL = props.apiURL + "/tasks/statement/" + task["code"] + "/" + task["pdf_statements"][0].filename
+    let mdStatement = task["md_statements"][0]
 
     useEffect(() => {
         renderMathInElement(document.getElementById("task-statement"), {
@@ -17,13 +18,12 @@ export default function Task(props) {
         });
     }, []);
 
-    console.log(props)
     return (<>
         <NavBar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
                 <div className="col-9 pe-4" id="task-statement">
-                    <h2>{props.task["name"]}</h2>
+                    <h2>{task["name"]}</h2>
                     <hr></hr>
                     <section className="my-4">
                         <h5 className={"my-3"}>formulējums</h5>
@@ -80,28 +80,28 @@ export default function Task(props) {
                             <tbody>
                             <tr>
                                 <th scope="col">kods:</th>
-                                <td className={"text-start ps-2"}>{props.task["code"]}</td>
+                                <td className={"text-start ps-2"}>{task["code"]}</td>
                             </tr>
                             <tr>
                                 <th scope="col">laika limits:</th>
-                                <td className={"text-start ps-2"}>{props.task["time_lim"]} sek.</td>
+                                <td className={"text-start ps-2"}>{task["time_lim"]} sek.</td>
                             </tr>
                             <tr>
                                 <th scope="col">atmiņa:</th>
-                                <td className={"text-start ps-2"}>{props.task["mem_lim"]} MB</td>
+                                <td className={"text-start ps-2"}>{task["mem_lim"]} MB</td>
                             </tr>
                             <tr>
                                 <th scope="col">versija:</th>
-                                <td className={"text-start ps-2"}>{props.task["version"]}</td>
+                                <td className={"text-start ps-2"}>{task["version"]}</td>
                             </tr>
                             <tr>
                                 <th scope="col">autors:</th>
-                                <td className={"text-start ps-2"}>{props.task["author"]}</td>
+                                <td className={"text-start ps-2"}>{task["author"]}</td>
                             </tr>
                             </tbody>
                         </table>
                         <h6 className="card-subtitle mt-3 mb-2">birkas</h6>
-                        <TagList tags={props.task["tags"]}/>
+                        <TagList tags={task["tags"]}/>
                         <h6 className="card-subtitle mt-3 mb-2">statistika</h6>
                         <table className={"table table-hover"}>
                             <tbody>
@@ -122,8 +122,31 @@ export default function Task(props) {
                         <h5 className="card-title text-center">iesūtīšana</h5>
 
                         <div className="my-3 text-center">
-                            <button type="button" className="btn btn-sm btn-outline-primary">atvērt sūtījuma redaktoru
+                            <button type="button" className="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                                    data-bs-target="#submission-modal">atvērt sūtījuma redaktoru
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal modal-lg fade" id="submission-modal" tabIndex="-1">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">{task["name"]+" - risinājuma iesūtīšana"}</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <Editor
+                                height="50vh"
+                                defaultLanguage="cpp"
+                                defaultValue="hello"
+                            />
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal">Aizvērt</button>
+                            <button type="button" className="btn btn-success">Iesūtīt</button>
                         </div>
                     </div>
                 </div>
