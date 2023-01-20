@@ -75,6 +75,11 @@ func (s *Scheduler) ReportJobStatus(stream pb.Scheduler_ReportJobStatusServer) e
 		}
 		log.Println("jobId: ", update.GetJobId())
 		switch update.Update.(type) {
+		case *pb.JobStatusUpdate_TaskRes:
+			var job models.TaskSubmJob
+			s.database.First(&job, update.GetJobId())
+			job.Status = update.GetTaskRes().GetSubmStatus().String()
+			s.database.Updates(&job)
 		case *pb.JobStatusUpdate_ExecRes:
 			log.Println("stdout: ", update.GetExecRes().GetStdout())
 			log.Println("stderr: ", update.GetExecRes().GetStderr())
