@@ -16,8 +16,7 @@ export default function EditorPage() {
     )
 }
 
-let defaultCPPCode = `
-#include <iostream>
+let defaultCPPCode = `#include <iostream>
 
 using namespace std;
 using ll = long long;
