@@ -1,14 +1,47 @@
 import NavBar from "../../components/navbar";
 import Editor from "@monaco-editor/react";
 import {parseStatement} from "../../scripts/renderMD";
+import Link from "next/link";
+import {formatDateTime} from "../../scripts/format_datetime.js";
 
 export default function Submission({submission, error}) {
     return (
-        <div className="d-flex flex-column vh-100">
+        <div className="vw-100">
             <NavBar active_page={"submissions"}/>
-            <div className={"container flex-grow-1 my-3"}>
+            <div className={"container my-3"}>
+                <table className="table table-hover table-bordered text-center">
+                    <thead>
+                    <tr>
+                        <th scope="col">iesūtījums</th>
+                        <th scope="col">iesūtījuma laiks</th>
+                        <th scope="col">lietotājs</th>
+                        <th scope="col">uzdevums</th>
+                        <th scope="col">valoda</th>
+                        <th scope="col">statuss</th>
+                        <th scope="col">izpildes laiks</th>
+                        <th scope="col">izmantotā atmiņa</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row"><Link href={"/submissions/" + submission["submission_id"]}><a
+                        >{submission["submission_id"]}</a></Link></th>
+                        <td>{formatDateTime(submission["created_time"])}</td>
+                        <td><Link href={"/users/" + submission["user_id"]}><a
+                            className="nav-link">{submission["user_id"]}</a></Link></td>
+                        <td><Link
+                            href={"/tasks/" + submission["task_code"]}><a>{submission["task_code"]}</a></Link>
+                        </td>
+                        <td>{submission["lang_code"]}</td>
+                        <td>IQS</td>
+                        <td>?</td>
+                        <td>?</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <Editor
-                    height="100%"
+                    className={"border"}
+                    height="40vh"
                     defaultLanguage="cpp"
                     defaultValue={submission["subm_src_code"]}
                     options={{
@@ -18,6 +51,7 @@ export default function Submission({submission, error}) {
                 />
             </div>
         </div>
+
     )
 }
 

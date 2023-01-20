@@ -1,15 +1,7 @@
 import NavBar from "../components/navbar";
 import ErrorAlert from "../components/error_alert";
 import Link from "next/link";
-
-function formatDateTime(dateTime) {
-    let d = new Date(dateTime);
-    let date = d.toISOString().split("T")[0];
-    date = date.replace("-", ".");
-    date = date.replace("-", ".");
-    let time = d.toTimeString().split(" ")[0];
-    return date + " " + time;
-}
+import {formatDateTime} from "../scripts/format_datetime.js";
 
 export default function Submissions({submissions, error}) {
     console.log(submissions)
