@@ -23,11 +23,13 @@ export default function Submissions({submissions, error}) {
                     <thead>
                     <tr>
                         <th scope="col">iesūtījums</th>
+                        <th scope="col">iesūtījuma laiks</th>
                         <th scope="col">lietotājs</th>
                         <th scope="col">uzdevums</th>
                         <th scope="col">valoda</th>
-                        <th scope="col">iesūtījuma laiks</th>
                         <th scope="col">statuss</th>
+                        <th scope="col">izpildes laiks</th>
+                        <th scope="col">izmantotā atmiņa</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,13 +38,16 @@ export default function Submissions({submissions, error}) {
                             <tr key={index}>
                                 <th scope="row"><Link href={"/submissions/" + submission["submission_id"]}><a
                                     className="nav-link">{submission["submission_id"]}</a></Link></th>
+                                <td>{formatDateTime(submission["created_time"])}</td>
                                 <td><Link href={"/users/" + submission["user_id"]}><a
                                     className="nav-link">{submission["user_id"]}</a></Link></td>
-                                <td><Link href={"/tasks/" + submission["task_code"]}><a
-                                    className="nav-link">{submission["task_code"]}</a></Link></td>
+                                <td><Link
+                                    href={"/tasks/" + submission["task_code"]}><a>{submission["task_code"]}</a></Link>
+                                </td>
                                 <td>{submission["lang_code"]}</td>
-                                <td>{formatDateTime(submission["created_time"])}</td>
                                 <td>IQS</td>
+                                <td>?</td>
+                                <td>?</td>
                             </tr>
                         )
                     })}
