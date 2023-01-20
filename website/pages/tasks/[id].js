@@ -178,7 +178,7 @@ export default function Task({task, apiURL}) {
                                 const dataSending = {
                                     "task_code": task["code"],
                                     "lang_code": langCode,
-                                    "src_code": submSrcCode
+                                    "subm_src_code": submSrcCode
                                 }
                                 const apiEndpoint = apiURL + "/submissions/enqueue";
                                 try {

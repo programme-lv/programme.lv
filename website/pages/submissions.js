@@ -37,7 +37,7 @@ export default function Submissions({submissions, error}) {
                         return (
                             <tr key={index}>
                                 <th scope="row"><Link href={"/submissions/" + submission["submission_id"]}><a
-                                    className="nav-link">{submission["submission_id"]}</a></Link></th>
+                                >{submission["submission_id"]}</a></Link></th>
                                 <td>{formatDateTime(submission["created_time"])}</td>
                                 <td><Link href={"/users/" + submission["user_id"]}><a
                                     className="nav-link">{submission["user_id"]}</a></Link></td>
