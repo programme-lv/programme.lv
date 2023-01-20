@@ -56,7 +56,7 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var submissions []models.TaskSubmission
-	result := c.database.Find(&submissions)
+	result := c.database.Order("created_at desc").Find(&submissions)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusBadRequest)
 		return
