@@ -2,6 +2,8 @@ package scheduler
 
 import (
 	"fmt"
+	"github.com/KrisjanisP/deikstra/service/database"
+	"gorm.io/gorm"
 	"io"
 	"log"
 	"net"
@@ -13,14 +15,18 @@ import (
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
-	submissionQueue chan models.TaskSubmission
-	executionQueue  chan models.ExecSubmission
+	submissionQueue chan *models.TaskSubmission
+	executionQueue  chan *models.ExecSubmission
+	database        *gorm.DB
+	taskFS          *database.TaskFS
 }
 
-func NewScheduler() *Scheduler {
+func NewScheduler(database *gorm.DB, taskFS *database.TaskFS) *Scheduler {
 	scheduler := &Scheduler{
-		submissionQueue: make(chan models.TaskSubmission, 100),
-		executionQueue:  make(chan models.ExecSubmission, 100),
+		submissionQueue: make(chan *models.TaskSubmission, 100),
+		executionQueue:  make(chan *models.ExecSubmission, 100),
+		database:        database,
+		taskFS:          taskFS,
 	}
 	return scheduler
 }
@@ -38,11 +44,18 @@ func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
 	}
 }
 
-func (s *Scheduler) EnqueueSubmission(submission models.TaskSubmission) {
+func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
+	job := models.TaskSubmJob{
+		TaskSubmissionId: submission.ID,
+		TaskSubmission:   *submission,
+		Status:           "IQS2",
+	}
+	s.database.Create(&job)
 	s.submissionQueue <- submission
+	return nil
 }
 
-func (s *Scheduler) EnqueueExecution(submission models.ExecSubmission) {
+func (s *Scheduler) EnqueueExecution(submission *models.ExecSubmission) {
 	s.executionQueue <- submission
 }
 

@@ -44,7 +44,12 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 
 	c.database.Create(&submission)
 
-	c.scheduler.EnqueueSubmission(submission)
+	err = c.scheduler.EnqueueSubmission(&submission)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
 	// echo back the submission
 	resp, err := json.Marshal(submission)
@@ -59,7 +64,6 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	c.scheduler.EnqueueSubmission(submission)
 }
 
 func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {

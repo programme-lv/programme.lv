@@ -33,8 +33,13 @@ func (c *Controller) enqueueExecution(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
-	w.Write(resp) // echo back the submission
-	c.scheduler.EnqueueExecution(submission)
+	_, err = w.Write(resp)
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	} // echo back the submission
+	c.scheduler.EnqueueExecution(&submission)
 }
 
 var upgrader = websocket.Upgrader{
@@ -48,6 +53,6 @@ func (c *Controller) communicateWithExec(w http.ResponseWriter, r *http.Request)
 		log.Println(err)
 		return
 	}
-	conn.WriteMessage(websocket.TextMessage, []byte("labdien"))
-	conn.Close()
+	_ = conn.WriteMessage(websocket.TextMessage, []byte("labdien"))
+	_ = conn.Close()
 }

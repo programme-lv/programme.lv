@@ -19,7 +19,7 @@ type TaskFS struct {
 	TasksDir string `mapstructure:"tasks_folder"`
 }
 
-func CreateTaskManager(tasksDir string) *TaskFS {
+func NewTaskManager(tasksDir string) *TaskFS {
 	return &TaskFS{TasksDir: tasksDir}
 }
 
