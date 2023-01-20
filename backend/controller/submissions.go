@@ -24,6 +24,24 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if taskSubmReq.TaskCode == "" {
+		log.Printf("HTTP %s", "task_code is required")
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	if taskSubmReq.LangCode == "" {
+		log.Printf("HTTP %s", "lang_code is required")
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	if taskSubmReq.SubmSrcCode == "" {
+		log.Printf("HTTP %s", "subm_src_code is required")
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
 	submission := models.TaskSubmission{
 		UserId:       1,
 		TaskSubmBase: taskSubmReq}
