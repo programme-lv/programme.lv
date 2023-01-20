@@ -14,7 +14,9 @@ function MyApp({Component, pageProps}) {
         <div className="vw-100">
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="description" content="Moderna programmēšanas izglītības platforma."/>
                 <title>programme.lv</title>
+
             </Head>
             <Component {...pageProps} />
         </div>
