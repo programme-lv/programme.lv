@@ -163,6 +163,9 @@ export default function Task({task, apiURL}) {
                                 defaultLanguage="cpp"
                                 defaultValue="hello"
                                 onMount={handleSubmissionEditorDidMount}
+                                options={{
+                                    minimap: {enabled: false}
+                                }}
                             />
                         </div>
                         <div className="modal-footer">
