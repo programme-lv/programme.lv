@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"github.com/KrisjanisP/deikstra/service/models"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -73,8 +74,34 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (c *Controller) getSubmission(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusNotImplemented)
+func (c *Controller) getSubmission(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
+	submissionId := mux.Vars(r)["subm_id"]
+	var submission models.TaskSubmission
+	result := c.database.First(&submission, submissionId)
+	if result.Error != nil {
+		http.Error(w, result.Error.Error(), http.StatusBadRequest)
+		return
+	}
+
+	resp, err := json.Marshal(submission)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// send the response
+	_, err = w.Write(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 }
 
 func (c *Controller) subscribeToResults(w http.ResponseWriter, _ *http.Request) {

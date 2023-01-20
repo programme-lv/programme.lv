@@ -12,7 +12,7 @@ func (c *Controller) registerAPIRoutes() {
 	// submissions
 	c.router.HandleFunc("/submissions/enqueue", c.enqueueSubmission).Methods("POST", "OPTIONS")
 	c.router.HandleFunc("/submissions/list", c.listSubmissions).Methods("GET")
-	c.router.HandleFunc("/submissions/info/{subm_id}", c.getSubmission).Methods("GET")
+	c.router.HandleFunc("/submissions/view/{subm_id}", c.getSubmission).Methods("GET")
 	c.router.HandleFunc("/submissions/subscribe", c.subscribeToResults).Methods("GET")
 
 	// execute
