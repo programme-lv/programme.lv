@@ -19,7 +19,7 @@ export default function Submissions({submissions, error}) {
             <main className="container">
                 <h1 className="my-4 text-center">iesūtījumi</h1>
                 <ErrorAlert msg={error}/>
-                <table className="table table-hover table-bordered">
+                <table className="table table-hover table-bordered text-center">
                     <thead>
                     <tr>
                         <th scope="col">iesūtījums</th>
