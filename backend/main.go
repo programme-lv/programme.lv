@@ -16,12 +16,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tm := database.NewTaskManager(config.TasksDir)
-
-	sched := scheduler.NewScheduler(db, tm)
+	sched := scheduler.NewScheduler(db)
 
 	go sched.StartSchedulerServer(config.SchedulerPort)
 
-	c := controller.CreateAPIController(sched, db, tm)
+	c := controller.CreateAPIController(sched, db)
 	c.StartAPIServer(config.APIPort)
 }

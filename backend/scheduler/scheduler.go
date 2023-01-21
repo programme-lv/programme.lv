@@ -2,7 +2,6 @@ package scheduler
 
 import (
 	"fmt"
-	"github.com/KrisjanisP/deikstra/service/database"
 	"gorm.io/gorm"
 	"io"
 	"log"
@@ -18,15 +17,13 @@ type Scheduler struct {
 	submissionQueue chan *models.TaskSubmJob
 	executionQueue  chan *models.ExecSubmission
 	database        *gorm.DB
-	taskFS          *database.TaskFS
 }
 
-func NewScheduler(database *gorm.DB, taskFS *database.TaskFS) *Scheduler {
+func NewScheduler(database *gorm.DB) *Scheduler {
 	scheduler := &Scheduler{
 		submissionQueue: make(chan *models.TaskSubmJob, 100),
 		executionQueue:  make(chan *models.ExecSubmission, 100),
 		database:        database,
-		taskFS:          taskFS,
 	}
 	return scheduler
 }

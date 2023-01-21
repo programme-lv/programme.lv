@@ -6,12 +6,12 @@ import (
 
 // TaskSubmission is managed by GORM
 type TaskSubmission struct {
-	ID        uint      `json:"subm_id" gorm:"primaryKey"`
+	ID        uint64    `json:"subm_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	UserId uint `json:"user_id" gorm:"not null"`
-	User   User `json:"user" gorm:"foreignKey:UserId"`
+	UserId uint64 `json:"user_id" gorm:"not null"`
+	User   User   `json:"user" gorm:"foreignKey:UserId"`
 
 	TaskCode string `json:"task_code" gorm:"not null"`
 
@@ -25,11 +25,11 @@ type TaskSubmission struct {
 
 // TaskSubmJob is managed by GORM
 type TaskSubmJob struct {
-	ID        uint      `json:"subm_job_id" gorm:"primaryKey"`
+	ID        uint64    `json:"subm_job_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	TaskSubmissionId uint           `json:"subm_id" gorm:"not null"`
+	TaskSubmissionId uint64         `json:"subm_id" gorm:"not null"`
 	TaskSubmission   TaskSubmission `json:"task_submission" gorm:"foreignKey:TaskSubmissionId"`
 
 	TaskVersion int `json:"task_version" gorm:"not null"`
@@ -41,12 +41,12 @@ type TaskSubmJob struct {
 // ExecSubmission is managed by GORM
 // the struct isn't ready for production yet
 type ExecSubmission struct {
-	ID        uint      `json:"exec_id" gorm:"primaryKey"`
+	ID        uint64    `json:"exec_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	UserId uint `json:"user_id"`
-	User   User `json:"user"`
+	UserId uint64 `json:"user_id"`
+	User   User   `json:"user"`
 
 	LanguageId string   `json:"lang_id"`
 	Language   Language `json:"language"`
