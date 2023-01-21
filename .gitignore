@@ -1,4 +1,4 @@
 /evaluate/tests
 *.db
 .idea
-.env
+**/.env
