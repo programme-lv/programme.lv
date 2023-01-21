@@ -1,15 +1,15 @@
 package database
 
 import (
+	"gorm.io/gorm"
 	"log"
 
 	"github.com/KrisjanisP/deikstra/service/models"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"gorm.io/driver/postgres"
 )
 
-func ConnectAndMigrate(connectionString string) (*gorm.DB, error) {
-	instance, err := gorm.Open(sqlite.Open(connectionString), &gorm.Config{})
+func ConnectAndMigrate(connStr string) (*gorm.DB, error) {
+	instance, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

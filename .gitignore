@@ -1,3 +1,4 @@
 /evaluate/tests
 *.db
 .idea
+.env

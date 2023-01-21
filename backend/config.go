@@ -24,6 +24,7 @@ func LoadAppConfig() SchedulerConfig {
 	viper.SetDefault("tasks_dir", "/srv/deikstra/tasks")
 
 	viper.SetConfigFile("config.toml")
+	viper.SetConfigFile(".env")
 
 	err := viper.ReadInConfig()
 	if err != nil {
