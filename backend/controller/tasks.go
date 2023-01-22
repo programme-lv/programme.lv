@@ -127,7 +127,32 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		os.ReadDir(filepath.Join(decompPath, "testing-dst"))
+		// PARSE TESTS
+		testDir, err := os.ReadDir(filepath.Join(decompPath, "tests"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		var tests []models.Test
+		var testNames = make(map[string]bool)
+		// read all test names into testNames
+		for _, test := range testDir {
+			// remove extension from test.Name()
+			testName := test.Name()[:len(test.Name())-len(filepath.Ext(test.Name()))]
+			testNames[testName] = true
+		}
+		// loop through test names
+		for testName := range testNames {
+			inPath := filepath.Join(decompPath, "tests", testName+".in")
+			ansPath := filepath.Join(decompPath, "tests", testName+".ans")
+			inBytes, _ := os.ReadFile(inPath)
+			ansBytes, _ := os.ReadFile(ansPath)
+			tests = append(tests, models.Test{
+				Name:   testName,
+				Input:  string(inBytes),
+				Answer: string(ansBytes),
+			})
+		}
 
 		tx := c.database.Begin()
 		var tags []models.Tag
@@ -144,6 +169,8 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 
 			TimeLim: uint32(math.Round(taskTOML.TimeLim * 1000)),
 			MemLim:  taskTOML.MemLim,
+
+			Tests: tests,
 		}
 
 		err = tx.Create(&task).Error
