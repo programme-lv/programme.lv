@@ -38,7 +38,7 @@ func LoadAppConfig() SchedulerConfig {
 
 	log.Printf("scheduler's API port: %v", res.APIPort)
 	log.Printf("scheduler's port: %v", res.SchedulerPort)
-	log.Printf("DB connection string: %v", res.DBConnString)
+	log.Printf("DB connection string: idk lmao")
 	log.Printf("tasks folder: %v", res.TasksDir)
 
 	return res

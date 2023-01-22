@@ -16,13 +16,13 @@ type MarkdownStatement struct {
 	Notes   string `json:"notes"`
 	Scoring string `json:"scoring"`
 
-	Examples []MDSTatementExample `json:"examples"`
+	Examples []MDStatementExample `json:"examples"`
 
 	TaskID string `json:"task_id" gorm:"not null"`
 	Task   Task   `json:"task" gorm:"foreignKey:TaskID"`
 }
 
-type MDSTatementExample struct {
+type MDStatementExample struct {
 	ID        uint64    `json:"example_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`

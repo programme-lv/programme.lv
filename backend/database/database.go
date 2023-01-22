@@ -25,7 +25,7 @@ func ConnectAndMigrate(connStr string) (*gorm.DB, error) {
 		&models.Subtask{},
 		&models.Tag{},
 		&models.MarkdownStatement{},
-		&models.MDSTatementExample{},
+		&models.MDStatementExample{},
 		&models.PDFStatement{},
 	)
 	if err != nil {

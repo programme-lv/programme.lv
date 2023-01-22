@@ -5,6 +5,8 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/KrisjanisP/deikstra/service/utils"
+	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 	"math"
 	"net/http"
 	"os"
@@ -22,7 +24,7 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var tasks []models.Task
-	err := c.database.Find(&tasks).Error
+	err := c.database.Model(&models.Task{}).Preload("Tags").Find(&tasks).Error
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -42,7 +44,7 @@ func (c *Controller) listTasks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// c.router.HandleFunc("/tasks/view/{task_code}", c.getTask).Methods("GET", "OPTIONS")
+// c.router.HandleFunc("/tasks/view/{task_ir}", c.getTask).Methods("GET", "OPTIONS")
 func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
 	// CORS
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -51,7 +53,27 @@ func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	taskId := mux.Vars(r)["task_id"]
+
+	var task models.Task
+	task.ID = taskId
+	err := c.database.Model(&task).Preload("MDStatements.Examples").Take(&task).Error
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	resp, err := json.Marshal(task)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err = w.Write(resp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 }
 
 func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
@@ -154,13 +176,82 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 
-		tx := c.database.Begin()
-		var tags []models.Tag
-		for _, tag := range taskTOML.Tags {
-			tags = append(tags, models.Tag{
-				Name: tag,
-			})
+		// PARSE MARKDOWN STATEMENTS
+		var mdStatements []models.MarkdownStatement
+		mdDir := filepath.Join(decompPath, "statements")
+		mdDirEntries, err := os.ReadDir(mdDir)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
+		for _, mdDirEntry := range mdDirEntries {
+			if !mdDirEntry.IsDir() {
+				continue
+			}
+			mdDirEntryPath := filepath.Join(mdDir, mdDirEntry.Name())
+			mdDirEntryEntries, err := os.ReadDir(mdDirEntryPath)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			var mdStatement models.MarkdownStatement
+			mdStatement.Name = mdDirEntry.Name()
+			for _, mdDirEntryEntry := range mdDirEntryEntries {
+				if mdDirEntryEntry.IsDir() {
+					var examples = make([]models.MDStatementExample, 0)
+					examplesDirPath := filepath.Join(mdDirEntryPath, mdDirEntryEntry.Name())
+					examplesDirEntries, err := os.ReadDir(examplesDirPath)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusBadRequest)
+						return
+					}
+					exampleNames := make(map[string]bool)
+					for _, examplesDirEntry := range examplesDirEntries {
+						exampleName := examplesDirEntry.Name()[:len(examplesDirEntry.Name())-len(filepath.Ext(examplesDirEntry.Name()))]
+						exampleNames[exampleName] = true
+					}
+					for exampleName := range exampleNames {
+						exampleInPath := filepath.Join(examplesDirPath, exampleName+".in")
+						exampleOutPath := filepath.Join(examplesDirPath, exampleName+".out")
+						exampleInBytes, err := os.ReadFile(exampleInPath)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusBadRequest)
+							return
+						}
+						exampleOutBytes, err := os.ReadFile(exampleOutPath)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusBadRequest)
+							return
+						}
+						examples = append(examples, models.MDStatementExample{
+							Input:  string(exampleInBytes),
+							Output: string(exampleOutBytes),
+						})
+					}
+					mdStatement.Examples = examples
+					continue
+				}
+				entryContent, err := os.ReadFile(filepath.Join(mdDirEntryPath, mdDirEntryEntry.Name()))
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				switch mdDirEntryEntry.Name() {
+				case "description.md":
+					mdStatement.Desc = string(entryContent)
+				case "input.md":
+					mdStatement.Input = string(entryContent)
+				case "output.md":
+					mdStatement.Output = string(entryContent)
+				case "scoring.md":
+					mdStatement.Scoring = string(entryContent)
+				case "notes.md":
+					mdStatement.Notes = string(entryContent)
+				}
+			}
+			mdStatements = append(mdStatements, mdStatement)
+		}
+
 		task := models.Task{
 			ID: taskTOML.Code,
 
@@ -171,9 +262,20 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			MemLim:  taskTOML.MemLim,
 
 			Tests: tests,
+
+			MDStatements: mdStatements,
 		}
 
-		err = tx.Create(&task).Error
+		tx := c.database.Begin()
+		var tags []models.Tag
+		err = tx.Where("name IN ?", taskTOML.Tags).Find(&tags).Error
+		if err != nil {
+			tx.Rollback()
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		task.Tags = tags
+		err = tx.Session(&gorm.Session{FullSaveAssociations: true}).Create(&task).Error
 		if err != nil {
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -204,9 +306,43 @@ func (c *Controller) deleteTask(w http.ResponseWriter, r *http.Request) {
 
 	var task models.Task
 	task.ID = req.TaskId
-	err = c.database.Delete(&task).Error
+
+	tx := c.database.Begin()
+
+	// DELETE MARKDOWN STATEMENT EXAMPLES
+	err = tx.Exec("DELETE FROM md_statement_examples WHERE markdown_statement_id in (SELECT id FROM markdown_statements WHERE task_id = ?)", task.ID).Error
 	if err != nil {
+		tx.Rollback()
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+	// DELETE MARKDOWN STATEMENTS
+	err = tx.Where("task_id = ?", task.ID).Delete(&models.MarkdownStatement{}).Error
+	if err != nil {
+		tx.Rollback()
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// DELETE TESTS
+	err = tx.Where("task_id = ?", task.ID).Delete(&models.Test{}).Error
+	if err != nil {
+		tx.Rollback()
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// CLEAR TAGS
+	err = tx.Model(&task).Association("Tags").Clear()
+	if err != nil {
+		tx.Rollback()
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	// DELETE TASK ITSELF
+	err = tx.Delete(&task).Error
+	if err != nil {
+		tx.Rollback()
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	tx.Commit()
 }
