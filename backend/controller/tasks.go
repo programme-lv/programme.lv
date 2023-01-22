@@ -127,6 +127,8 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		os.ReadDir(filepath.Join(decompPath, "testing-dst"))
+
 		tx := c.database.Begin()
 		var tags []models.Tag
 		for _, tag := range taskTOML.Tags {
