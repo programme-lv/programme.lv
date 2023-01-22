@@ -25,9 +25,9 @@ export default function Tasks({tasks, error}) {
                     {tasks.map((task, index) => {
                         return (
                             <tr key={index}>
-                                <th scope="row"><Link href={"/tasks/" + task["code"]}><a
-                                    className="nav-link">{task["code"]}</a></Link></th>
-                                <td><Link href={"/tasks/" + task["code"]}><a
+                                <th scope="row"><Link href={"/tasks/" + task["task_id"]}><a
+                                    className="nav-link">{task["task_id"]}</a></Link></th>
+                                <td><Link href={"/tasks/" + task["task_id"]}><a
                                     className="nav-link">{task["name"]}</a></Link></td>
                                 <td><TagList tags={task["tags"]}/></td>
                                 <td><span className="badge bg-danger">6.9</span></td>

@@ -11,7 +11,7 @@ export default function Task({task, apiURL}) {
     const router = useRouter();
 
     //let pdfURL = props.apiURL + "/tasks/statement/" + task["code"] + "/" + task["pdf_statements"][0].filename
-    let mdStatement = task["md_statements"][0]
+    let mdStatement = task ? (task["md_statements"] ? (task["md_statements"][0] ?? null) : null) : null;
 
     useEffect(() => {
         // RENDER KATEX MATH

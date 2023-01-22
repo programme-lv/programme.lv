@@ -103,7 +103,7 @@ export default function Admin(props) {
                     </div>
                 </form>
 
-                <table className="table table-hover" style={{tableLayout: "fixed"}}>
+                <table className="table table-hover table-bordered text-center" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>
                         <th scope="col">kods</th>
@@ -135,8 +135,8 @@ export default function Admin(props) {
                             <td>2</td>
                             <td>13</td>
                             <td>
-                                <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
-                                <button type="button" className="btn btn-sm btn-danger ms-1"
+                                <button type="button" className="btn btn-sm btn-primary me-1 my-1">Rediģēt</button>
+                                <button type="button" className="btn btn-sm btn-danger ms-1 my-1"
                                         onClick={() => displayTaskDeleteModal(task["task_id"], task["name"])}>Izdzēst
                                 </button>
                             </td>
