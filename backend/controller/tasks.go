@@ -155,3 +155,29 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 }
+
+func (c *Controller) deleteTask(w http.ResponseWriter, r *http.Request) {
+	// CORS
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "content-type")
+	if r.Method == http.MethodOptions {
+		return
+	}
+
+	var req struct {
+		TaskId string `json:"task_id"`
+	}
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var task models.Task
+	task.ID = req.TaskId
+	err = c.database.Delete(&task).Error
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+}
