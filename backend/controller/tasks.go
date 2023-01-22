@@ -5,7 +5,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/KrisjanisP/deikstra/service/utils"
-	"log"
+	"math"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -103,33 +103,54 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-
-		type subtaskTOML struct {
+		type SubtaskTOML struct {
 			Name    string
 			Score   int
 			Pattern string
 		}
-
-		type taskTOML struct {
+		type TaskToml struct {
 			Code      string        `json:"code"`
 			Name      string        `json:"name"`
 			Version   int           `json:"version"`
 			Author    string        `json:"author"`
 			Tags      []string      `json:"tags"`
 			Type      string        `json:"type"`
-			TimeLim   float32       `json:"time_lim" toml:"time_lim"`
-			MemLim    int           `json:"mem_lim" toml:"mem_lim"`
-			Subtasks  []subtaskTOML `json:"subtasks"`
+			TimeLim   float64       `json:"time_lim" toml:"time_lim"`
+			MemLim    uint32        `json:"mem_lim" toml:"mem_lim"`
+			Subtasks  []SubtaskTOML `json:"subtasks"`
 			CreatedAt time.Time     `json:"created_time"`
 		}
-		problem := taskTOML{}
-		_, err = toml.Decode(string(problemTOMLBytes), &problem)
+		taskTOML := TaskToml{}
+		_, err = toml.Decode(string(problemTOMLBytes), &taskTOML)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		log.Println(problem)
+		tx := c.database.Begin()
+		var tags []models.Tag
+		for _, tag := range taskTOML.Tags {
+			tags = append(tags, models.Tag{
+				Name: tag,
+			})
+		}
+		task := models.Task{
+			ID: taskTOML.Code,
+
+			Name:   taskTOML.Name,
+			Author: taskTOML.Author,
+
+			TimeLim: uint32(math.Round(taskTOML.TimeLim * 1000)),
+			MemLim:  taskTOML.MemLim,
+		}
+
+		err = tx.Create(&task).Error
+		if err != nil {
+			tx.Rollback()
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		tx.Commit()
 	}
 
 	w.WriteHeader(200)

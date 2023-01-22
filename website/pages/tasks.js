@@ -1,7 +1,7 @@
 import NavBar from "../components/navbar";
 import Link from 'next/link'
 import TagList from "../components/taglist";
-import ErrorAlert from "../components/error_alert";
+import Error from "../components/error";
 
 export default function Tasks({tasks, error}) {
     return (
@@ -9,7 +9,7 @@ export default function Tasks({tasks, error}) {
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
-                <ErrorAlert msg={error}/>
+                <Error msg={error}/>
                 <table className="table table-hover table-bordered text-center" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>

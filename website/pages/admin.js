@@ -1,26 +1,31 @@
 import NavBar from '../components/navbar'
 import Link from "next/link";
 import {useState} from 'react'
+import TagList from "../components/taglist";
+import {formatDateTime} from "../scripts/format_datetime";
+import Error from "../components/error";
 
-async function deleteTask(code, apiURL) {
-    const fetchOptions = {
+async function deleteTask(taskId, apiURL) {
+    const options = {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
         },
-        body: JSON.stringify({code: code}),
+        body: JSON.stringify({task_id: taskId}),
     };
 
-    const response = await fetch(`${apiURL}/tasks/delete/` + code, fetchOptions);
+    const response = await fetch(`${apiURL}/tasks/delete/` + taskId, options);
 
     if (!response.ok) {
         const errorMessage = await response.text();
         console.error(errorMessage)
-        return
+        throw errorMessage
     }
 
-    return response.json()
+    const respText = response.text();
+    console.log("create task response: ", respText)
+    return respText
 }
 
 async function createTaskSubmit(form_event) {
@@ -29,98 +34,55 @@ async function createTaskSubmit(form_event) {
     const url = form.action;
 
     const formData = new FormData(form);
-
     const response = await fetch(url, {method: "POST", body: formData});
 
     if (!response.ok) {
         const errorMessage = await response.text();
         console.error(errorMessage)
-        return
+        throw errorMessage
     }
 
-    const responseData = response.text();
-    console.log(responseData)
-    return responseData
+    const respText = response.text();
+    console.log("create task response: ", respText)
+    return respText
 }
 
 export default function Admin(props) {
 
     const [tasks, setTasks] = useState(props.tasks)
+    const [error, setError] = useState(null)
 
     let refreshTable = async () => {
         const res = await fetch(`${props.apiURL}/tasks/list`)
         const tasks = await res.json()
         setTasks(tasks)
     }
-    let deleteTaskAndRefreshTable = async (code) => {
-        await deleteTask(code,props.apiURL);
-        await refreshTable();
+
+    let deleteTaskAndRefreshTable = async (taskId) => {
+        try {
+            await deleteTask(taskId, props.apiURL);
+            await refreshTable();
+        } catch (e) {
+            setError(e)
+        }
     }
-    let displayTaskDeleteModal = async (name, code) => {
-        document.getElementById("delete-task-modal-header").innerHTML = name
+
+    let displayTaskDeleteModal = async (taskId, taskName) => {
+        document.getElementById("delete-task-modal-header").innerHTML = taskName
         document.getElementById("delete-task-modal-confirm").onclick = async () => {
-            await deleteTaskAndRefreshTable(code);
+            await deleteTaskAndRefreshTable(taskId);
             document.getElementById("delete-task-modal-close").click()
         }
         document.getElementById("delete-task-modal-show").click()
     }
+
     let createTaskSubmitAndRefresh = async (form_event) => {
-        await createTaskSubmit(form_event)
-        await refreshTable()
-    }
-
-    let admin_table_entries = []
-    let TagList = (props)=> {
-        let tag_entries = []
-        let tags = props.tags;
-        for(let tag of tags) {
-            let bg = "bg-secondary"
-            if(tag==="ProblemCon++") bg = "bg-primary"
-            tag_entries.push(<span className={`badge ${bg} m-1`} key={tag}>{tag}</span>)
+        try {
+            await createTaskSubmit(form_event)
+            await refreshTable()
+        } catch (e) {
+            setError(e)
         }
-        return (
-            <>
-                {tag_entries}
-            </>
-        )
-    }
-    if(props.tasks) {
-        tasks.forEach((task) => {
-            admin_table_entries.push(
-                <tr key={task["code"]}>
-                    <th scope="row">
-                        <Link href={"/tasks/" + task["code"]}>
-                            <a className="nav-link">{task["code"]}</a>
-                        </Link>
-                    </th>
-                    <td>
-                        <Link href={"/tasks/" + task["code"]}>
-                            <a className="nav-link">{task["name"]}</a>
-                        </Link>
-                    </td>
-                    <td>{task["version"]}</td>
-                    <td><TagList tags={task["tags"]}/></td>
-                    <td><span className="badge bg-danger">6.9</span></td>
-                    <td>2</td>
-                    <td>13</td>
-                    <td>
-                        <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
-                        <button type="button" className="btn btn-sm btn-danger ms-1"
-                                onClick={() => displayTaskDeleteModal(task["name"], task["code"])}>Izdzēst
-                        </button>
-                    </td>
-                </tr>
-            )
-        })
-    }
-
-
-    let ErrorAlert = ({ msg }) => {
-        if (msg) return (
-            <div className="alert alert-danger text-center" role="alert">
-                {msg}
-            </div>)
-        else return <></>
     }
 
     return (
@@ -129,6 +91,7 @@ export default function Admin(props) {
             <main className="container">
                 <h1 className="my-4 text-center">administrācija</h1>
 
+                <Error msg={error}/>
                 <form action={`${props.apiURL}/tasks/create`} onSubmit={createTaskSubmitAndRefresh}>
                     <div className="row">
                         <div className="mb-3 col">
@@ -140,13 +103,12 @@ export default function Admin(props) {
                     </div>
                 </form>
 
-                <ErrorAlert msg={props.error}/>
                 <table className="table table-hover" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>
                         <th scope="col">kods</th>
                         <th scope="col">nosaukums</th>
-                        <th scope={"col"}>versija</th>
+                        <th scope="col">atjaunots</th>
                         <th scope="col">birkas</th>
                         <th scope="col">grūtība</th>
                         <th scope="col">atrisinājumi</th>
@@ -155,7 +117,31 @@ export default function Admin(props) {
                     </tr>
                     </thead>
                     <tbody>
-                    {admin_table_entries}
+                    {tasks.map((task) => (
+                        <tr key={task["task_id"]}>
+                            <th scope="row">
+                                <Link href={"/tasks/" + task["task_id"]}>
+                                    <a className="nav-link">{task["task_id"]}</a>
+                                </Link>
+                            </th>
+                            <td>
+                                <Link href={"/tasks/" + task["task_id"]}>
+                                    <a className="nav-link">{task["name"]}</a>
+                                </Link>
+                            </td>
+                            <td>{formatDateTime(task["updated_time"])}</td>
+                            <td><TagList tags={task["tags"]}/></td>
+                            <td><span className="badge bg-danger">6.9</span></td>
+                            <td>2</td>
+                            <td>13</td>
+                            <td>
+                                <button type="button" className="btn btn-sm btn-primary me-1">Rediģēt</button>
+                                <button type="button" className="btn btn-sm btn-danger ms-1"
+                                        onClick={() => displayTaskDeleteModal(task["task_id"], task["name"])}>Izdzēst
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
 

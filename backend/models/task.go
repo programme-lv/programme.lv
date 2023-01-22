@@ -11,8 +11,8 @@ type Task struct {
 	Author string `json:"author"`
 	Tags   []Tag  `json:"tags" gorm:"many2many:task_tags"`
 
-	TimeLim float32 `json:"time_lim" toml:"time_lim"`
-	MemLim  int     `json:"mem_lim" toml:"mem_lim"`
+	TimeLim uint32 `json:"time_lim" toml:"time_lim"`
+	MemLim  uint32 `json:"mem_lim" toml:"mem_lim"`
 
 	Tests    []Test    `json:"tests"`
 	Subtasks []Subtask `json:"subtasks"`

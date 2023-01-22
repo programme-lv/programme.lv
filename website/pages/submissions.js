@@ -1,5 +1,5 @@
 import NavBar from "../components/navbar";
-import ErrorAlert from "../components/error_alert";
+import Error from "../components/error";
 import Link from "next/link";
 import {formatDateTime} from "../scripts/format_datetime.js";
 
@@ -10,7 +10,7 @@ export default function Submissions({submissions, error}) {
             <NavBar active_page={"submissions"}/>
             <main className="container">
                 <h1 className="my-4 text-center">iesūtījumi</h1>
-                <ErrorAlert msg={error}/>
+                <Error msg={error}/>
                 <table className="table table-hover table-bordered text-center">
                     <thead>
                     <tr>

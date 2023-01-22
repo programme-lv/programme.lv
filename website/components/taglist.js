@@ -1,6 +1,7 @@
-export default function TagList(props) {
+export default function TagList({tags}) {
+    console.log(tags)
+    if (!tags) return null
     let tag_entries = []
-    let tags = props.tags;
     for (let tag of tags) {
         let bg = "bg-secondary"
         if (tag === "ProblemCon++") bg = "bg-primary"
