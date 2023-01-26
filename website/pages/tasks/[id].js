@@ -176,7 +176,7 @@ export default function Task({task, apiURL}) {
                                 const langCode = document.getElementById("subm-lang-select").value;
                                 const submSrcCode = submissionEditorRef.current.getValue();
                                 const dataSending = {
-                                    "task_code": task["code"],
+                                    "task_code": task["task_id"],
                                     "lang_id": langCode,
                                     "src_code": submSrcCode
                                 }
