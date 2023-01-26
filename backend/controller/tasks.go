@@ -6,7 +6,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/KrisjanisP/deikstra/service/utils"
 	"github.com/gorilla/mux"
-	"gorm.io/gorm"
+	"log"
 	"math"
 	"net/http"
 	"os"
@@ -268,14 +268,20 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 
 		tx := c.database.Begin()
 		var tags []models.Tag
-		err = tx.Where("name IN ?", taskTOML.Tags).Find(&tags).Error
-		if err != nil {
-			tx.Rollback()
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+		for _, tagName := range taskTOML.Tags {
+			var tag models.Tag
+			tag.Name = tagName
+			err = tx.FirstOrCreate(&tag, tag).Error
+			log.Println(tag, tagName)
+			if err != nil {
+				tx.Rollback()
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			tags = append(tags, tag)
 		}
 		task.Tags = tags
-		err = tx.Session(&gorm.Session{FullSaveAssociations: true}).Create(&task).Error
+		err = tx.Create(&task).Error
 		if err != nil {
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusBadRequest)
