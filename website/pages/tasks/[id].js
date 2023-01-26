@@ -5,7 +5,6 @@ import SubmitModal from "../../components/SubmitModal";
 import TaskInfoCard from "../../components/TaskInfoCard";
 
 export default function Task({task, apiURL}) {
-
     let mdStatement = task["md_statements"][0] ?? null;
 
     return (<div className="vw-100">

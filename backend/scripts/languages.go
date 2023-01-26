@@ -16,6 +16,7 @@ func main() {
 	languages = append(languages, models.Language{ID: "C", Name: "C"})
 	languages = append(languages, models.Language{ID: "C++17", Name: "C++17 (GNU G++)"})
 	languages = append(languages, models.Language{ID: "Python3.10", Name: "Python3.10"})
+	languages = append(languages, models.Language{ID: "Java19", Name: "Java19 (OpenJDK)"})
 
 	tx := db.Begin()
 	for _, lang := range languages {
