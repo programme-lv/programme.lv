@@ -1,20 +1,10 @@
-import Editor from "@monaco-editor/react";
-import {useRef} from "react";
-import {useRouter} from "next/router";
 import {parseStatement} from "../../scripts/renderMD";
 import NavBar from "../../components/navbar";
-import TagList from "../../components/taglist";
 import MDStatement from "../../components/MDStatement";
+import SubmitModal from "../../components/SubmitModal";
+import TaskInfoCard from "../../components/TaskInfoCard";
 
 export default function Task({task, apiURL}) {
-    const submissionEditorRef = useRef(null);
-
-    function handleSubmissionEditorDidMount(editor) {
-        submissionEditorRef.current = editor;
-    }
-
-
-    const router = useRouter(); // used for automatic navigation to the submission page
 
     let mdStatement = task["md_statements"][0] ?? null;
 
@@ -22,153 +12,17 @@ export default function Task({task, apiURL}) {
         <NavBar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
-
                 <div className="col-9 pe-4" id="task-statement">
                     <h2>{task["name"]}</h2>
                     <hr></hr>
                     <MDStatement mdStatement={mdStatement}/>
                 </div>
-                <div className="col-3 card shadow-sm h-100">
-                    <div className="card-body">
-                        <h5 className="card-title text-center">uzd. informācija</h5>
-                        <p className="card-text"></p>
-                        <table className={"table table-hover"}>
-                            <tbody>
-                            <tr>
-                                <th scope="col">kods:</th>
-                                <td className={"text-start ps-2"}>{task["code"]}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">laika limits:</th>
-                                <td className={"text-start ps-2"}>{task["time_lim"]} sek.</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">atmiņa:</th>
-                                <td className={"text-start ps-2"}>{task["mem_lim"]} MB</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">versija:</th>
-                                <td className={"text-start ps-2"}>{task["version"]}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">autors:</th>
-                                <td className={"text-start ps-2"}>{task["author"]}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <h6 className="card-subtitle mt-3 mb-2">birkas</h6>
-                        <TagList tags={task["tags"]}/>
-                        <h6 className="card-subtitle mt-3 mb-2">statistika</h6>
-                        <table className={"table table-hover"}>
-                            <tbody>
-                            <tr>
-                                <th scope="col">iesūtījumi:</th>
-                                <td className={"text-start ps-2"}>?</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">atrisinājumi:</th>
-                                <td className={"text-start ps-2"}>?</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">grūtība:</th>
-                                <td className={"text-start ps-2"}>?</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <h5 className="card-title text-center">iesūtīšana</h5>
-
-                        <div className="my-3 text-center">
-                            <button type="button" className="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                    data-bs-target="#submission-modal" id="submission-modal-toggle">atvērt sūtījuma
-                                redaktoru
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="modal modal-lg fade" id="submission-modal" tabIndex="-1">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">{task["name"] + " - risinājuma iesūtīšana"}</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <div className="row px-4">
-                                <label className="col-4">programmēšanas valoda:</label>
-                                <select className="col form-select form-select-sm mb-3" id="subm-lang-select"
-                                        defaultValue="C++17">
-                                    <option value="C++17">C++17 (GNU G++)</option>
-                                    <option value="python3">Python 3.10.9</option>
-                                    <option value="java19">Java 19.0.1 (OpenJDK)</option>
-                                </select>
-                            </div>
-                            <Editor
-                                height="50vh"
-                                defaultLanguage="cpp"
-                                defaultValue={defaultCode}
-                                onMount={handleSubmissionEditorDidMount}
-                                options={{
-                                    minimap: {enabled: false}
-                                }}
-                            />
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-outline-secondary"
-                                    data-bs-dismiss="modal">Aizvērt
-                            </button>
-                            <button type="button" className="btn btn-success" onClick={async () => {
-                                const langCode = document.getElementById("subm-lang-select").value;
-                                const submSrcCode = submissionEditorRef.current.getValue();
-                                const dataSending = {
-                                    "task_code": task["task_id"],
-                                    "lang_id": langCode,
-                                    "src_code": submSrcCode
-                                }
-                                const apiEndpoint = apiURL + "/submissions/enqueue";
-                                try {
-
-                                    const response = await fetch(apiEndpoint, {
-                                        method: "POST",
-                                        headers: {"Content-Type": "application/json"},
-                                        body: JSON.stringify(dataSending)
-                                    });
-
-                                    if (response.ok) {
-                                        const data = await response.json();
-                                        console.log(data);
-
-                                        // remove modal background
-                                        // reset style on document.body
-                                        document.body.removeAttribute("style");
-                                        document.getElementsByClassName("modal-backdrop")[0].remove();
-                                        router.push("/submissions").then(() => {
-                                        });
-                                    } else {
-                                        alert("Kļūda: " + response.status + " " + response.statusText);
-                                    }
-                                } catch (e) {
-                                    alert("Kļūda: " + e);
-                                    console.log(e);
-                                }
-                            }}>Iesūtīt
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <TaskInfoCard task={task}/>
             </div>
         </main>
+        <SubmitModal task={task} apiURL={apiURL}/>
     </div>)
 }
-
-const defaultCode = `#include <iostream>
-
-using namespace std;
-
-int main() {
-    cout<<"hello, world!";
-}`;
 
 export async function getServerSideProps(context) {
     try {
@@ -179,6 +33,7 @@ export async function getServerSideProps(context) {
             task["md_statements"][statement] = await parseStatement(task["md_statements"][statement])
             console.log(task["md_statements"][statement])
         }
+
         return {
             props: {
                 task: task, apiURL: process.env.API_URL
