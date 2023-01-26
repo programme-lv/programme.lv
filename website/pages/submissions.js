@@ -25,7 +25,7 @@ export default function Submissions({submissions, error}) {
                     </tr>
                     </thead>
                     <tbody>
-                    {submissions.map((submission, index) => {
+                    {submissions && submissions.map((submission, index) => {
                         return (
                             <tr key={index}>
                                 <th scope="row"><Link href={"/submissions/" + submission["subm_id"]}><a
