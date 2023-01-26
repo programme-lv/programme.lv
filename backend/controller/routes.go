@@ -19,5 +19,8 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST", "OPTIONS")
 	c.router.HandleFunc("/execute/communicate/{exec_id}", c.communicateWithExec)
 
+	// languages
+	c.router.HandleFunc("/languages/list", c.listLanguages).Methods("GET", "OPTIONS")
+
 	c.router.Use(mux.CORSMethodMiddleware(c.router))
 }
