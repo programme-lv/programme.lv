@@ -1,3 +1,7 @@
+import renderMathInElement from "katex/contrib/auto-render";
+import "katex/dist/katex.min.css";
+import {useEffect} from "react";
+
 export default function MDStatement({mdStatement}) {
     let description = mdStatement["desc"];
     let input = mdStatement["input"];
@@ -5,6 +9,14 @@ export default function MDStatement({mdStatement}) {
     let examples = mdStatement["examples"];
     let scoring = mdStatement["scoring"];
     let notes = mdStatement["notes"];
+    useEffect(() => {
+        // RENDER KATEX MATH
+        renderMathInElement(document.getElementById("task-statement"), {
+            throwOnError: true, delimiters: [{left: '$$', right: '$$', display: true}, {
+                left: '$', right: '$', display: false
+            }, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}],
+        });
+    }, []);
     return (<>
         <section className="my-4">
             <h5 className={"my-3"}>formulējums</h5>

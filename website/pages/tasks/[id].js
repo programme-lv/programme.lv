@@ -1,11 +1,9 @@
+import Editor from "@monaco-editor/react";
+import {useRef} from "react";
+import {useRouter} from "next/router";
+import {parseStatement} from "../../scripts/renderMD";
 import NavBar from "../../components/navbar";
 import TagList from "../../components/taglist";
-import "katex/dist/katex.min.css";
-import renderMathInElement from "katex/dist/contrib/auto-render.mjs";
-import {useEffect, useRef} from "react";
-import {parseStatement} from "../../scripts/renderMD";
-import Editor from "@monaco-editor/react";
-import {useRouter} from "next/router";
 import MDStatement from "../../components/MDStatement";
 
 export default function Task({task, apiURL}) {
@@ -15,14 +13,6 @@ export default function Task({task, apiURL}) {
         submissionEditorRef.current = editor;
     }
 
-    useEffect(() => {
-        // RENDER KATEX MATH
-        renderMathInElement(document.getElementById("task-statement"), {
-            throwOnError: true, delimiters: [{left: '$$', right: '$$', display: true}, {
-                left: '$', right: '$', display: false
-            }, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}],
-        });
-    }, []);
 
     const router = useRouter(); // used for automatic navigation to the submission page
 
