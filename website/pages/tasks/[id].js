@@ -8,10 +8,11 @@ import Editor from "@monaco-editor/react";
 import {useRouter} from "next/router";
 
 export default function Task({task, apiURL}) {
-    const router = useRouter();
+    const submissionEditorRef = useRef(null);
 
-    //let pdfURL = props.apiURL + "/tasks/statement/" + task["code"] + "/" + task["pdf_statements"][0].filename
-    let mdStatement = task["md_statements"][0] ?? null;
+    function handleSubmissionEditorDidMount(editor) {
+        submissionEditorRef.current = editor;
+    }
 
     useEffect(() => {
         // RENDER KATEX MATH
@@ -22,11 +23,9 @@ export default function Task({task, apiURL}) {
         });
     }, []);
 
-    const submissionEditorRef = useRef(null);
+    const router = useRouter(); // used for automatic navigation to the submission page
 
-    function handleSubmissionEditorDidMount(editor) {
-        submissionEditorRef.current = editor;
-    }
+    let mdStatement = task["md_statements"][0] ?? null;
 
     return (<div className="vw-100">
         <NavBar active_page={"tasks"}/>
@@ -182,18 +181,20 @@ export default function Task({task, apiURL}) {
                                 }
                                 const apiEndpoint = apiURL + "/submissions/enqueue";
                                 try {
+
                                     const response = await fetch(apiEndpoint, {
                                         method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json",
-                                        },
+                                        headers: {"Content-Type": "application/json"},
                                         body: JSON.stringify(dataSending)
                                     });
+
                                     if (response.ok) {
                                         const data = await response.json();
                                         console.log(data);
 
                                         // remove modal background
+                                        // reset style on document.body
+                                        document.body.removeAttribute("style");
                                         document.getElementsByClassName("modal-backdrop")[0].remove();
                                         router.push("/submissions").then(() => {
                                         });
