@@ -57,7 +57,7 @@ func (c *Controller) getTask(w http.ResponseWriter, r *http.Request) {
 
 	var task models.Task
 	task.ID = taskId
-	err := c.database.Model(&task).Preload("MDStatements.Examples").Take(&task).Error
+	err := c.database.Model(&task).Preload("MDStatements.Examples").Preload("Tags").Take(&task).Error
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
