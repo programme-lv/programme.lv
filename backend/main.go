@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/KrisjanisP/deikstra/service/config"
 	"log"
 
 	"github.com/KrisjanisP/deikstra/service/controller"
@@ -9,17 +10,17 @@ import (
 )
 
 func main() {
-	config := LoadAppConfig()
+	conf := config.LoadAppConfig()
 
-	db, err := database.ConnectAndMigrate(config.DBConnString)
+	db, err := database.ConnectAndMigrate(conf.DBConnString)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	sched := scheduler.NewScheduler(db)
 
-	go sched.StartSchedulerServer(config.SchedulerPort)
+	go sched.StartSchedulerServer(conf.SchedulerPort)
 
 	c := controller.CreateAPIController(sched, db)
-	c.StartAPIServer(config.APIPort)
+	c.StartAPIServer(conf.APIPort)
 }

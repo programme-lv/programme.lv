@@ -37,12 +37,18 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	submission := models.TaskSubmission{
+		UserId:     1,
 		TaskCode:   taskSubmReq.TaskCode,
 		SrcCode:    taskSubmReq.SrcCode,
 		LanguageId: taskSubmReq.LanguageId,
 	}
 
-	c.database.Create(&submission)
+	err = c.database.Create(&submission).Error
+	if err != nil {
+		log.Printf("HTTP %s", err.Error())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
 
 	err = c.scheduler.EnqueueSubmission(&submission)
 	if err != nil {

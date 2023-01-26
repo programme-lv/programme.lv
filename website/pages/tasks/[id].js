@@ -152,8 +152,8 @@ export default function Task({task, apiURL}) {
                             <div className="row px-4">
                                 <label className="col-4">programmēšanas valoda:</label>
                                 <select className="col form-select form-select-sm mb-3" id="subm-lang-select"
-                                        defaultValue="c++17">
-                                    <option value="c++17">C++17 (GNU G++)</option>
+                                        defaultValue="C++17">
+                                    <option value="C++17">C++17 (GNU G++)</option>
                                     <option value="python3">Python 3.10.9</option>
                                     <option value="java19">Java 19.0.1 (OpenJDK)</option>
                                 </select>
