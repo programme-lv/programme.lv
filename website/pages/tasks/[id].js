@@ -4,7 +4,7 @@ import MDStatement from "../../components/MDStatement";
 import SubmitModal from "../../components/SubmitModal";
 import TaskInfoCard from "../../components/TaskInfoCard";
 
-export default function Task({task, apiURL}) {
+export default function Task({languages, task, apiURL}) {
     let mdStatement = task["md_statements"][0] ?? null;
 
     return (<div className="vw-100">
@@ -19,14 +19,16 @@ export default function Task({task, apiURL}) {
                 <TaskInfoCard task={task}/>
             </div>
         </main>
-        <SubmitModal task={task} apiURL={apiURL}/>
+        <SubmitModal languages={languages} task={task} apiURL={apiURL}/>
     </div>)
 }
 
 export async function getServerSideProps(context) {
     try {
-        const reqRes = await fetch(`${process.env.API_URL}/tasks/view/${context.params.id}`)
-        const task = await reqRes.json()
+
+        const languages = await fetch(`${process.env.API_URL}/languages/list`).then(res => res.json())
+
+        const task = await fetch(`${process.env.API_URL}/tasks/view/${context.params.id}`).then(res => res.json())
 
         for (let statement in task["md_statements"]) {
             task["md_statements"][statement] = await parseStatement(task["md_statements"][statement])
@@ -35,7 +37,9 @@ export async function getServerSideProps(context) {
 
         return {
             props: {
-                task: task, apiURL: process.env.API_URL
+                languages: languages,
+                task: task,
+                apiURL: process.env.API_URL
             }
         }
     } catch (err) {

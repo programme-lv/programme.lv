@@ -10,7 +10,7 @@ export default function TaskInfoCard({task}) {
                     <tbody>
                     <tr>
                         <th scope="col">kods:</th>
-                        <td className={"text-start ps-2"}>{task["code"]}</td>
+                        <td className={"text-start ps-2"}>{task["task_id"]}</td>
                     </tr>
                     <tr>
                         <th scope="col">laika limits:</th>
