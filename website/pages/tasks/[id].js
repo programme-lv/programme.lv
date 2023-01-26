@@ -6,6 +6,7 @@ import {useEffect, useRef} from "react";
 import {parseStatement} from "../../scripts/renderMD";
 import Editor from "@monaco-editor/react";
 import {useRouter} from "next/router";
+import MDStatement from "../../components/MDStatement";
 
 export default function Task({task, apiURL}) {
     const submissionEditorRef = useRef(null);
@@ -31,55 +32,11 @@ export default function Task({task, apiURL}) {
         <NavBar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
+
                 <div className="col-9 pe-4" id="task-statement">
                     <h2>{task["name"]}</h2>
                     <hr></hr>
-                    <section className="my-4">
-                        <h5 className={"my-3"}>formulējums</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["desc"]}}></div>
-                    </section>
-                    <section className="my-4">
-                        <h5>ievaddati</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["input"]}}></div>
-                    </section>
-                    <section className="my-4">
-                        <h5>izvaddati</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["output"]}}></div>
-                    </section>
-                    <section className="my-4">
-                        <h5>piemēri</h5>
-                        <div className={"row"}>
-                            {mdStatement["examples"].map((example, index) => {
-                                return (<table className={"table table-bordered col m-3"} key={index}>
-                                    <thead>
-                                    <tr>
-                                        <th>ievaddati</th>
-                                        <th>izvaddati</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>
-                                            <code>{example["input"]}</code>
-                                        </td>
-                                        <td>
-                                            <code>{example["output"]}</code>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>)
-                            })}
-                        </div>
-                    </section>
-                    <section className="my-4 md-statement-scoring">
-                        <h5>vērtēšana</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["scoring"]}}></div>
-                    </section>
-                    {mdStatement["notes"] ? <section className="my-4">
-                        <h5>piezīmes</h5>
-                        <div dangerouslySetInnerHTML={{__html: mdStatement["notes"]}}></div>
-                    </section> : <></>}
-
+                    <MDStatement mdStatement={mdStatement}/>
                 </div>
                 <div className="col-3 card shadow-sm h-100">
                     <div className="card-body">
