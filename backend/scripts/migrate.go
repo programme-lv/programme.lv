@@ -28,6 +28,7 @@ func main() {
 		&models.MarkdownStatement{},
 		&models.MDStatementExample{},
 		&models.PDFStatement{},
+		&models.TaskSubmJobTest{},
 	)
 	if err != nil {
 		panic(err)

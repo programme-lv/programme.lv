@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// TaskSubmission is managed by GORM
 type TaskSubmission struct {
 	ID        uint64    `json:"subm_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
@@ -23,7 +22,6 @@ type TaskSubmission struct {
 	TaskSubmJobs []TaskSubmJob `json:"task_subm_jobs"`
 }
 
-// TaskSubmJob is managed by GORM
 type TaskSubmJob struct {
 	ID        uint64    `json:"subm_job_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
@@ -38,8 +36,22 @@ type TaskSubmJob struct {
 	Score  int    `json:"score"`
 }
 
-// ExecSubmission is managed by GORM
-// the struct isn't ready for production yet
+type TaskSubmJobTest struct {
+	ID        uint64    `json:"subm_job_test_id" gorm:"primaryKey"`
+	CreatedAt time.Time `json:"created_time"`
+	UpdatedAt time.Time `json:"updated_time"`
+
+	TaskSubmJobId uint64      `json:"subm_job_id" gorm:"not null"`
+	TaskSubmJob   TaskSubmJob `json:"task_subm_job" gorm:"foreignKey:TaskSubmJobId"`
+
+	TestId uint64 `json:"test_id" gorm:"not null"`
+	Test   Test   `json:"test" gorm:"foreignKey:TestId"`
+
+	Output string `json:"output"`
+	Status string `json:"status" gorm:"not null"`
+	Score  int    `json:"score"`
+}
+
 type ExecSubmission struct {
 	ID        uint64    `json:"exec_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`

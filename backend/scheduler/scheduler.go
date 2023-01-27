@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"os"
 
 	"github.com/KrisjanisP/deikstra/service/models"
 	pb "github.com/KrisjanisP/deikstra/service/protofiles"
@@ -17,6 +18,8 @@ type Scheduler struct {
 	submissionQueue chan *models.TaskSubmJob
 	executionQueue  chan *models.ExecSubmission
 	database        *gorm.DB
+	infoLogger      *log.Logger
+	errorLogger     *log.Logger
 }
 
 func NewScheduler(database *gorm.DB) *Scheduler {
@@ -24,6 +27,8 @@ func NewScheduler(database *gorm.DB) *Scheduler {
 		submissionQueue: make(chan *models.TaskSubmJob, 100),
 		executionQueue:  make(chan *models.ExecSubmission, 100),
 		database:        database,
+		infoLogger:      log.New(os.Stdout, "SCHEDULER INFO ", log.Ldate|log.Ltime),
+		errorLogger:     log.New(os.Stderr, "SCHEDULER ERROR ", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 	return scheduler
 }
@@ -33,12 +38,10 @@ func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
 	pb.RegisterSchedulerServer(server, s)
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", schedulerPort))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		s.errorLogger.Fatalf("failed to listen: %v", err)
 	}
-	log.Printf("grpc server listening at %v", lis.Addr())
-	if err := server.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	s.infoLogger.Printf("GRPC server listening at %v", lis.Addr())
+	s.errorLogger.Println("failed to serve: ", server.Serve(lis))
 }
 
 func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
@@ -48,7 +51,9 @@ func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
 		Status:           "IQS",
 	}
 	s.database.Create(&job)
+	s.infoLogger.Printf("Created submission job %v", job.ID)
 	s.submissionQueue <- &job
+	s.infoLogger.Printf("Enqueued submission %v", submission.ID)
 	return nil
 }
 
@@ -57,7 +62,7 @@ func (s *Scheduler) EnqueueExecution(submission *models.ExecSubmission) {
 }
 
 func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
-	log.Printf("%v is ready for duty", worker.WorkerName)
+	s.infoLogger.Printf("Registered worker %v", worker.WorkerName)
 }
 
 // ReportJobStatus function is called by the worker
