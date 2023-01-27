@@ -13,6 +13,7 @@ type TaskSubmission struct {
 	User   User   `json:"user" gorm:"foreignKey:UserId"`
 
 	TaskCode string `json:"task_code" gorm:"not null"`
+	Task     Task   `json:"task" gorm:"foreignKey:TaskCode"`
 
 	LanguageId string   `json:"lang_id" gorm:"not null"`
 	Language   Language `json:"language" gorm:"foreignKey:LanguageId"`

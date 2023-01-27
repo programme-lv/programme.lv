@@ -5,6 +5,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
@@ -129,11 +130,17 @@ func (c *Controller) getSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	submissionId := mux.Vars(r)["subm_id"]
+	submissionId, err := strconv.Atoi(mux.Vars(r)["subm_id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	var submission models.TaskSubmission
-	result := c.database.First(&submission, submissionId)
-	if result.Error != nil {
-		http.Error(w, result.Error.Error(), http.StatusBadRequest)
+	submission.ID = uint64(submissionId)
+	err = c.database.Model(&submission).Preload("Task.Tests").Take(&submission).Error
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

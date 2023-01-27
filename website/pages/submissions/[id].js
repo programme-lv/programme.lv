@@ -49,6 +49,41 @@ export default function Submission({submission}) {
                         minimap: {enabled: false}
                     }}
                 />
+                <table className="table table-hover table-bordered text-center mt-4">
+                    <thead>
+                    <tr>
+                        <th scope="col">tests</th>
+                        <th scope="col">statuss</th>
+                        <th scope="col">apakšuzdevumi</th>
+                        <th scope="col">punkti</th>
+                        <th scope="col">izmantotā atmiņa</th>
+                        <th scope="col">tiesāšanas laiks</th>
+                        <th scope="col">ievaddati, izvaddati</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        // create a row for each test
+                        submission["task"]["tests"].map((test, index) => {
+                            return (
+                                <tr key={index}>
+                                    <th scope="row"><a>{test["test_id"]}</a></th>
+                                    <td>IQS</td>
+                                    <td><span className="badge bg-secondary m-1">1</span><span
+                                        className="badge bg-secondary m-1">1</span><span
+                                        className="badge bg-secondary m-1">1</span></td>
+                                    <td>?</td>
+                                    <td>?</td>
+                                    <td>?</td>
+                                    <td>
+                                        <button className="btn btn-primary btn-sm">skatīt</button>
+                                    </td>
+                                </tr>
+                            )
+                        })
+                    }
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -58,9 +93,10 @@ export default function Submission({submission}) {
 
 export async function getServerSideProps(context) {
     try {
-        const reqRes = await fetch(`${process.env.API_URL}/submissions/view/${context.params.id}`)
-        const submission = await reqRes.json()
+        let url = `${process.env.API_URL}/submissions/view/${context.params.id}`
+        const submission = await fetch(url).then(res => res.json())
 
+        console.log(submission)
         return {
             props: {
                 submission: submission,
