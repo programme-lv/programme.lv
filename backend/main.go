@@ -12,7 +12,7 @@ import (
 func main() {
 	conf := config.LoadAppConfig()
 
-	db, err := database.ConnectAndMigrate(conf.DBConnString)
+	db, err := database.Connect(conf.DBConnString)
 	if err != nil {
 		log.Fatal(err)
 	}
