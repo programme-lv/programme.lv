@@ -4,6 +4,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/config"
 	"github.com/KrisjanisP/deikstra/service/database"
 	"github.com/KrisjanisP/deikstra/service/models"
+	"log"
 )
 
 func main() {
@@ -12,10 +13,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var languages []models.Language
-	languages = append(languages, models.Language{ID: "C++17", Name: "C++17 (GNU G++)"})
-	languages = append(languages, models.Language{ID: "Python3.10", Name: "Python 3.10"})
-	languages = append(languages, models.Language{ID: "Java19", Name: "Java19 (OpenJDK)"})
+	languages := []models.Language{
+		{ID: "C11", Name: "C11 (GNU GCC)"},
+		{ID: "C++17", Name: "C++17 (GNU G++)"},
+		{ID: "Python3.10", Name: "Python 3.10"},
+		{ID: "Java19", Name: "Java19 (OpenJDK)"},
+	}
 
 	tx := db.Begin()
 	for _, lang := range languages {
@@ -24,6 +27,7 @@ func main() {
 			tx.Rollback()
 			panic(err)
 		}
+		log.Printf("language %+v added to database", lang.Name)
 	}
 	tx.Commit()
 }
