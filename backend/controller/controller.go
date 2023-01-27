@@ -42,7 +42,7 @@ func (c *Controller) StartAPIServer(APIPort int) {
 	if err != nil {
 		c.errorLogger.Fatalf("failed to listen: %v", err)
 	}
-	c.infoLogger.Println("API server listening at", lis.Addr())
+	c.infoLogger.Println("HTTP server listening at", lis.Addr())
 	if err := http.Serve(lis, c.router); err != nil {
 		c.errorLogger.Fatalf("failed to serve: %v", err)
 	}

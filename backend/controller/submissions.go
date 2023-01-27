@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/gorilla/mux"
-	"log"
 	"net/http"
 )
 
@@ -24,14 +23,14 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&taskSubmReq)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
+		c.errorLogger.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
 	err = c.validate.Struct(taskSubmReq)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
+		c.errorLogger.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
@@ -45,28 +44,30 @@ func (c *Controller) enqueueSubmission(w http.ResponseWriter, r *http.Request) {
 
 	err = c.database.Create(&submission).Error
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
+		c.errorLogger.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
+
+	c.infoLogger.Printf("HTTP created submission %v for task %v", submission.ID, submission.TaskCode)
 
 	err = c.scheduler.EnqueueSubmission(&submission)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
+		c.errorLogger.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
-	// echo back the submission
 	resp, err := json.Marshal(submission)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		c.errorLogger.Printf("HTTP %s", err.Error())
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+
 	_, err = w.Write(resp)
 	if err != nil {
-		log.Printf("HTTP %s", err.Error())
+		c.errorLogger.Printf("HTTP %s", err.Error())
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
