@@ -9,9 +9,10 @@ type Task struct {
 
 	Name   string    `json:"name" gorm:"not null;unique"`
 	Author string    `json:"author"`
-	Tags   []TaskTag `json:"tags" gorm:"many2many:task_tags"`
+	Tags   []TaskTag `json:"tags" gorm:"many2many:tasks_tags;"`
 
-	TaskTypeId string `json:"task_type" gorm:"not null;default:'batch'"`
+	Type     string   `json:"type" gorm:"not null"`
+	TaskType TaskType `gorm:"foreignKey:Type"`
 
 	TimeLim uint32 `json:"time_lim" toml:"time_lim"`
 	MemLim  uint32 `json:"mem_lim" toml:"mem_lim"`
@@ -41,7 +42,7 @@ type TaskTest struct {
 	Input  string `json:"input"`
 	Answer string `json:"answer"`
 
-	Subtasks []TaskSubtask `json:"subtasks" gorm:"many2many:subtask_tests"`
+	Subtasks []TaskSubtask `json:"subtasks" gorm:"many2many:subtasks_tests"`
 }
 
 type TaskSubtask struct {
@@ -54,7 +55,7 @@ type TaskSubtask struct {
 
 	Score int `json:"score" go:"not null"`
 
-	Tests []TaskTest `json:"tests"  gorm:"many2many:subtask_tests"`
+	Tests []TaskTest `json:"tests"  gorm:"many2many:subtasks_tests"`
 }
 
 type TaskTag struct {
@@ -65,5 +66,5 @@ type TaskTag struct {
 	Name  string `json:"name" gorm:"unique;not null"`
 	Color string `json:"color"`
 
-	Tasks []Task `json:"tasks" gorm:"many2many:task_tags"`
+	Tasks []Task `json:"tasks" gorm:"many2many:tasks_tags"`
 }
