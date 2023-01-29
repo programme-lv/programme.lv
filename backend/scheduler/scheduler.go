@@ -15,7 +15,7 @@ import (
 
 type Scheduler struct {
 	pb.UnimplementedSchedulerServer
-	submissionQueue chan *models.TaskSubmJob
+	submissionQueue chan *models.TaskSubmEvaluation
 	executionQueue  chan *models.ExecSubmission
 	database        *gorm.DB
 	infoLogger      *log.Logger
@@ -24,7 +24,7 @@ type Scheduler struct {
 
 func NewScheduler(database *gorm.DB) *Scheduler {
 	scheduler := &Scheduler{
-		submissionQueue: make(chan *models.TaskSubmJob, 100),
+		submissionQueue: make(chan *models.TaskSubmEvaluation, 100),
 		executionQueue:  make(chan *models.ExecSubmission, 100),
 		database:        database,
 		infoLogger:      log.New(os.Stdout, "SCHEDULER INFO ", log.Ldate|log.Ltime),
@@ -45,7 +45,7 @@ func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
 }
 
 func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
-	job := models.TaskSubmJob{
+	job := models.TaskSubmEvaluation{
 		TaskSubmissionId: submission.ID,
 		TaskSubmission:   *submission,
 		Status:           "IQS",
@@ -78,7 +78,7 @@ func (s *Scheduler) ReportJobStatus(stream pb.Scheduler_ReportJobStatusServer) e
 		log.Println("jobId: ", update.GetJobId())
 		switch update.Update.(type) {
 		case *pb.JobStatusUpdate_TaskRes:
-			var job models.TaskSubmJob
+			var job models.TaskSubmEvaluation
 			s.database.First(&job, update.GetJobId())
 			job.Status = update.GetTaskRes().GetSubmStatus().String()
 			s.database.Updates(&job)

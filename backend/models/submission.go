@@ -20,10 +20,10 @@ type TaskSubmission struct {
 
 	SrcCode string `json:"src_code" gorm:"not null"`
 
-	TaskSubmJobs []TaskSubmJob `json:"task_subm_jobs"`
+	TaskSubmJobs []TaskSubmEvaluation `json:"task_subm_jobs"`
 }
 
-type TaskSubmJob struct {
+type TaskSubmEvaluation struct {
 	ID        uint64    `json:"subm_job_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
@@ -37,16 +37,16 @@ type TaskSubmJob struct {
 	Score  int    `json:"score"`
 }
 
-type TaskSubmJobTest struct {
+type TaskSubmEvalTest struct {
 	ID        uint64    `json:"subm_job_test_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	TaskSubmJobId uint64      `json:"subm_job_id" gorm:"not null"`
-	TaskSubmJob   TaskSubmJob `json:"task_subm_job" gorm:"foreignKey:TaskSubmJobId"`
+	TaskSubmJobId uint64             `json:"subm_job_id" gorm:"not null"`
+	TaskSubmJob   TaskSubmEvaluation `json:"task_subm_job" gorm:"foreignKey:TaskSubmJobId"`
 
-	TestId uint64 `json:"test_id" gorm:"not null"`
-	Test   Test   `json:"test" gorm:"foreignKey:TestId"`
+	TestId uint64   `json:"test_id" gorm:"not null"`
+	Test   TaskTest `json:"test" gorm:"foreignKey:TestId"`
 
 	Output string `json:"output"`
 	Status string `json:"status" gorm:"not null"`

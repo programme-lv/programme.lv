@@ -15,26 +15,23 @@ func main() {
 		panic(err)
 	}
 
-	err = db.AutoMigrate(&models.Language{})
+	err = db.AutoMigrate(&models.TaskType{})
 	if err != nil {
 		return
 	}
 
-	languages := []models.Language{
-		{ID: "C11", Name: "C11 (GNU GCC)"},
-		{ID: "C++17", Name: "C++17 (GNU G++)"},
-		{ID: "Python3.10", Name: "Python 3.10"},
-		{ID: "Java19", Name: "Java19 (OpenJDK)"},
+	types := []models.TaskType{
+		{ID: "batch", Description: "idk"},
 	}
 
 	tx := db.Begin()
-	for _, lang := range languages {
-		err = tx.FirstOrCreate(&lang, models.Language{Name: lang.Name}).Error
+	for _, taskType := range types {
+		err = tx.FirstOrCreate(&taskType).Error
 		if err != nil {
 			tx.Rollback()
 			panic(err)
 		}
-		log.Printf("language %+v added to database", lang.Name)
+		log.Printf("task type %+v added to database", taskType.ID)
 	}
 	tx.Commit()
 }

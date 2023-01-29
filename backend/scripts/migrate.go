@@ -19,16 +19,17 @@ func main() {
 		&models.User{},
 		&models.Language{},
 		&models.TaskSubmission{},
-		&models.TaskSubmJob{},
+		&models.TaskSubmEvaluation{},
 		&models.ExecSubmission{},
 		&models.Task{},
-		&models.Test{},
-		&models.Subtask{},
-		&models.Tag{},
+		&models.TaskType{},
+		&models.TaskTest{},
+		&models.TaskSubtask{},
+		&models.TaskTag{},
 		&models.MarkdownStatement{},
 		&models.MDStatementExample{},
 		&models.PDFStatement{},
-		&models.TaskSubmJobTest{},
+		&models.TaskSubmEvalTest{},
 	)
 	if err != nil {
 		panic(err)

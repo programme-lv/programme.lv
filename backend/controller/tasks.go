@@ -155,7 +155,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		var tests []models.Test
+		var tests []models.TaskTest
 		var testNames = make(map[string]bool)
 		// read all test names into testNames
 		for _, test := range testDir {
@@ -169,7 +169,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 			ansPath := filepath.Join(decompPath, "tests", testName+".ans")
 			inBytes, _ := os.ReadFile(inPath)
 			ansBytes, _ := os.ReadFile(ansPath)
-			tests = append(tests, models.Test{
+			tests = append(tests, models.TaskTest{
 				Name:   testName,
 				Input:  string(inBytes),
 				Answer: string(ansBytes),
@@ -267,9 +267,9 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 		}
 
 		tx := c.database.Begin()
-		var tags []models.Tag
+		var tags []models.TaskTag
 		for _, tagName := range taskTOML.Tags {
-			var tag models.Tag
+			var tag models.TaskTag
 			tag.Name = tagName
 			err = tx.FirstOrCreate(&tag, tag).Error
 			log.Println(tag, tagName)
@@ -330,7 +330,7 @@ func (c *Controller) deleteTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// DELETE TESTS
-	err = tx.Where("task_id = ?", task.ID).Delete(&models.Test{}).Error
+	err = tx.Where("task_id = ?", task.ID).Delete(&models.TaskTest{}).Error
 	if err != nil {
 		tx.Rollback()
 		http.Error(w, err.Error(), http.StatusBadRequest)

@@ -7,21 +7,28 @@ type Task struct {
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	Name   string `json:"name" gorm:"not null;unique"`
-	Author string `json:"author"`
-	Tags   []Tag  `json:"tags" gorm:"many2many:task_tags"`
+	Name   string    `json:"name" gorm:"not null;unique"`
+	Author string    `json:"author"`
+	Tags   []TaskTag `json:"tags" gorm:"many2many:task_tags"`
+
+	TaskTypeId string `json:"task_type" gorm:"not null;default:'batch'"`
 
 	TimeLim uint32 `json:"time_lim" toml:"time_lim"`
 	MemLim  uint32 `json:"mem_lim" toml:"mem_lim"`
 
-	Tests    []Test    `json:"tests"`
-	Subtasks []Subtask `json:"subtasks"`
+	Tests    []TaskTest    `json:"tests"`
+	Subtasks []TaskSubtask `json:"subtasks"`
 
 	MDStatements  []MarkdownStatement `json:"md_statements"`
 	PDFStatements []PDFStatement      `json:"pdf_statements"`
 }
 
-type Test struct {
+type TaskType struct {
+	ID          string `json:"type_id" gorm:"primaryKey"`
+	Description string `json:"description"`
+}
+
+type TaskTest struct {
 	ID        uint64    `json:"test_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
@@ -34,10 +41,10 @@ type Test struct {
 	Input  string `json:"input"`
 	Answer string `json:"answer"`
 
-	Subtasks []Subtask `json:"subtasks" gorm:"many2many:subtask_tests"`
+	Subtasks []TaskSubtask `json:"subtasks" gorm:"many2many:subtask_tests"`
 }
 
-type Subtask struct {
+type TaskSubtask struct {
 	ID        uint64    `json:"test_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
@@ -47,10 +54,10 @@ type Subtask struct {
 
 	Score int `json:"score" go:"not null"`
 
-	Tests []Test `json:"tests"  gorm:"many2many:subtask_tests"`
+	Tests []TaskTest `json:"tests"  gorm:"many2many:subtask_tests"`
 }
 
-type Tag struct {
+type TaskTag struct {
 	ID        uint64    `json:"tag_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
