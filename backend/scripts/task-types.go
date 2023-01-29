@@ -21,7 +21,9 @@ func main() {
 	}
 
 	types := []models.TaskType{
-		{ID: "batch", Description: "idk"},
+		{ID: "batch", Description: "todo"},
+		{ID: "interactive", Description: "todo"},
+		{ID: "simple", Description: "todo"},
 	}
 
 	tx := db.Begin()

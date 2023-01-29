@@ -257,6 +257,7 @@ func (c *Controller) createTask(w http.ResponseWriter, r *http.Request) {
 
 			Name:   taskTOML.Name,
 			Author: taskTOML.Author,
+			Type:   taskTOML.Type,
 
 			TimeLim: uint32(math.Round(taskTOML.TimeLim * 1000)),
 			MemLim:  taskTOML.MemLim,
