@@ -22,7 +22,7 @@ message TaskEvalJob {
 }
 
 message TaskEvalStatus {
-    int64 job_id = 1;
+    uint64 job_id = 1;
     oneof status {
         TaskTestResult test_res = 2;
         TaskEvalResult task_res = 3;

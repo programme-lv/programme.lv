@@ -49,7 +49,10 @@ func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
 		TaskSubmission:   *submission,
 		Status:           "IQS",
 	}
-	s.database.Create(&job)
+	err := s.database.Create(&job).Error
+	if err != nil {
+		return err
+	}
 	s.infoLogger.Printf("Created submission job %v", job.ID)
 	s.submissionQueue <- &job
 	s.infoLogger.Printf("Enqueued submission %v", submission.ID)
