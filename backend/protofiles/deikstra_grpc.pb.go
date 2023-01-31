@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,9 +23,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SchedulerClient interface {
-	GetJobs(ctx context.Context, in *RegisterWorker, opts ...grpc.CallOption) (Scheduler_GetJobsClient, error)
-	// rpc ReportWorkerStatus(stream ReportWorkerStatusRequest) returns (google.protobuf.Empty) {}
-	ReportJobStatus(ctx context.Context, opts ...grpc.CallOption) (Scheduler_ReportJobStatusClient, error)
+	GetTaskEvalJobs(ctx context.Context, in *RegisterWorker, opts ...grpc.CallOption) (Scheduler_GetTaskEvalJobsClient, error)
+	ReportTaskEvalStatus(ctx context.Context, opts ...grpc.CallOption) (Scheduler_ReportTaskEvalStatusClient, error)
 }
 
 type schedulerClient struct {
@@ -35,12 +35,12 @@ func NewSchedulerClient(cc grpc.ClientConnInterface) SchedulerClient {
 	return &schedulerClient{cc}
 }
 
-func (c *schedulerClient) GetJobs(ctx context.Context, in *RegisterWorker, opts ...grpc.CallOption) (Scheduler_GetJobsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[0], "/protofiles.Scheduler/GetJobs", opts...)
+func (c *schedulerClient) GetTaskEvalJobs(ctx context.Context, in *RegisterWorker, opts ...grpc.CallOption) (Scheduler_GetTaskEvalJobsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[0], "/protofiles.Scheduler/GetTaskEvalJobs", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &schedulerGetJobsClient{stream}
+	x := &schedulerGetTaskEvalJobsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -50,51 +50,51 @@ func (c *schedulerClient) GetJobs(ctx context.Context, in *RegisterWorker, opts 
 	return x, nil
 }
 
-type Scheduler_GetJobsClient interface {
-	Recv() (*Job, error)
+type Scheduler_GetTaskEvalJobsClient interface {
+	Recv() (*TaskEvalJob, error)
 	grpc.ClientStream
 }
 
-type schedulerGetJobsClient struct {
+type schedulerGetTaskEvalJobsClient struct {
 	grpc.ClientStream
 }
 
-func (x *schedulerGetJobsClient) Recv() (*Job, error) {
-	m := new(Job)
+func (x *schedulerGetTaskEvalJobsClient) Recv() (*TaskEvalJob, error) {
+	m := new(TaskEvalJob)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *schedulerClient) ReportJobStatus(ctx context.Context, opts ...grpc.CallOption) (Scheduler_ReportJobStatusClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[1], "/protofiles.Scheduler/ReportJobStatus", opts...)
+func (c *schedulerClient) ReportTaskEvalStatus(ctx context.Context, opts ...grpc.CallOption) (Scheduler_ReportTaskEvalStatusClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Scheduler_ServiceDesc.Streams[1], "/protofiles.Scheduler/ReportTaskEvalStatus", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &schedulerReportJobStatusClient{stream}
+	x := &schedulerReportTaskEvalStatusClient{stream}
 	return x, nil
 }
 
-type Scheduler_ReportJobStatusClient interface {
-	Send(*JobStatusUpdate) error
-	CloseAndRecv() (*JobAction, error)
+type Scheduler_ReportTaskEvalStatusClient interface {
+	Send(*TaskEvalStatus) error
+	CloseAndRecv() (*emptypb.Empty, error)
 	grpc.ClientStream
 }
 
-type schedulerReportJobStatusClient struct {
+type schedulerReportTaskEvalStatusClient struct {
 	grpc.ClientStream
 }
 
-func (x *schedulerReportJobStatusClient) Send(m *JobStatusUpdate) error {
+func (x *schedulerReportTaskEvalStatusClient) Send(m *TaskEvalStatus) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *schedulerReportJobStatusClient) CloseAndRecv() (*JobAction, error) {
+func (x *schedulerReportTaskEvalStatusClient) CloseAndRecv() (*emptypb.Empty, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
-	m := new(JobAction)
+	m := new(emptypb.Empty)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -105,9 +105,8 @@ func (x *schedulerReportJobStatusClient) CloseAndRecv() (*JobAction, error) {
 // All implementations must embed UnimplementedSchedulerServer
 // for forward compatibility
 type SchedulerServer interface {
-	GetJobs(*RegisterWorker, Scheduler_GetJobsServer) error
-	// rpc ReportWorkerStatus(stream ReportWorkerStatusRequest) returns (google.protobuf.Empty) {}
-	ReportJobStatus(Scheduler_ReportJobStatusServer) error
+	GetTaskEvalJobs(*RegisterWorker, Scheduler_GetTaskEvalJobsServer) error
+	ReportTaskEvalStatus(Scheduler_ReportTaskEvalStatusServer) error
 	mustEmbedUnimplementedSchedulerServer()
 }
 
@@ -115,11 +114,11 @@ type SchedulerServer interface {
 type UnimplementedSchedulerServer struct {
 }
 
-func (UnimplementedSchedulerServer) GetJobs(*RegisterWorker, Scheduler_GetJobsServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetJobs not implemented")
+func (UnimplementedSchedulerServer) GetTaskEvalJobs(*RegisterWorker, Scheduler_GetTaskEvalJobsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetTaskEvalJobs not implemented")
 }
-func (UnimplementedSchedulerServer) ReportJobStatus(Scheduler_ReportJobStatusServer) error {
-	return status.Errorf(codes.Unimplemented, "method ReportJobStatus not implemented")
+func (UnimplementedSchedulerServer) ReportTaskEvalStatus(Scheduler_ReportTaskEvalStatusServer) error {
+	return status.Errorf(codes.Unimplemented, "method ReportTaskEvalStatus not implemented")
 }
 func (UnimplementedSchedulerServer) mustEmbedUnimplementedSchedulerServer() {}
 
@@ -134,47 +133,47 @@ func RegisterSchedulerServer(s grpc.ServiceRegistrar, srv SchedulerServer) {
 	s.RegisterService(&Scheduler_ServiceDesc, srv)
 }
 
-func _Scheduler_GetJobs_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _Scheduler_GetTaskEvalJobs_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(RegisterWorker)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(SchedulerServer).GetJobs(m, &schedulerGetJobsServer{stream})
+	return srv.(SchedulerServer).GetTaskEvalJobs(m, &schedulerGetTaskEvalJobsServer{stream})
 }
 
-type Scheduler_GetJobsServer interface {
-	Send(*Job) error
+type Scheduler_GetTaskEvalJobsServer interface {
+	Send(*TaskEvalJob) error
 	grpc.ServerStream
 }
 
-type schedulerGetJobsServer struct {
+type schedulerGetTaskEvalJobsServer struct {
 	grpc.ServerStream
 }
 
-func (x *schedulerGetJobsServer) Send(m *Job) error {
+func (x *schedulerGetTaskEvalJobsServer) Send(m *TaskEvalJob) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Scheduler_ReportJobStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(SchedulerServer).ReportJobStatus(&schedulerReportJobStatusServer{stream})
+func _Scheduler_ReportTaskEvalStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SchedulerServer).ReportTaskEvalStatus(&schedulerReportTaskEvalStatusServer{stream})
 }
 
-type Scheduler_ReportJobStatusServer interface {
-	SendAndClose(*JobAction) error
-	Recv() (*JobStatusUpdate, error)
+type Scheduler_ReportTaskEvalStatusServer interface {
+	SendAndClose(*emptypb.Empty) error
+	Recv() (*TaskEvalStatus, error)
 	grpc.ServerStream
 }
 
-type schedulerReportJobStatusServer struct {
+type schedulerReportTaskEvalStatusServer struct {
 	grpc.ServerStream
 }
 
-func (x *schedulerReportJobStatusServer) SendAndClose(m *JobAction) error {
+func (x *schedulerReportTaskEvalStatusServer) SendAndClose(m *emptypb.Empty) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *schedulerReportJobStatusServer) Recv() (*JobStatusUpdate, error) {
-	m := new(JobStatusUpdate)
+func (x *schedulerReportTaskEvalStatusServer) Recv() (*TaskEvalStatus, error) {
+	m := new(TaskEvalStatus)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -190,13 +189,13 @@ var Scheduler_ServiceDesc = grpc.ServiceDesc{
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "GetJobs",
-			Handler:       _Scheduler_GetJobs_Handler,
+			StreamName:    "GetTaskEvalJobs",
+			Handler:       _Scheduler_GetTaskEvalJobs_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "ReportJobStatus",
-			Handler:       _Scheduler_ReportJobStatus_Handler,
+			StreamName:    "ReportTaskEvalStatus",
+			Handler:       _Scheduler_ReportTaskEvalStatus_Handler,
 			ClientStreams: true,
 		},
 	},

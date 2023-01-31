@@ -2,50 +2,46 @@ syntax = "proto3";
 package protofiles;
 option go_package = "github.com/KrisjanisP/deikstra/service/protofiles";
 
-// import "google/protobuf/empty.proto";
-
+import "google/protobuf/empty.proto";
 
 service Scheduler {
-    rpc GetJobs(RegisterWorker) returns (stream Job) {}
-    // rpc ReportWorkerStatus(stream ReportWorkerStatusRequest) returns (google.protobuf.Empty) {}
-    rpc ReportJobStatus(stream JobStatusUpdate) returns (JobAction) {}
-}
-
-message JobAction {
-
+    rpc GetTaskEvalJobs(RegisterWorker) returns (stream TaskEvalJob) {}
+    rpc ReportTaskEvalStatus(stream TaskEvalStatus) returns (google.protobuf.Empty) {}
 }
 
 message RegisterWorker {
     string worker_name = 1;
+    string cpu_name = 2;
 }
 
-message TaskSubmission {
-    string task_code = 1;
-    int32  task_version = 2;
+message TaskEvalJob {
+    uint64 job_id = 1;
+    string task_code = 2;
     string lang_id = 3;
     string src_code = 4;
 }
 
-message ExecSubmission {
-    string lang_id = 1;
-    string src_code = 2;
-    string std_input = 3;
-}
-
-message Job {
-    int32 job_id = 1;
-    oneof job {
-        TaskSubmission task_submission = 2;
-        ExecSubmission exec_submission = 3;
+message TaskEvalStatus {
+    int64 job_id = 1;
+    oneof status {
+        TaskTestResult test_res = 2;
+        TaskEvalResult task_res = 3;
     }
 }
 
-message TaskSubmResult {
-    TaskSubmStatus subm_status = 1;
-} 
+message TaskEvalResult {
+    TaskEvalStatusCode eval_status = 1;
+    string error_msg = 2;
+    int32 score = 3;
+}
 
 message TaskTestResult {
-    TaskTestStatus test_status = 1;
+    TaskTestStatusCode test_status = 1;
+    int32 test_id = 2;
+    int32 time = 3;
+    int32 memory = 4;
+    string stdout = 5;
+    string stderr = 6;
 }
 
 message ExecResult {
@@ -53,44 +49,36 @@ message ExecResult {
     string stderr = 2;
 }
 
-message JobStatusUpdate {
-    int32 job_id = 1;
-    oneof update {
-        TaskSubmResult task_res = 2;
-        TaskTestResult test_res = 3;
-        ExecResult exec_res = 4;
-    }
+enum TaskEvalStatusCode {
+    TE_IQS = 0;  // In Queue State
+    TE_ICS = 1;  // In Compilation State
+    TE_ITS = 2;  // In Testing State
+    TE_CE  = 3;  // Compilation Error
+    TE_TLE = 4;  // Time Limit Exceeded
+    TE_MLE = 5;  // Memory Limit Exceed
+    TE_OK  = 6;  // Accepted
+    TE_PT  = 7;  // Partial solution
+    TE_WA  = 8;  // Wrong Answer
+    TE_RE  = 9;  // Runtime Error
+    TE_PE  = 10; // Presentation Error
+    TE_ILE = 11; // Idleness Limit Exceeded
+    TE_CF  = 12; // Check Failed
+    TE_SV  = 13; // Security Violation
+    TE_RJ  = 14; // Rejected
+    TE_DQ  = 15; // Disqualified
+    TE_SE  = 16; // System Error
 }
 
-enum TaskSubmStatus {
-    TSS_IQS = 0;  // In Queue State
-    TSS_ICS = 1;  // In Compilation State
-    TSS_ITS = 2;  // In Testing State
-    TSS_CE  = 3;  // Compilation Error
-    TSS_TLE = 4;  // Time Limit Exceeded
-    TSS_MLE = 5;  // Memory Limit Exceed
-    TSS_OK  = 6;  // Accepted
-    TSS_PT  = 7;  // Partial solution
-    TSS_WA  = 8;  // Wrong Answer
-    TSS_RE  = 9;  // Runtime Error
-    TSS_PE  = 10; // Presentation Error
-    TSS_ILE = 11; // Idleness Limit Exceeded
-    TSS_CF  = 12; // Check Failed
-    TSS_SV  = 13; // Security Violation
-    TSS_RJ  = 14; // Rejected
-    TSS_DQ  = 15; // Disqualified
-}
-
-enum TaskTestStatus {
-    TTS_TLE = 0;  // Time Limit Exceeded
-    TTS_MLE = 1;  // Memory Limit Exceeded
-    TTS_OK  = 2;  // Accepted
-    TTS_PT  = 3;  // Partial solution
-    TTS_WA  = 4;  // Wrong Answer
-    TTS_RE  = 5;  // Runtime Error
-    TTS_PE  = 6;  // Presentation Error
-    TTS_ILE = 7;  // Idleness limit exceeded
-    TTS_IG  = 8;  // Ignored
-    TTS_SV  = 9;  // Security violation
-    TTS_CF  = 10; // Check Failed
+enum TaskTestStatusCode {
+    TT_TLE = 0;  // Time Limit Exceeded
+    TT_MLE = 1;  // Memory Limit Exceeded
+    TT_OK  = 2;  // Accepted
+    TT_PT  = 3;  // Partial solution
+    TT_WA  = 4;  // Wrong Answer
+    TT_RE  = 5;  // Runtime Error
+    TT_PE  = 6;  // Presentation Error
+    TT_ILE = 7;  // Idleness limit exceeded
+    TT_IG  = 8;  // Ignored
+    TT_SV  = 9;  // Security violation
+    TT_CF  = 10; // Check Failed
 }

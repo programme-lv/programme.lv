@@ -3,7 +3,6 @@ package scheduler
 import (
 	"fmt"
 	"gorm.io/gorm"
-	"io"
 	"log"
 	"net"
 	"os"
@@ -61,54 +60,39 @@ func (s *Scheduler) EnqueueExecution(submission *models.ExecSubmission) {
 	s.executionQueue <- submission
 }
 
-func (s *Scheduler) registerWorker(worker *pb.RegisterWorker) {
-	s.infoLogger.Printf("Registered worker %v", worker.WorkerName)
-}
-
-// ReportJobStatus function is called by the worker
-func (s *Scheduler) ReportJobStatus(stream pb.Scheduler_ReportJobStatusServer) error {
+// ReportTaskEvalStatus function is called by the worker
+func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatusServer) error {
 	for {
-		update, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
+		status, err := stream.Recv()
 		if err != nil {
 			return err
 		}
-		log.Println("jobId: ", update.GetJobId())
-		switch update.Update.(type) {
-		case *pb.JobStatusUpdate_TaskRes:
-			var job models.TaskSubmEvaluation
-			s.database.First(&job, update.GetJobId())
-			job.Status = update.GetTaskRes().GetSubmStatus().String()
-			s.database.Updates(&job)
-		case *pb.JobStatusUpdate_ExecRes:
-			log.Println("stdout: ", update.GetExecRes().GetStdout())
-			log.Println("stderr: ", update.GetExecRes().GetStderr())
 
+		log.Println("received status for job id: ", status.GetJobId())
+
+		switch status.Status.(type) {
+		case *pb.TaskEvalStatus_TestRes:
+			log.Println("tested test: ", status.GetTestRes().TestId)
 		}
 	}
-	return nil
 }
 
-// GetJobs function is called by the worker
-func (s *Scheduler) GetJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetJobsServer) error {
-	s.registerWorker(worker)
+// GetTaskEvalJobs function is called by the worker
+func (s *Scheduler) GetTaskEvalJobs(worker *pb.RegisterWorker, stream pb.Scheduler_GetTaskEvalJobsServer) error {
+	s.infoLogger.Printf("worker %v connected", worker.WorkerName)
 	for {
 		select {
 		case <-stream.Context().Done():
 			return stream.Context().Err()
 		case taskSubmJob := <-s.submissionQueue:
 			log.Printf("sending submission to %v", worker.WorkerName)
-			request := &pb.Job{}
-			request.JobId = int32(taskSubmJob.ID)
-			taskSubmission := &pb.TaskSubmission{
+			taskEvalJob := &pb.TaskEvalJob{
+				JobId:    taskSubmJob.ID,
 				TaskCode: taskSubmJob.TaskSubmission.TaskCode,
 				LangId:   taskSubmJob.TaskSubmission.LanguageId,
 				SrcCode:  taskSubmJob.TaskSubmission.SrcCode,
 			}
-			request.Job = &pb.Job_TaskSubmission{TaskSubmission: taskSubmission}
-			err := stream.Send(request)
+			err := stream.Send(taskEvalJob)
 			if err != nil {
 				return err
 			}
