@@ -31,8 +31,6 @@ type TaskSubmEvaluation struct {
 	TaskSubmissionId uint64         `json:"subm_id" gorm:"not null"`
 	TaskSubmission   TaskSubmission `json:"task_submission" gorm:"foreignKey:TaskSubmissionId"`
 
-	TaskVersion int `json:"task_version" gorm:"not null"`
-
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
 }
@@ -48,7 +46,10 @@ type TaskSubmEvalTest struct {
 	TestId uint64   `json:"test_id" gorm:"not null"`
 	Test   TaskTest `json:"test" gorm:"foreignKey:TestId"`
 
+	Time   int    `json:"time"`
+	Memory int    `json:"memory"`
 	Output string `json:"output"`
+
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
 }
