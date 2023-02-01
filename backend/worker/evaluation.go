@@ -4,7 +4,6 @@ import (
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/KrisjanisP/deikstra/service/protofiles"
 	"gorm.io/gorm"
-	"io"
 	"log"
 	"strings"
 )
@@ -37,13 +36,13 @@ func (e *EvaluationService) EvaluateTaskSubmission(job *protofiles.TaskEvalJob, 
 
 	tests := evaluation.TaskSubmission.Task.Tests
 	for _, test := range tests {
-		stdout, stderr, err := executable.Execute(io.NopCloser(strings.NewReader(test.Input)))
+		stdout, stderr, err := executable.Execute(strings.NewReader(test.Input))
 		if err != nil {
 			return err
 		}
 		log.Println("test:", test.ID, stdout, stderr)
 
-		taskTestResult := protofiles.TaskTestResult{TestId: int32(test.ID), TestStatus: protofiles.TaskTestStatusCode_TT_OK}
+		taskTestResult := protofiles.TaskTestResult{TestId: int32(test.ID), TestStatus: protofiles.TaskTestStatusCode_TT_OK, Stdout: stdout, Stderr: stderr}
 		taskTestStatus := protofiles.TaskEvalStatus_TestRes{TestRes: &taskTestResult}
 		err = resStream.Send(&protofiles.TaskEvalStatus{JobId: job.GetJobId(), Status: &taskTestStatus})
 		if err != nil {

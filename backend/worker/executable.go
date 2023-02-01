@@ -13,10 +13,15 @@ type Executable struct {
 	exePath string
 }
 
-func (e *Executable) Execute(stdin io.ReadCloser) (stdout string, stderr string, err error) {
+func (e *Executable) Execute(stdin io.Reader) (stdout string, stderr string, err error) {
 	cmd := exec.Command(e.exePath)
+	stdinPipe, _ := cmd.StdinPipe()
 	stdoutPipe, _ := cmd.StdoutPipe()
 	stderrPipe, _ := cmd.StderrPipe()
+	_, err = io.Copy(stdinPipe, stdin)
+	if err != nil {
+		return "", "", err
+	}
 	if err = cmd.Start(); err != nil {
 		return
 	}
