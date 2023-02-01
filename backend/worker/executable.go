@@ -31,7 +31,7 @@ func (e *Executable) Execute(stdin io.ReadCloser) (stdout string, stderr string,
 	return
 }
 
-func CreateExecutable(srcCode string, langId string) (*Executable, error) {
+func NewExecutable(srcCode string, langId string) (*Executable, error) {
 	exe := &Executable{}
 
 	dirPath := filepath.Join("/tmp", "deikstra")
@@ -49,7 +49,12 @@ func CreateExecutable(srcCode string, langId string) (*Executable, error) {
 	if err != nil {
 		return exe, err
 	}
-	defer srcFile.Close()
+	defer func(srcFile *os.File) {
+		err := srcFile.Close()
+		if err != nil {
+
+		}
+	}(srcFile)
 
 	exe.srcPath = srcFile.Name()
 
