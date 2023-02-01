@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"io"
 	"log"
 	"time"
@@ -15,9 +17,16 @@ import (
 func main() {
 	config := LoadAppConfig()
 
+	database, err := gorm.Open(postgres.Open(config.DBConnString), &gorm.Config{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	evaluationService := NewEvaluationService(database)
+
 	for {
 		log.Println("connecting to scheduler ", config.SchedulerAddr)
-		err := listenToScheduler(config.SchedulerAddr, config.WorkerName)
+		err := listenToScheduler(config.SchedulerAddr, config.WorkerName, evaluationService)
 		if err != nil {
 			log.Println(err)
 		}
@@ -25,7 +34,7 @@ func main() {
 	}
 }
 
-func listenToScheduler(schedulerAddr string, workerName string) error {
+func listenToScheduler(schedulerAddr string, workerName string, service *EvaluationService) error {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
@@ -79,7 +88,7 @@ func listenToScheduler(schedulerAddr string, workerName string) error {
 		if err != nil {
 			return err
 		}
-		err = evaluateTaskSubmission(job, resStream)
+		err = service.EvaluateTaskSubmission(job, resStream)
 		if err != nil {
 			return err
 		}
