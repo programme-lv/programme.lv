@@ -14,7 +14,7 @@ export default function TaskInfoCard({task}) {
                     </tr>
                     <tr>
                         <th scope="col">laika limits:</th>
-                        <td className={"text-start ps-2"}>{task["time_lim"]} sek.</td>
+                        <td className={"text-start ps-2"}>{task["time_lim"]} ms</td>
                     </tr>
                     <tr>
                         <th scope="col">atmiņa:</th>
