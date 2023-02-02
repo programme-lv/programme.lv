@@ -34,6 +34,11 @@ type TaskSubmEvaluation struct {
 	CompilationStdout string `json:"compilation_stdout"`
 	CompilationStderr string `json:"compilation_stderr"`
 
+	MaximumTime   uint64 `json:"maximum_time"`
+	MaximumMemory uint64 `json:"maximum_memory"`
+	TotalTime     uint64 `json:"total_time"`
+	TotalMemory   uint64 `json:"total_memory"`
+
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
 }
