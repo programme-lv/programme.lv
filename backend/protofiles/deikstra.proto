@@ -25,7 +25,8 @@ message TaskEvalStatus {
     uint64 job_id = 1;
     oneof status {
         TaskTestResult test_res = 2;
-        TaskEvalResult task_res = 3;
+        TaskEvalResult eval_res = 3;
+        CompilationRes comp_res = 4;
     }
 }
 
@@ -42,6 +43,14 @@ message TaskTestResult {
     int32 memory = 4;
     string stdout = 5;
     string stderr = 6;
+}
+
+message CompilationRes {
+    string stdout = 1;
+    string stderr = 2;
+    int64 exitCode = 3;
+    uint64 time = 4;
+    uint64 memory = 5;
 }
 
 message ExecResult {

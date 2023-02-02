@@ -73,6 +73,6 @@ func NewTestStatus(jobId, testId uint64, testStatus pb.TaskTestStatusCode, stdou
 
 func NewEvalStatus(jobId uint64, evalStatus pb.TaskEvalStatusCode, score int32) *pb.TaskEvalStatus {
 	taskEvalResult := pb.TaskEvalResult{EvalStatus: evalStatus, Score: score}
-	taskEvalStatus := pb.TaskEvalStatus_TaskRes{TaskRes: &taskEvalResult}
+	taskEvalStatus := pb.TaskEvalStatus_EvalRes{EvalRes: &taskEvalResult}
 	return &pb.TaskEvalStatus{JobId: jobId, Status: &taskEvalStatus}
 }

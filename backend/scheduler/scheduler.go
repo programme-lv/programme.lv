@@ -75,6 +75,17 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 		log.Println("received status for job id: ", status.GetJobId())
 
 		switch status.Status.(type) {
+		case *pb.TaskEvalStatus_EvalRes:
+			received := status.GetEvalRes()
+			var evalRes models.TaskSubmEvaluation
+			evalRes.ID = status.GetJobId()
+			evalRes.Score = int(received.GetScore())
+			switch received.GetEvalStatus() {
+			case pb.TaskEvalStatusCode_TE_OK:
+				evalRes.Status = "OK"
+			}
+			s.database.Save(&evalRes)
+
 		case *pb.TaskEvalStatus_TestRes:
 			log.Println("tested test: ", status.GetTestRes().TestId)
 			received := status.GetTestRes()

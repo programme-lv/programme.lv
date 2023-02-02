@@ -31,6 +31,9 @@ type TaskSubmEvaluation struct {
 	TaskSubmissionId uint64         `json:"subm_id" gorm:"not null"`
 	TaskSubmission   TaskSubmission `json:"task_submission" gorm:"foreignKey:TaskSubmissionId"`
 
+	CompilationStdout string `json:"compilation_stdout"`
+	CompilationStderr string `json:"compilation_stderr"`
+
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
 }
