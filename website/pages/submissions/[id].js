@@ -55,26 +55,23 @@ export default function Submission({submission}) {
                         <th scope="col">tests</th>
                         <th scope="col">statuss</th>
                         <th scope="col">apakšuzdevumi</th>
-                        <th scope="col">punkti</th>
-                        <th scope="col">izmantotā atmiņa</th>
                         <th scope="col">tiesāšanas laiks</th>
+                        <th scope="col">izmantotā atmiņa</th>
                         <th scope="col">ievaddati, izvaddati</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {
+                    {submission["task_subm_evals"][0]["task_subm_job_tests"] &&
                         // create a row for each test
-                        submission["task"]["tests"].map((test, index) => {
+                        submission["task_subm_evals"][0]["task_subm_job_tests"].map((test, index) => {
                             return (
-                                <tr key={index}>
+                                <tr key={index}
+                                    className={(test["status"] === "OK") ? "bg-opacity-25 bg-success" : ""}>
                                     <th scope="row"><a>{test["test_id"]}</a></th>
-                                    <td>IQS</td>
-                                    <td><span className="badge bg-secondary m-1">1</span><span
-                                        className="badge bg-secondary m-1">1</span><span
-                                        className="badge bg-secondary m-1">1</span></td>
-                                    <td>?</td>
-                                    <td>?</td>
-                                    <td>?</td>
+                                    <td>{test["status"]}</td>
+                                    <td><span className="badge bg-secondary m-1">1</span></td>
+                                    <td>{test["time"]}</td>
+                                    <td>{test["memory"]}</td>
                                     <td>
                                         <button className="btn btn-primary btn-sm">skatīt</button>
                                     </td>

@@ -47,7 +47,7 @@ func (s *Scheduler) StartSchedulerServer(schedulerPort int) {
 func (s *Scheduler) EnqueueSubmission(submission *models.TaskSubmission) error {
 	job := models.TaskSubmEvaluation{
 		TaskSubmissionId: submission.ID,
-		TaskSubmission:   *submission,
+		TaskSubmission:   submission,
 		Status:           "IQS",
 	}
 	err := s.database.Create(&job).Error

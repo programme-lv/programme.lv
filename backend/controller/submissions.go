@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -96,7 +98,10 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 
 	var submsWithStatus []submWithStatus
 	for _, subm := range submissions {
-		status := subm.TaskSubmEvals[0].Status
+		var status string
+		if len(subm.TaskSubmEvals) != 0 {
+			status = subm.TaskSubmEvals[0].Status
+		}
 		submWithStatus := submWithStatus{
 			TaskSubmission: subm,
 			Status:         status,
@@ -134,11 +139,16 @@ func (c *Controller) getSubmission(w http.ResponseWriter, r *http.Request) {
 
 	var submission models.TaskSubmission
 	submission.ID = uint64(submissionId)
-	err = c.database.Model(&submission).Preload("Task.Tests").Take(&submission).Error
+	err = c.database.Model(&submission).Preload("TaskSubmEvals.TaskSubmEvalTests", func(tx *gorm.DB) *gorm.DB {
+		return tx.Omit("stdout", "stderr")
+	}).Take(&submission).Error
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	log.Println(submission)
 
 	resp, err := json.Marshal(submission)
 	if err != nil {
