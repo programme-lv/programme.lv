@@ -13,46 +13,53 @@ type Executable struct {
 	exePath string
 }
 
-func (e *Executable) Execute(stdin io.Reader) (stdout string, stderr string, err error) {
+type ExecutionResult struct {
+	Stdout   string
+	Stderr   string
+	ExitCode int
+}
+
+func (e *Executable) Execute(stdin io.Reader) (exeRes ExecutionResult, err error) {
 	cmd := exec.Command(e.exePath)
 	stdinPipe, _ := cmd.StdinPipe()
 	stdoutPipe, _ := cmd.StdoutPipe()
 	stderrPipe, _ := cmd.StderrPipe()
 	_, err = io.Copy(stdinPipe, stdin)
 	if err != nil {
-		return "", "", err
+		return
 	}
 	if err = cmd.Start(); err != nil {
 		return
 	}
 	stdoutBytes, _ := io.ReadAll(stdoutPipe)
 	stderrBytes, _ := io.ReadAll(stderrPipe)
-	stdout = string(stdoutBytes)
-	stderr = string(stderrBytes)
 	err = cmd.Wait()
 	if err != nil {
 		return
 	}
+	exeRes.Stdout = string(stdoutBytes)
+	exeRes.Stderr = string(stderrBytes)
+	exeRes.ExitCode = cmd.ProcessState.ExitCode()
 	return
 }
 
-func NewExecutable(srcCode string, langId string) (*Executable, error) {
-	exe := &Executable{}
+func NewExecutable(srcCode string, langId string) (exe *Executable, compilationExeRes ExecutionResult, err error) {
+	exe = &Executable{}
 
 	dirPath := filepath.Join("/tmp", "deikstra")
-	err := os.MkdirAll(dirPath, os.ModePerm)
+	err = os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
-		return exe, err
+		return
 	}
 
 	exeDir, err := os.MkdirTemp(dirPath, "")
 	if err != nil {
-		return exe, err
+		return
 	}
 
 	srcFile, nil := os.Create(filepath.Join(exeDir, "main.cpp"))
 	if err != nil {
-		return exe, err
+		return
 	}
 	defer func(srcFile *os.File) {
 		err := srcFile.Close()
@@ -65,7 +72,7 @@ func NewExecutable(srcCode string, langId string) (*Executable, error) {
 
 	_, err = srcFile.WriteString(srcCode)
 	if err != nil {
-		return exe, err
+		return
 	}
 
 	exeFile := filepath.Join(exeDir, "exe")
@@ -74,23 +81,23 @@ func NewExecutable(srcCode string, langId string) (*Executable, error) {
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()
 
-	if err := cmd.Start(); err != nil {
-		return exe, nil
+	if err = cmd.Start(); err != nil {
+		return
 	}
 
 	stdoutStr, _ := io.ReadAll(stdout)
 	stderrStr, _ := io.ReadAll(stderr)
-	if err := cmd.Wait(); err != nil {
+	if err = cmd.Wait(); err != nil {
 		log.Printf("stdout: %v\n", string(stdoutStr))
 		log.Printf("stderr: %v\n", string(stderrStr))
 		log.Printf("cmd wait err: %v\n", err)
-		return exe, nil
+		return
 	}
-	log.Printf("stdout: %v\n", string(stdoutStr))
-	log.Printf("stderr: %v\n", string(stderrStr))
-	// TODO: figure out what to do if err is nil but stderr isn't empty
+	compilationExeRes.Stdout = string(stdoutStr)
+	compilationExeRes.Stderr = string(stderrStr)
+	compilationExeRes.ExitCode = cmd.ProcessState.ExitCode()
 
 	exe.exePath = exeFile
 
-	return exe, nil
+	return
 }

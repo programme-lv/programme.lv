@@ -79,7 +79,8 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 			log.Println("tested test: ", status.GetTestRes().TestId)
 			received := status.GetTestRes()
 			var evalTestRes models.TaskSubmEvalTest
-			evalTestRes.ID = uint64(received.GetTestId())
+			evalTestRes.TaskSubmJobId = status.GetJobId()
+			evalTestRes.TestId = uint64(received.GetTestId())
 			evalTestRes.Time = uint64(received.GetTime())
 			evalTestRes.Memory = uint64(received.GetMemory())
 			evalTestRes.Stdout = received.GetStdout()
