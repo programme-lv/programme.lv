@@ -84,7 +84,7 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 			case pb.TaskEvalStatusCode_TE_OK:
 				evalRes.Status = "OK"
 			}
-			s.database.Save(&evalRes)
+			s.database.Updates(&evalRes)
 
 		case *pb.TaskEvalStatus_TestRes:
 			log.Println("tested test: ", status.GetTestRes().TestId)
@@ -102,6 +102,15 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 				evalTestRes.Status = "OK"
 			}
 			s.database.Create(&evalTestRes)
+		case *pb.TaskEvalStatus_CompRes:
+			log.Println("compiled")
+			received := status.GetCompRes()
+			var evalRes models.TaskSubmEvaluation
+			evalRes.ID = status.GetJobId()
+			evalRes.CompilationStdout = received.GetStdout()
+			evalRes.CompilationStderr = received.GetStderr()
+			s.database.Updates(&evalRes)
+
 		}
 	}
 }
