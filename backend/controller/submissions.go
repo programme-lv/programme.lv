@@ -83,7 +83,7 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var submissions []models.TaskSubmission
-	err := c.database.Model(&models.TaskSubmission{}).Preload("TaskSubmJobs").Order("created_at desc").Find(&submissions).Error
+	err := c.database.Model(&models.TaskSubmission{}).Preload("TaskSubmEvals").Order("created_at desc").Find(&submissions).Error
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -96,15 +96,12 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 
 	var submsWithStatus []submWithStatus
 	for _, subm := range submissions {
-		status := ""
-		for _, job := range subm.TaskSubmJobs {
-			status = job.Status
-		}
+		status := subm.TaskSubmEvals[0].Status
 		submWithStatus := submWithStatus{
 			TaskSubmission: subm,
 			Status:         status,
 		}
-		submWithStatus.TaskSubmJobs = nil // don't send data that isn't required
+		submWithStatus.TaskSubmEvals = nil // don't send data that isn't required
 		submsWithStatus = append(submsWithStatus, submWithStatus)
 	}
 
@@ -114,7 +111,6 @@ func (c *Controller) listSubmissions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// send the response
 	_, err = w.Write(resp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

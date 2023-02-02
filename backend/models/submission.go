@@ -20,7 +20,7 @@ type TaskSubmission struct {
 
 	SrcCode string `json:"src_code" gorm:"not null"`
 
-	TaskSubmJobs []TaskSubmEvaluation `json:"task_subm_jobs"`
+	TaskSubmEvals []TaskSubmEvaluation `json:"task_subm_jobs"`
 }
 
 type TaskSubmEvaluation struct {
