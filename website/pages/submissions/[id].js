@@ -67,7 +67,7 @@ export default function Submission({submission}) {
                             return (
                                 <tr key={index}
                                     className={(test["status"] === "OK") ? "bg-opacity-25 bg-success" : ""}>
-                                    <th scope="row"><a>{test["test_id"]}</a></th>
+                                    <th scope="row"><a>{index + 1}</a></th>
                                     <td>{test["status"]}</td>
                                     <td><span className="badge bg-secondary m-1">1</span></td>
                                     <td>{test["time"]}</td>
