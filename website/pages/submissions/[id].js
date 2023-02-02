@@ -61,7 +61,7 @@ export default function Submission({submission}) {
                     </tr>
                     </thead>
                     <tbody>
-                    {submission["task_subm_evals"][0]["task_subm_job_tests"] &&
+                    {submission["task_subm_evals"][0] && submission["task_subm_evals"][0]["task_subm_job_tests"] &&
                         // create a row for each test
                         submission["task_subm_evals"][0]["task_subm_job_tests"].map((test, index) => {
                             return (
