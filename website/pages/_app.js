@@ -11,7 +11,7 @@ function MyApp({Component, pageProps}) {
     }, [])
 
     return (
-        <div className="vw-100">
+        <div className="vw-100 mw-100">
             <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <meta name="description" content="Moderna programmēšanas izglītības platforma."/>

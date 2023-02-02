@@ -5,7 +5,7 @@ import {formatDateTime} from "../../scripts/format_datetime.js";
 
 export default function Submission({submission}) {
     return (
-        <div className="vw-100">
+        <div className="vw-100 mw-100">
             <NavBar active_page={"submissions"}/>
             <div className={"container my-3"}>
                 <table className="table table-hover table-bordered text-center">

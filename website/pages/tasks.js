@@ -5,7 +5,7 @@ import Error from "../components/error";
 
 export default function Tasks({tasks, error}) {
     return (
-        <div className="vw-100">
+        <div className="vw-100 mw-100">
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>

@@ -6,7 +6,7 @@ import {formatDateTime} from "../scripts/format_datetime.js";
 export default function Submissions({submissions, error}) {
     console.log(submissions)
     return (
-        <div className="vw-100">
+        <div className="vw-100 mw-100">
             <NavBar active_page={"submissions"}/>
             <main className="container">
                 <h1 className="my-4 text-center">iesūtījumi</h1>

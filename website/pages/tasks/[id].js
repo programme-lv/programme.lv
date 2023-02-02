@@ -7,7 +7,7 @@ import TaskInfoCard from "../../components/TaskInfoCard";
 export default function Task({languages, task, apiURL}) {
     let mdStatement = task["md_statements"][0] ?? null;
 
-    return (<div className="vw-100">
+    return (<div className="vw-100 mw-100">
         <NavBar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
