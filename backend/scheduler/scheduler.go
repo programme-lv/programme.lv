@@ -2,10 +2,11 @@ package scheduler
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"log"
 	"net"
 	"os"
+
+	"gorm.io/gorm"
 
 	"github.com/KrisjanisP/deikstra/service/models"
 	pb "github.com/KrisjanisP/deikstra/service/protofiles"
@@ -76,6 +77,19 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 		switch status.Status.(type) {
 		case *pb.TaskEvalStatus_TestRes:
 			log.Println("tested test: ", status.GetTestRes().TestId)
+			received := status.GetTestRes()
+			var evalTestRes models.TaskSubmEvalTest
+			evalTestRes.ID = uint64(received.GetTestId())
+			evalTestRes.Time = uint64(received.GetTime())
+			evalTestRes.Memory = uint64(received.GetMemory())
+			evalTestRes.Stdout = received.GetStdout()
+			evalTestRes.Stderr = received.GetStderr()
+
+			switch received.GetTestStatus() {
+			case pb.TaskTestStatusCode_TT_OK:
+				evalTestRes.Status = "OK"
+			}
+			s.database.Create(&evalTestRes)
 		}
 	}
 }

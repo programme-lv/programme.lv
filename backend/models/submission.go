@@ -46,9 +46,11 @@ type TaskSubmEvalTest struct {
 	TestId uint64   `json:"test_id" gorm:"not null"`
 	Test   TaskTest `json:"test" gorm:"foreignKey:TestId"`
 
-	Time   int    `json:"time"`
-	Memory int    `json:"memory"`
-	Output string `json:"output"`
+	Time   uint64 `json:"time"`
+	Memory uint64 `json:"memory"`
+
+	Stdout string `json:"stdout"`
+	Stderr string `json:"stderr"`
 
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
