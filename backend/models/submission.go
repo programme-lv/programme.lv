@@ -41,15 +41,17 @@ type TaskSubmEvaluation struct {
 
 	Status string `json:"status" gorm:"not null"`
 	Score  int    `json:"score"`
+
+	TaskSubmEvalTests []TaskSubmEvalTest `json:"task_subm_job_tests"`
 }
 
 type TaskSubmEvalTest struct {
-	ID        uint64    `json:"subm_job_test_id" gorm:"primaryKey"`
+	ID        uint64    `json:"subm_eval_test_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	TaskSubmJobId uint64             `json:"subm_job_id" gorm:"not null"`
-	TaskSubmJob   TaskSubmEvaluation `json:"task_subm_job" gorm:"foreignKey:TaskSubmJobId"`
+	TaskSubmEvaluationId uint64             `json:"subm_eval_id" gorm:"not null"`
+	TaskSubmEvaluation   TaskSubmEvaluation `json:"task_subm_eval" gorm:"foreignKey:TaskSubmEvaluationId"`
 
 	TestId uint64   `json:"test_id" gorm:"not null"`
 	Test   TaskTest `json:"test" gorm:"foreignKey:TestId"`
