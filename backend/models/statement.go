@@ -16,10 +16,10 @@ type MarkdownStatement struct {
 	Notes   string `json:"notes"`
 	Scoring string `json:"scoring"`
 
-	Examples []MDStatementExample `json:"examples"`
+	Examples []*MDStatementExample `json:"examples"`
 
 	TaskID string `json:"task_id" gorm:"not null"`
-	Task   Task   `json:"task" gorm:"foreignKey:TaskID"`
+	Task   *Task  `json:"task" gorm:"foreignKey:TaskID"`
 }
 
 type MDStatementExample struct {
@@ -30,8 +30,8 @@ type MDStatementExample struct {
 	Input  string `json:"input"`
 	Output string `json:"output"`
 
-	MarkdownStatementID uint64            `json:"statement_id" gorm:"not null"`
-	MarkdownStatement   MarkdownStatement `json:"statement" gorm:"foreignKey:MarkdownStatementID"`
+	MarkdownStatementID uint64             `json:"statement_id" gorm:"not null"`
+	MarkdownStatement   *MarkdownStatement `json:"statement" gorm:"foreignKey:MarkdownStatementID"`
 }
 
 type PDFStatement struct {
@@ -42,5 +42,5 @@ type PDFStatement struct {
 	Name string `json:"filename"`
 
 	TaskID string `json:"task_id" gorm:"not null"`
-	Task   Task   `json:"task" gorm:"foreignKey:TaskID"`
+	Task   *Task  `json:"task" gorm:"foreignKey:TaskID"`
 }

@@ -92,7 +92,7 @@ export default function Admin(props) {
                 <h1 className="my-4 text-center">administrācija</h1>
 
                 <Error msg={error}/>
-                <form action={`${props.apiURL}/tasks/create`} onSubmit={createTaskSubmitAndRefresh}>
+                <form action={`${props.apiURL}/tasks/import`} onSubmit={createTaskSubmitAndRefresh}>
                     <div className="row">
                         <div className="mb-3 col">
                             <input className="form-control" type="file" name="task-file" accept={".zip"}/>

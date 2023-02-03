@@ -1,11 +1,15 @@
 package models
 
-import "time"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Task struct {
-	ID        string    `json:"task_id" gorm:"primaryKey"`
-	CreatedAt time.Time `json:"created_time"`
-	UpdatedAt time.Time `json:"updated_time"`
+	ID        string         `json:"task_id" gorm:"primaryKey"`
+	CreatedAt time.Time      `json:"created_time"`
+	UpdatedAt time.Time      `json:"updated_time"`
+	DeletedAt gorm.DeletedAt `json:"deleted_time"`
 
 	Name   string     `json:"name" gorm:"not null;unique"`
 	Author string     `json:"author"`
@@ -62,11 +66,10 @@ type TaskSubtask struct {
 }
 
 type TaskTag struct {
-	ID        uint64    `json:"tag_id" gorm:"primaryKey"`
+	ID        string    `json:"tag_id" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
-	Name  string `json:"name" gorm:"unique;not null"`
 	Color string `json:"color"`
 
 	Tasks []*Task `json:"tasks" gorm:"many2many:tasks_tags"`
