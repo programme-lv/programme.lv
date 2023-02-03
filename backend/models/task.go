@@ -50,6 +50,9 @@ type TaskSubtask struct {
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 
+	Name    string `json:"name" gorm:"not null"`
+	Pattern string `json:"pattern" gorm:"not null"`
+
 	TaskID string `json:"task_id" gorm:"not null"`
 	Task   Task   `json:"task" gorm:"foreignKey:TaskID"`
 
