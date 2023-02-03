@@ -34,9 +34,10 @@ type TaskType struct {
 }
 
 type TaskTest struct {
-	ID        uint64    `json:"test_id" gorm:"primaryKey"`
-	CreatedAt time.Time `json:"created_time"`
-	UpdatedAt time.Time `json:"updated_time"`
+	ID        uint64         `json:"test_id" gorm:"primaryKey"`
+	CreatedAt time.Time      `json:"created_time"`
+	UpdatedAt time.Time      `json:"updated_time"`
+	DeletedAt gorm.DeletedAt `json:"deleted_time"`
 
 	Name string `json:"name" gorm:"not null"`
 

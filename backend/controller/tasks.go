@@ -97,12 +97,21 @@ func (c *Controller) importTask(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		tx := c.database.Begin()
+		// soft delete previous tests
+		err = tx.Where("task_id", task.ID).Delete(&models.TaskTest{}).Error
+		if err != nil {
+			tx.Rollback()
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		// update task values
 		err = tx.Unscoped().Updates(task).Error
 		if err != nil {
 			tx.Rollback()
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
+		// remove soft delete from task
 		err = tx.Unscoped().Model(task).Where("id", task.ID).Update("deleted_at", nil).Error
 		if err != nil {
 			tx.Rollback()
