@@ -67,7 +67,7 @@ type TaskSubtask struct {
 }
 
 type TaskTag struct {
-	ID        string    `json:"tag_id" gorm:"primaryKey"`
+	ID        string    `json:"name" gorm:"primaryKey"`
 	CreatedAt time.Time `json:"created_time"`
 	UpdatedAt time.Time `json:"updated_time"`
 

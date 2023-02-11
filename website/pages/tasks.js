@@ -58,6 +58,7 @@ export async function getServerSideProps() {
     try {
         const res = await fetch(`${process.env.API_URL}/tasks/list`)
         const tasks = await res.json()
+        console.log(tasks)
         return {props: {tasks: tasks, error: null}}
     } catch (err) {
         return {props: {tasks: null, error: "failed to fetch tasks from the API: " + err}}
