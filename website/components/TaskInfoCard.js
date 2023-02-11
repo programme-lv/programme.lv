@@ -3,7 +3,7 @@ import {formatDateTime} from "../scripts/formatDateTime";
 
 export default function TaskInfoCard({task}) {
     return (
-        <div className="col-3 card shadow-sm h-100">
+        <div className="col-3 p-3 shadow-sm h-100">
             <div className="card-body">
                 <h5 className="card-title text-center">uzd. informācija</h5>
                 <p className="card-text"></p>
@@ -33,6 +33,10 @@ export default function TaskInfoCard({task}) {
                             <td className={"text-start ps-2"}>{task["source"]}</td>
                         </tr>
                     }
+                    <tr>
+                        <th scope="col">pievienots</th>
+                        <td className={"text-start ps-2"}>{formatDateTime(task["created_time"])}</td>
+                    </tr>
                     <tr>
                         <th scope="col">atjaunots</th>
                         <td className={"text-start ps-2"}>{formatDateTime(task["updated_time"])}</td>
