@@ -4,12 +4,22 @@ import TagList from "../components/taglist";
 import Error from "../components/error";
 
 export default function Tasks({tasks, error}) {
+    if (error) {
+        return (
+            <div className="vw-100 mw-100">
+                <NavBar active_page={"tasks"}/>
+                <main className="container">
+                    <h1 className="my-4 text-center">uzdevumi</h1>
+                    <Error msg={error}/>
+                </main>
+            </div>
+        )
+    }
     return (
         <div className="vw-100 mw-100">
             <NavBar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
-                <Error msg={error}/>
                 <table className="table table-hover table-bordered text-center" style={{tableLayout: "fixed"}}>
                     <thead>
                     <tr>
@@ -22,7 +32,7 @@ export default function Tasks({tasks, error}) {
                     </tr>
                     </thead>
                     <tbody>
-                    {tasks.map((task, index) => {
+                    {tasks && tasks.map((task, index) => {
                         return (
                             <tr key={index}>
                                 <th scope="row"><Link href={"/tasks/" + task["task_id"]}><a
@@ -48,9 +58,8 @@ export async function getServerSideProps() {
     try {
         const res = await fetch(`${process.env.API_URL}/tasks/list`)
         const tasks = await res.json()
-        // Pass data to the page via props
-        return {props: {tasks: tasks, error: ""}}
+        return {props: {tasks: tasks, error: null}}
     } catch (err) {
-        return {props: {tasks: [], error: "failed to fetch tasks from the API :("}}
+        return {props: {tasks: null, error: "failed to fetch tasks from the API: " + err}}
     }
 }
