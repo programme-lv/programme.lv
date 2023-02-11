@@ -1,5 +1,5 @@
 import {parseStatement} from "../../scripts/renderMD";
-import NavBar from "../../components/navbar";
+import Navbar from "../../components/Navbar";
 import MDStatement from "../../components/MDStatement";
 import SubmitModal from "../../components/SubmitModal";
 import TaskInfoCard from "../../components/TaskInfoCard";
@@ -8,7 +8,7 @@ export default function Task({languages, task, apiURL}) {
     let mdStatement = task["md_statements"][0] ?? null;
 
     return (<div className="vw-100 mw-100">
-        <NavBar active_page={"tasks"}/>
+        <Navbar active_page={"tasks"}/>
         <main className="container">
             <div className={"row my-5"}>
                 <div className="col-9 pe-4" id="task-statement">

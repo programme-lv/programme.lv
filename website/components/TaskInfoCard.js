@@ -1,9 +1,9 @@
-import TagList from "./taglist";
+import TagList from "./TagList";
 import {formatDateTime} from "../scripts/formatDateTime";
 
 export default function TaskInfoCard({task}) {
     return (
-        <div className="col-3 p-3 shadow-sm h-100">
+        <div className="col-3 p-3 shadow h-100">
             <div className="card-body">
                 <h5 className="card-title text-center">uzd. informācija</h5>
                 <p className="card-text"></p>

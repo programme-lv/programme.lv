@@ -1,9 +1,9 @@
-import NavBar from "../components/navbar";
+import Navbar from "../components/Navbar";
 
 export default function Competitions() {
     return (
         <>
-            <NavBar active_page={"competitions"}/>
+            <Navbar active_page={"competitions"}/>
         </>
     )
 }

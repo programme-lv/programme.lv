@@ -1,10 +1,10 @@
-import NavBar from "../components/navbar";
+import Navbar from "../components/Navbar";
 import Editor from "@monaco-editor/react";
 
 export default function EditorPage() {
     return (
         <div className="d-flex flex-column vh-100">
-            <NavBar active_page={"editor"}/>
+            <Navbar active_page={"editor"}/>
             <div className={"container flex-grow-1 my-3"}>
                 <Editor
                     height="100%"

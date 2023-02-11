@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
-export default function NavBar({active_page, admin}) {
+export default function Navbar({active_page, admin}) {
     admin = true; // TODO: this is a temporary hack to make the admin page show up
     return (
-        <nav className="navbar bg-white shadow-sm">
+        <nav className="navbar bg-white border-bottom shadow-sm">
             <div className="navbar-expand-md container">
                 <div className="d-flex">
                     <Link href="/"><a className="navbar-brand">programme.lv</a></Link>

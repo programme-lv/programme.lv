@@ -1,9 +1,9 @@
-import NavBar from '../components/navbar'
+import Navbar from '../components/Navbar'
 import Link from "next/link";
 import {useState} from 'react'
-import TagList from "../components/taglist";
+import TagList from "../components/TagList";
 import {formatDateTime} from "../scripts/formatDateTime";
-import Error from "../components/error";
+import Error from "../components/Error";
 
 async function deleteTask(taskId, apiURL) {
     const options = {
@@ -87,7 +87,7 @@ export default function Admin(props) {
 
     return (
         <div>
-            <NavBar active_page={"admin"}/>
+            <Navbar active_page={"admin"}/>
             <main className="container">
                 <h1 className="my-4 text-center">administrācija</h1>
 

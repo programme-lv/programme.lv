@@ -49,7 +49,7 @@ export default function MDStatement({mdStatement}) {
 }
 
 function ExampleTable({input, output}) {
-    return (<table className={"table table-bordered col m-3"}>
+    return (<table className={"table table-bordered col my-3"}>
         <thead>
         <tr>
             <th>ievaddati</th>

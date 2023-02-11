@@ -1,9 +1,9 @@
-import NavBar from "../components/navbar";
+import Navbar from "../components/Navbar";
 
 export default function Theory() {
     return (
         <>
-            <NavBar active_page={"theory"}/>
+            <Navbar active_page={"theory"}/>
         </>
     )
 }

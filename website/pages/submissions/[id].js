@@ -1,4 +1,4 @@
-import NavBar from "../../components/navbar";
+import Navbar from "../../components/Navbar";
 import Editor from "@monaco-editor/react";
 import Link from "next/link";
 import {formatDateTime} from "../../scripts/formatDateTime.js";
@@ -6,7 +6,7 @@ import {formatDateTime} from "../../scripts/formatDateTime.js";
 export default function Submission({submission}) {
     return (
         <div className="vw-100 mw-100">
-            <NavBar active_page={"submissions"}/>
+            <Navbar active_page={"submissions"}/>
             <div className={"container my-3"}>
                 <table className="table table-hover table-bordered text-center">
                     <thead>

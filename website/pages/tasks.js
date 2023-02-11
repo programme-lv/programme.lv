@@ -1,13 +1,13 @@
-import NavBar from "../components/navbar";
+import Navbar from "../components/Navbar";
 import Link from 'next/link'
-import TagList from "../components/taglist";
-import Error from "../components/error";
+import TagList from "../components/TagList";
+import Error from "../components/Error";
 
 export default function Tasks({tasks, error}) {
     if (error) {
         return (
             <div className="vw-100 mw-100">
-                <NavBar active_page={"tasks"}/>
+                <Navbar active_page={"tasks"}/>
                 <main className="container">
                     <h1 className="my-4 text-center">uzdevumi</h1>
                     <Error msg={error}/>
@@ -17,7 +17,7 @@ export default function Tasks({tasks, error}) {
     }
     return (
         <div className="vw-100 mw-100">
-            <NavBar active_page={"tasks"}/>
+            <Navbar active_page={"tasks"}/>
             <main className="container">
                 <h1 className="my-4 text-center">uzdevumi</h1>
                 <table className="table table-hover table-bordered text-center" style={{tableLayout: "fixed"}}>

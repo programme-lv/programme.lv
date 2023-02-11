@@ -1,5 +1,5 @@
-import NavBar from "../components/navbar";
-import Error from "../components/error";
+import Navbar from "../components/Navbar";
+import Error from "../components/Error";
 import Link from "next/link";
 import {formatDateTime} from "../scripts/formatDateTime.js";
 
@@ -7,7 +7,7 @@ export default function Submissions({submissions, error}) {
     console.log(submissions)
     return (
         <div className="vw-100 mw-100">
-            <NavBar active_page={"submissions"}/>
+            <Navbar active_page={"submissions"}/>
             <main className="container">
                 <h1 className="my-4 text-center">iesūtījumi</h1>
                 <Error msg={error}/>
