@@ -34,6 +34,8 @@ func ParseTaskFile(file multipart.File) (task *models.Task, err error) {
 	task.Name = taskToml.Name
 	task.Type = taskToml.Type
 	task.Author = taskToml.Author
+	task.TimeLim = taskToml.TimeLim
+	task.MemLim = taskToml.MemLim
 
 	task.Tags = make([]*models.TaskTag, len(taskToml.Tags))
 	for i, tag := range taskToml.Tags {
@@ -62,7 +64,7 @@ type TaskToml struct {
 	Author    string        `json:"author"`
 	Tags      []string      `json:"tags"`
 	Type      string        `json:"type"`
-	TimeLim   float64       `json:"time_lim" toml:"time_lim"`
+	TimeLim   uint32        `json:"time_lim" toml:"time_lim"`
 	MemLim    uint32        `json:"mem_lim" toml:"mem_lim"`
 	Subtasks  []SubtaskTOML `json:"subtasks"`
 	CreatedAt time.Time     `json:"created_time"`

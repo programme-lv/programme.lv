@@ -1,12 +1,12 @@
 code = "baobabi"
 name = "baobabi"
-version = 7
+version = 9
 
 author = "Krišjānis Petručeņa"
 tags = ["brute-force","math","number-theory","ProblemCon++"]
 
-type = "batch"
-time_lim= 1.0
+type = "simple"
+time_lim= 1000
 mem_lim = 256
 
 [[subtasks]]
