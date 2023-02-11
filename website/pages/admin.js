@@ -2,7 +2,7 @@ import NavBar from '../components/navbar'
 import Link from "next/link";
 import {useState} from 'react'
 import TagList from "../components/taglist";
-import {formatDateTime} from "../scripts/format_datetime";
+import {formatDateTime} from "../scripts/formatDateTime";
 import Error from "../components/error";
 
 async function deleteTask(taskId, apiURL) {

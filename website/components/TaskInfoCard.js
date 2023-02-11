@@ -1,4 +1,5 @@
 import TagList from "./taglist";
+import {formatDateTime} from "../scripts/formatDateTime";
 
 export default function TaskInfoCard({task}) {
     return (
@@ -9,24 +10,32 @@ export default function TaskInfoCard({task}) {
                 <table className={"table table-hover"}>
                     <tbody>
                     <tr>
-                        <th scope="col">kods:</th>
+                        <th scope="col">uzd. kods</th>
                         <td className={"text-start ps-2"}>{task["task_id"]}</td>
                     </tr>
                     <tr>
-                        <th scope="col">laika limits:</th>
+                        <th scope="col">laika lim.</th>
                         <td className={"text-start ps-2"}>{task["time_lim"]} ms</td>
                     </tr>
                     <tr>
-                        <th scope="col">atmiņa:</th>
+                        <th scope="col">atmiņa</th>
                         <td className={"text-start ps-2"}>{task["mem_lim"]} MB</td>
                     </tr>
+                    {task["author"] &&
+                        <tr>
+                            <th scope="col">autors</th>
+                            <td className={"text-start ps-2"}>{task["author"]}</td>
+                        </tr>
+                    }
+                    {task["source"] &&
+                        <tr>
+                            <th scope="col">avots</th>
+                            <td className={"text-start ps-2"}>{task["source"]}</td>
+                        </tr>
+                    }
                     <tr>
-                        <th scope="col">versija:</th>
-                        <td className={"text-start ps-2"}>{task["version"]}</td>
-                    </tr>
-                    <tr>
-                        <th scope="col">autors:</th>
-                        <td className={"text-start ps-2"}>{task["author"]}</td>
+                        <th scope="col">atjaunots</th>
+                        <td className={"text-start ps-2"}>{formatDateTime(task["updated_time"])}</td>
                     </tr>
                     </tbody>
                 </table>

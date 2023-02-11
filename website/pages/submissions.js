@@ -1,7 +1,7 @@
 import NavBar from "../components/navbar";
 import Error from "../components/error";
 import Link from "next/link";
-import {formatDateTime} from "../scripts/format_datetime.js";
+import {formatDateTime} from "../scripts/formatDateTime.js";
 
 export default function Submissions({submissions, error}) {
     console.log(submissions)
