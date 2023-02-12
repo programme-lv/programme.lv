@@ -10,11 +10,13 @@ export default function Task({languages, task, apiURL}) {
     return (<div className="vw-100 mw-100">
         <Navbar active_page={"tasks"}/>
         <main className="container">
-            <div className={"row my-5"}>
-                <div className="col-9 pe-4" id="task-statement">
-                    <h2>{task["name"]}</h2>
-                    <hr></hr>
-                    <MDStatement mdStatement={mdStatement}/>
+            <div className={"row my-3"}>
+                <div className="col-9 p-0 pe-4" id="task-statement">
+                    <div className="bg-white p-3 border">
+                        <h2>{task["name"]}</h2>
+                        <hr></hr>
+                        <MDStatement mdStatement={mdStatement}/>
+                    </div>
                 </div>
                 <TaskInfoCard task={task}/>
             </div>

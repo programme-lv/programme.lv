@@ -3,7 +3,7 @@ import {formatDateTime} from "../scripts/formatDateTime";
 
 export default function TaskInfoCard({task}) {
     return (
-        <div className="col-3 p-3 shadow h-100">
+        <div className="col-3 p-3 h-100 bg-white border">
             <div className="card-body">
                 <h5 className="card-title text-center">uzd. informācija</h5>
                 <p className="card-text"></p>
