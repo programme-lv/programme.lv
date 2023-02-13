@@ -9,8 +9,8 @@ export default function Task({languages, task, apiURL}) {
 
     return (<div className="vw-100 mw-100">
         <Navbar active_page={"tasks"}/>
-        <main className="container">
-            <div className={"row my-3"}>
+        <main className="container p-0">
+            <div className={"my-3 d-flex"}>
                 <div className="col-9 p-0 pe-4" id="task-statement">
                     <div className="bg-white p-3 border">
                         <h2>{task["name"]}</h2>
@@ -34,7 +34,6 @@ export async function getServerSideProps(context) {
 
         for (let statement in task["md_statements"]) {
             task["md_statements"][statement] = await parseStatement(task["md_statements"][statement])
-            console.log(task["md_statements"][statement])
         }
 
         return {
@@ -45,7 +44,6 @@ export async function getServerSideProps(context) {
             }
         }
     } catch (err) {
-        console.log(err)
         return {props: {error: "failed to fetch task info from the API :("}}
     }
 }

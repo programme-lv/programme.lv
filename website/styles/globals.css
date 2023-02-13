@@ -14,3 +14,7 @@
     padding: 0.4rem 0.5rem;
     border-width: 0 1px;
 }
+
+.container {
+    padding: 0;
+}

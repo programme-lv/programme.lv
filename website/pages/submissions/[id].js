@@ -93,7 +93,6 @@ export async function getServerSideProps(context) {
         let url = `${process.env.API_URL}/submissions/view/${context.params.id}`
         const submission = await fetch(url).then(res => res.json())
 
-        console.log(submission)
         return {
             props: {
                 submission: submission,

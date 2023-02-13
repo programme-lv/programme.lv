@@ -18,7 +18,7 @@ export default function Tasks({tasks, error}) {
     return (
         <div className="vw-100 mw-100">
             <Navbar active_page={"tasks"}/>
-            <main className="container">
+            <main className="container p-0">
                 <h1 className="my-4 text-center">uzdevumi</h1>
                 <table className="table table-hover table-bordered text-center" style={{tableLayout: "fixed"}}>
                     <thead>

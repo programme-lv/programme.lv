@@ -12,10 +12,9 @@ export async function renderMD(md) {
 }
 
 export async function parseStatement(statement) {
-    statement["desc"]=await renderMD(statement["desc"])
-    statement["input"]=await renderMD(statement["input"])
-    statement["output"]=await renderMD(statement["output"])
-    console.log(statement["scoring"])
-    statement["scoring"]=await renderMD(statement["scoring"])
+    statement["desc"] = await renderMD(statement["desc"])
+    statement["input"] = await renderMD(statement["input"])
+    statement["output"] = await renderMD(statement["output"])
+    statement["scoring"] = await renderMD(statement["scoring"])
     return statement
 }

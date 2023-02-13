@@ -1,5 +1,4 @@
 export default function TagList({tags}) {
-    console.log(tags)
     if (!tags) return null
     return (
         <>
