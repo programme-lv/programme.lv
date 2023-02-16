@@ -34,6 +34,7 @@ func main() {
 	}
 }
 
+// listenToScheduler forwards jobs from scheduler to evaluation service
 func listenToScheduler(schedulerAddr string, workerName string, service *EvaluationService) error {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))

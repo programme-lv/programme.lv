@@ -100,6 +100,8 @@ func (s *Scheduler) ReportTaskEvalStatus(stream pb.Scheduler_ReportTaskEvalStatu
 			switch received.GetTestStatus() {
 			case pb.TaskTestStatusCode_TT_OK:
 				evalTestRes.Status = "OK"
+			case pb.TaskTestStatusCode_TT_WA:
+				evalTestRes.Status = "WA"
 			}
 			s.database.Create(&evalTestRes)
 		case *pb.TaskEvalStatus_CompRes:

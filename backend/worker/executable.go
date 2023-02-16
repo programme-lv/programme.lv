@@ -19,6 +19,10 @@ type ExecutionResult struct {
 	ExitCode int
 }
 
+type ConstrainedExecutionResult struct {
+	ExecutionResult
+}
+
 func (e *Executable) Execute(stdin io.Reader) (exeRes ExecutionResult, err error) {
 	cmd := exec.Command(e.exePath)
 	stdinPipe, _ := cmd.StdinPipe()
@@ -40,6 +44,11 @@ func (e *Executable) Execute(stdin io.Reader) (exeRes ExecutionResult, err error
 	exeRes.Stdout = string(stdoutBytes)
 	exeRes.Stderr = string(stderrBytes)
 	exeRes.ExitCode = cmd.ProcessState.ExitCode()
+	return
+}
+
+func (e *Executable) ConstrainedExecute(stdin io.Reader, timeLime uint32, memLim uint32) (exeRes ExecutionResult, err error) {
+
 	return
 }
 

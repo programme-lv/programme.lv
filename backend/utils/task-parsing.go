@@ -42,7 +42,7 @@ func ParseTaskFile(file multipart.File) (task *models.Task, err error) {
 		task.Tags[i] = &models.TaskTag{ID: tag}
 	}
 
-	task.Tests, err = ParseTaskTests(filepath.Join(unzippedPath, "tests"))
+	task.Tests, err = ParseTaskTests(filepath.Join(unzippedPath, "testing", "tests"))
 	if err != nil {
 		return
 	}
