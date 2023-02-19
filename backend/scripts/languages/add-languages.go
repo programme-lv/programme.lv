@@ -29,7 +29,7 @@ func main() {
 
 	tx := db.Begin()
 	for _, lang := range languages {
-		err = tx.FirstOrCreate(&lang, models.Language{Name: lang.Name}).Error
+		err = tx.Save(&lang).Error
 		if err != nil {
 			tx.Rollback()
 			panic(err)
