@@ -4,7 +4,17 @@ import Link from "next/link";
 import {formatDateTime} from "../scripts/formatDateTime.js";
 
 export default function Submissions({submissions, error}) {
-    console.log(submissions)
+    if (error) {
+        return (
+            <div className="vw-100 mw-100">
+                <Navbar active_page={"submissions"}/>
+                <main className="container">
+                    <h1 className="my-4 text-center">iesūtījumi</h1>
+                    <Error msg={error}/>
+                </main>
+            </div>
+        )
+    }
     return (
         <div className="vw-100 mw-100">
             <Navbar active_page={"submissions"}/>
@@ -57,6 +67,6 @@ export async function getServerSideProps() {
         // Pass data to the page via props
         return {props: {submissions}}
     } catch (err) {
-        return {props: {error: "failed to fetch submissions from the API :("}}
+        return {props: {error: err.toString()}}
     }
 }

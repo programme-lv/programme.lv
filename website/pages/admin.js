@@ -50,7 +50,19 @@ async function createTaskSubmit(form_event) {
 export default function Admin(props) {
 
     const [tasks, setTasks] = useState(props.tasks)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(props.error)
+
+    if (error) {
+        return (
+            <div className="vw-100 mw-100">
+                <Navbar active_page={"admin"}/>
+                <main className="container">
+                    <h1 className="my-4 text-center">administrācija</h1>
+                    <Error msg={error}/>
+                </main>
+            </div>
+        )
+    }
 
     let refreshTable = async () => {
         const res = await fetch(`${props.apiURL}/tasks/list`)
@@ -117,7 +129,7 @@ export default function Admin(props) {
                     </tr>
                     </thead>
                     <tbody>
-                    {tasks.map((task) => (
+                    {tasks && tasks.map((task) => (
                         <tr key={task["task_id"]}>
                             <th scope="row">
                                 <Link href={"/tasks/" + task["task_id"]}>
@@ -190,7 +202,7 @@ export async function getServerSideProps() {
         const res = await fetch(`${process.env.API_URL}/tasks/list`)
         result.props.tasks = await res.json()
     } catch (err) {
-        result.props.error = "failed to fetch tasks from the API :("
+        result.props.error = err.toString()
     }
 
     return result
