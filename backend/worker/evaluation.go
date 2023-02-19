@@ -48,7 +48,7 @@ func (e *EvaluationService) EvaluateTaskSubmission(job *pb.TaskEvalJob, resStrea
 		if err != nil {
 			return err
 		}
-		log.Println("stdout: ", res.Stdout)
+		log.Printf("test exec result %+v", res)
 		if res.Stdout == test.Answer {
 			err = resStream.Send(NewTestStatus(job.GetJobId(), test.ID, testOK, res.Stdout, res.Stderr))
 		} else {

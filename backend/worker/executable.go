@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -9,7 +10,6 @@ import (
 )
 
 type Executable struct {
-	srcPath string
 	exePath string
 }
 
@@ -49,18 +49,36 @@ func (e *Executable) Execute(stdin io.Reader) (exeRes ExecutionResult, err error
 func NewExecutable(srcCode string, langId string) (exe *Executable, compilationExeRes ExecutionResult, err error) {
 	exe = &Executable{}
 
+	var exeDir string
+	exeDir, err = makeTmpDir()
+	if err != nil {
+		return
+	}
+
+	switch langId {
+	case "C++17":
+		exe.exePath, _, err = compileCpp(srcCode, exeDir)
+		return
+	}
+	// create an error if langId is not supported
+	err = fmt.Errorf("langId \"%s\" is not supported", langId)
+	return
+}
+
+func makeTmpDir() (path string, err error) {
+
 	dirPath := filepath.Join("/tmp", "deikstra")
 	err = os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return
 	}
 
-	exeDir, err := os.MkdirTemp(dirPath, "")
-	if err != nil {
-		return
-	}
+	return os.MkdirTemp(dirPath, "")
+}
 
-	srcFile, nil := os.Create(filepath.Join(exeDir, "main.cpp"))
+func compileCpp(code string, dir string) (exePath string, execRes ExecutionResult, err error) {
+
+	srcFile, nil := os.Create(filepath.Join(dir, "main.cpp"))
 	if err != nil {
 		return
 	}
@@ -71,15 +89,13 @@ func NewExecutable(srcCode string, langId string) (exe *Executable, compilationE
 		}
 	}(srcFile)
 
-	exe.srcPath = srcFile.Name()
-
-	_, err = srcFile.WriteString(srcCode)
+	_, err = srcFile.WriteString(code)
 	if err != nil {
 		return
 	}
 
-	exeFile := filepath.Join(exeDir, "exe")
-	cmd := exec.Command("g++", exe.srcPath, "-o", exeFile)
+	exePath = filepath.Join(dir, "exe")
+	cmd := exec.Command("g++", srcFile.Name(), "-o", exePath)
 
 	stdout, _ := cmd.StdoutPipe()
 	stderr, _ := cmd.StderrPipe()
@@ -96,11 +112,9 @@ func NewExecutable(srcCode string, langId string) (exe *Executable, compilationE
 		log.Printf("cmd wait err: %v\n", err)
 		return
 	}
-	compilationExeRes.Stdout = string(stdoutStr)
-	compilationExeRes.Stderr = string(stderrStr)
-	compilationExeRes.ExitCode = cmd.ProcessState.ExitCode()
-
-	exe.exePath = exeFile
+	execRes.Stdout = string(stdoutStr)
+	execRes.Stderr = string(stderrStr)
+	execRes.ExitCode = cmd.ProcessState.ExitCode()
 
 	return
 }
