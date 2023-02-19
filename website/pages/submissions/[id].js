@@ -18,8 +18,8 @@ export default function Submission({submission}) {
                         <th scope="col">valoda</th>
                         <th scope="col">statuss</th>
                         <th scope="col">izpildes laiks</th>
-                        <th scope="col">izmantotā atmiņa</th>
-                        <th scope="col">tiesāšanas laiks</th>
+                        <th scope="col">izmantotā atmiņa [MB]</th>
+                        <th scope="col">tiesāšanas laiks [ms]</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -55,8 +55,8 @@ export default function Submission({submission}) {
                         <th scope="col">tests</th>
                         <th scope="col">statuss</th>
                         <th scope="col">apakšuzdevumi</th>
-                        <th scope="col">tiesāšanas laiks</th>
-                        <th scope="col">izmantotā atmiņa</th>
+                        <th scope="col">tiesāšanas laiks [ms]</th>
+                        <th scope="col">izmantotā atmiņa [MB]</th>
                         <th scope="col">ievaddati, izvaddati</th>
                     </tr>
                     </thead>
@@ -66,9 +66,10 @@ export default function Submission({submission}) {
                         submission["task_subm_evals"][0]["task_subm_job_tests"].map((test, index) => {
                             return (
                                 <tr key={index}
-                                    className={(test["status"] === "OK") ? "bg-opacity-25 bg-success" : ""}>
+                                    className={TestStatusRowClasses(test["status"])}>
                                     <th scope="row"><a>{index + 1}</a></th>
-                                    <td>{test["status"]}</td>
+                                    <td title={TestStatusTooltip(test["status"])}
+                                        className={TestStatusTextClasses(test["status"])}>{test["status"]}</td>
                                     <td><span className="badge bg-secondary m-1">1</span></td>
                                     <td>{test["time"]}</td>
                                     <td>{test["memory"]}</td>
@@ -87,6 +88,40 @@ export default function Submission({submission}) {
     )
 }
 
+function TestStatusRowClasses(status) {
+    switch (status) {
+        case "OK":
+            return "bg-success bg-opacity-25"
+        default:
+            return ""
+    }
+}
+
+function TestStatusTooltip(status) {
+    switch (status) {
+        case "OK":
+            return "testa izpilde ir veiksmīga (okay)"
+        case "WA":
+            return "izvaddati nav pareizi (wrong answer)"
+        case "TLE":
+            return "testa izpilde pārsniedza laika limitu (time limit exceeded)"
+        default:
+            return ""
+    }
+}
+
+function TestStatusTextClasses(status) {
+    switch (status) {
+        case "OK":
+            return "text-success"
+        case "WA":
+            return "text-danger"
+        case "TLE":
+            return "text-warning"
+        default:
+            return ""
+    }
+}
 
 export async function getServerSideProps(context) {
     try {
