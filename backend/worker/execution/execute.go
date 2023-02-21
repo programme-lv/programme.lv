@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/KrisjanisP/deikstra/service/worker/utils"
 	"io"
+	"log"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -32,12 +33,9 @@ func Execute(cmd *exec.Cmd, stdin io.ReadCloser) (res Result, err error) {
 	}
 	stdoutBytes, _ := io.ReadAll(stdoutPipe)
 	stderrBytes, _ := io.ReadAll(stderrPipe)
+	err = cmd.Wait()
 	_ = stdoutPipe.Close()
 	_ = stderrPipe.Close()
-	err = cmd.Wait()
-	if err != nil {
-		return
-	}
 	res.Stdout = string(stdoutBytes)
 	res.Stderr = string(stderrBytes)
 	res.ExitCode = cmd.ProcessState.ExitCode()
@@ -59,13 +57,22 @@ type ExtendedResult struct {
 }
 
 type Constraints struct {
-	memoryLimit   *int // kilobytes
-	timeLimit     *int // seconds
-	wallTimeLimit *int // seconds
-	extraTime     *int // seconds
+	memoryLimit   int // kilobytes
+	timeLimit     int // seconds
+	wallTimeLimit int // seconds
+	extraTime     int // seconds
 }
 
-func (box *IsolateBox) Execute(boxCmd string, stdin io.ReadCloser, constraints Constraints) (res ExtendedResult, err error) {
+var DefaultConstraints = Constraints{
+	memoryLimit:   256 * 1024,
+	timeLimit:     3,
+	wallTimeLimit: 10,
+	extraTime:     2,
+}
+
+func (box *IsolateBox) Execute(boxCmd string, stdin io.ReadCloser, constraints Constraints) (res *ExtendedResult, err error) {
+	res = &ExtendedResult{}
+
 	var directory string
 	directory, err = utils.MakeTempDir()
 	if err != nil {
@@ -76,33 +83,33 @@ func (box *IsolateBox) Execute(boxCmd string, stdin io.ReadCloser, constraints C
 
 	cmdArgs := make([]string, 0)
 
-	if constraints.memoryLimit != nil {
-		cmdArgs = append(cmdArgs, fmt.Sprintf("--mem=%d", *constraints.memoryLimit))
-	}
-	if constraints.timeLimit != nil {
-		cmdArgs = append(cmdArgs, fmt.Sprintf("--time=%d", *constraints.timeLimit))
-	}
-	if constraints.wallTimeLimit != nil {
-		cmdArgs = append(cmdArgs, fmt.Sprintf("--wall-time=%d", *constraints.wallTimeLimit))
-	}
-	if constraints.extraTime != nil {
-		cmdArgs = append(cmdArgs, fmt.Sprintf("--extra-time=%d", *constraints.extraTime))
-	}
+	cmdArgs = append(cmdArgs, fmt.Sprintf("--mem=%d", constraints.memoryLimit))
+	cmdArgs = append(cmdArgs, fmt.Sprintf("--time=%d", constraints.timeLimit))
+	cmdArgs = append(cmdArgs, fmt.Sprintf("--wall-time=%d", constraints.wallTimeLimit))
+	cmdArgs = append(cmdArgs, fmt.Sprintf("--extra-time=%d", constraints.extraTime))
 
 	cmdArgs = append(cmdArgs, fmt.Sprintf("--meta=%s", metaFilePath))
 	cmdArgs = append(cmdArgs, fmt.Sprintf("--box-id=%d", box.id))
-	cmdArgs = append(cmdArgs, "--run", boxCmd)
+	cmdArgs = append(cmdArgs, "--cg")
+	cmdArgs = append(cmdArgs, "--processes=4")
+	cmdArgs = append(cmdArgs, "--env=PATH=/usr/bin")
+	cmdArgs = append(cmdArgs, "--run")
+	for _, boxArg := range strings.Split(boxCmd, " ") {
+		cmdArgs = append(cmdArgs, boxArg)
+	}
 	cmd := exec.Command("isolate", cmdArgs...)
+	cmd.Dir = box.BoxPath
+
+	log.Println(cmd)
 
 	var executionRes Result
 	executionRes, err = Execute(cmd, stdin)
-	if err != nil {
-		return
-	}
-
 	res.Stdout = executionRes.Stdout
 	res.Stderr = executionRes.Stderr
 	res.ExitCode = executionRes.ExitCode
+	if err != nil {
+		return
+	}
 
 	// TODO: read meta file
 	return

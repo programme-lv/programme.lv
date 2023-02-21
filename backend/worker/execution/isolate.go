@@ -26,13 +26,13 @@ func (ic *IsolateController) NewIsolateBox() (box *IsolateBox, err error) {
 	box = &IsolateBox{ic: ic}
 	box.id = <-ic.boxIds
 
-	_, err = ExecuteCmd(fmt.Sprintf("isolate --cleanup --box-id %d", box.id), nil)
+	_, err = ExecuteCmd(fmt.Sprintf("isolate --cg --cleanup --box-id %d", box.id), nil)
 	if err != nil {
 		return
 	}
 
 	var initRes Result
-	initRes, err = ExecuteCmd(fmt.Sprintf("isolate --init --box-id %d", box.id), nil)
+	initRes, err = ExecuteCmd(fmt.Sprintf("isolate --cg --init --box-id %d", box.id), nil)
 	if err != nil {
 		return
 	}

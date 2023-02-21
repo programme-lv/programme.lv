@@ -18,7 +18,7 @@ type SrcCode struct {
 }
 
 func NewIsolatedExecutable(box *execution.IsolateBox, srcCode *SrcCode) (exe *IsolatedExecutable, compilation *execution.ExtendedResult, err error) {
-	// place srcCode in the box
+	// place source code in the box
 	srcFilePath := filepath.Join(box.BoxPath, srcCode.language.Filename)
 	var srcFile *os.File
 	srcFile, err = os.Create(srcFilePath)
@@ -29,7 +29,14 @@ func NewIsolatedExecutable(box *execution.IsolateBox, srcCode *SrcCode) (exe *Is
 	if err != nil {
 		return
 	}
+
 	// compile the executable in the box
+	if srcCode.language.CompileCmd != nil {
+		compilation, err = box.Execute(*srcCode.language.CompileCmd, nil, execution.DefaultConstraints)
+		if err != nil {
+			return
+		}
+	}
 
 	exe = &IsolatedExecutable{box: box}
 	return
