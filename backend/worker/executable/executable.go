@@ -19,7 +19,13 @@ type SrcCode struct {
 
 func NewIsolatedExecutable(box *execution.IsolateBox, srcCode *SrcCode) (exe *IsolatedExecutable, compilation *execution.ExtendedResult, err error) {
 	// place srcCode in the box
-	_, err = os.Create(filepath.Join(box.BoxPath, srcCode.language.Filename))
+	srcFilePath := filepath.Join(box.BoxPath, srcCode.language.Filename)
+	var srcFile *os.File
+	srcFile, err = os.Create(srcFilePath)
+	if err != nil {
+		return
+	}
+	_, err = srcFile.Write([]byte(srcCode.code))
 	if err != nil {
 		return
 	}

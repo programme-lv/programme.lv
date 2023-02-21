@@ -1,6 +1,10 @@
 package execution
 
-import "fmt"
+import (
+	"fmt"
+	"path/filepath"
+	"strings"
+)
 
 type IsolateController struct {
 	boxIds chan int
@@ -33,7 +37,7 @@ func (ic *IsolateController) NewIsolateBox() (box *IsolateBox, err error) {
 		return
 	}
 
-	box.BoxPath = initRes.Stdout
+	box.BoxPath = filepath.Join(strings.Trim(initRes.Stdout, " \n\r"), "box")
 
 	return
 }
