@@ -19,7 +19,9 @@ func Execute(cmd *exec.Cmd, stdin io.Reader) (res Result, err error) {
 	stdinPipe, _ := cmd.StdinPipe()
 	stdoutPipe, _ := cmd.StdoutPipe()
 	stderrPipe, _ := cmd.StderrPipe()
-	_, err = io.Copy(stdinPipe, stdin)
+	if stdin != nil {
+		_, err = io.Copy(stdinPipe, stdin)
+	}
 	if err != nil {
 		return
 	}
