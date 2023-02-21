@@ -55,3 +55,39 @@ func TestNewIsolatedExecutableC(t *testing.T) {
 	}
 	t.Log(compRes)
 }
+
+func TestIsolatedExecutable_Execute(t *testing.T) {
+	ic := execution.NewIsolateController(4)
+	box, err := ic.NewIsolateBox()
+	if err != nil {
+		t.Error(err)
+	}
+	defer box.Release()
+
+	t.Log("box path: ", box.BoxPath)
+
+	compileCmd := "/usr/bin/gcc -o main main.c"
+	srcCode := &SrcCode{
+		code:     "#include <stdio.h>\nint main(){printf(\"Hello World!\");}",
+		language: models.Language{Filename: "main.c", CompileCmd: &compileCmd, ExecuteCmd: "./main"},
+	}
+
+	ie, compRes, err := NewIsolatedExecutable(box, srcCode)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if ie == nil {
+		t.Error("IsolatedExecutable is nil")
+		return
+	}
+	if compRes != nil {
+		t.Log(compRes)
+	}
+
+	res, err := ie.Execute(nil)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(res)
+}

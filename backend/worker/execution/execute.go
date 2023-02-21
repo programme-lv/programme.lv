@@ -93,14 +93,14 @@ func (box *IsolateBox) Execute(boxCmd string, stdin io.ReadCloser, constraints C
 	cmdArgs = append(cmdArgs, "--cg")
 	cmdArgs = append(cmdArgs, "--processes=4")
 	cmdArgs = append(cmdArgs, "--env=PATH=/usr/bin")
-	cmdArgs = append(cmdArgs, "--run")
+	cmdArgs = append(cmdArgs, "--run", "--")
 	for _, boxArg := range strings.Split(boxCmd, " ") {
 		cmdArgs = append(cmdArgs, boxArg)
 	}
 	cmd := exec.Command("isolate", cmdArgs...)
 	cmd.Dir = box.BoxPath
 
-	log.Println(cmd)
+	log.Println(strings.Join(strings.Split(cmd.String(), " "), ","))
 
 	var executionRes Result
 	executionRes, err = Execute(cmd, stdin)

@@ -9,7 +9,8 @@ import (
 )
 
 type IsolatedExecutable struct {
-	box *execution.IsolateBox
+	box     *execution.IsolateBox
+	srcCode *SrcCode
 }
 
 type SrcCode struct {
@@ -38,13 +39,11 @@ func NewIsolatedExecutable(box *execution.IsolateBox, srcCode *SrcCode) (exe *Is
 		}
 	}
 
-	exe = &IsolatedExecutable{box: box}
+	exe = &IsolatedExecutable{box: box, srcCode: srcCode}
 	return
 }
 
-func (e *IsolatedExecutable) Execute(stdin io.Reader) (res execution.ExtendedResult, err error) {
-	// execute the executable in the box
-	// read stdout and stderr from the box
-	// return the result
+func (e *IsolatedExecutable) Execute(stdin io.ReadCloser) (res *execution.ExtendedResult, err error) {
+	res, err = e.box.Execute(e.srcCode.language.ExecuteCmd, stdin, execution.DefaultConstraints)
 	return
 }
