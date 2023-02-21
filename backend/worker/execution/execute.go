@@ -45,7 +45,7 @@ func ExecuteCmd(fullCmd string, stdin io.Reader) (executionRes Result, err error
 	return Execute(cmd, stdin)
 }
 
-type ExpandedResult struct {
+type ExtendedResult struct {
 	Result
 	CpuTime  int
 	WallTime int
@@ -59,7 +59,7 @@ type Constraints struct {
 	extraTime     *int // seconds
 }
 
-func (box *IsolateBox) Execute(boxCmd string, stdin io.Reader, constraints Constraints) (res ExpandedResult, err error) {
+func (box *IsolateBox) Execute(boxCmd string, stdin io.Reader, constraints Constraints) (res ExtendedResult, err error) {
 	var directory string
 	directory, err = utils.MakeTempDir()
 	if err != nil {

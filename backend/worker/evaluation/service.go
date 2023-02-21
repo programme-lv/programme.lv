@@ -2,15 +2,18 @@ package evaluation
 
 import (
 	"github.com/KrisjanisP/deikstra/service/models"
+	"github.com/KrisjanisP/deikstra/service/worker/executable"
+	"github.com/KrisjanisP/deikstra/service/worker/execution"
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	database *gorm.DB
+	database          *gorm.DB
+	isolateController *execution.IsolateController
 }
 
-func NewEvaluationService(database *gorm.DB) *Service {
-	return &Service{database: database}
+func NewEvaluationService(database *gorm.DB, isolateBoxes int) *Service {
+	return &Service{database: database, isolateController: execution.NewIsolateController(isolateBoxes)}
 }
 
 func (e *Service) DownloadTask(jobId uint64) (task *models.Task, err error) {
@@ -20,5 +23,10 @@ func (e *Service) DownloadTask(jobId uint64) (task *models.Task, err error) {
 		return
 	}
 	task = evaluation.TaskSubmission.Task
+	return
+}
+
+func (e *Service) DownloadSourceCode(jobId uint64) (srcCode *executable.SrcCode, err error) {
+
 	return
 }

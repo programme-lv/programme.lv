@@ -8,13 +8,18 @@ type IsolateController struct {
 
 type IsolateBox struct {
 	id      int
-	boxPath string
+	BoxPath string
+	ic      *IsolateController
+}
+
+func (box *IsolateBox) Release() {
+	box.ic.boxIds <- box.id
 }
 
 func (ic *IsolateController) NewIsolateBox() (box *IsolateBox, err error) {
 	// run isolate --cleaup --box-id {id}
 	// run isolate --init --box-id {id} <-- returns path to box
-
+	box = &IsolateBox{ic: ic}
 	box.id = <-ic.boxIds
 
 	_, err = ExecuteCmd(fmt.Sprintf("isolate --cleanup --box-id %d", box.id), nil)
@@ -28,13 +33,9 @@ func (ic *IsolateController) NewIsolateBox() (box *IsolateBox, err error) {
 		return
 	}
 
-	box.boxPath = initRes.Stdout
+	box.BoxPath = initRes.Stdout
 
 	return
-}
-
-func (ic *IsolateController) ReleaseIsolateBox(box *IsolateBox) {
-	ic.boxIds <- box.id
 }
 
 func NewIsolateController(boxes int) *IsolateController {

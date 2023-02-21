@@ -23,7 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	evaluationService := evaluation.NewEvaluationService(database)
+	evaluationService := evaluation.NewEvaluationService(database, config.WorkerStrength)
 
 	for {
 		log.Println("connecting to scheduler ", config.SchedulerAddr)
