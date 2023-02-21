@@ -16,9 +16,9 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.HandleFunc("/submissions/view/{subm_id}", c.getSubmission).Methods("GET")
 	c.router.HandleFunc("/submissions/subscribe", c.subscribeToResults).Methods("GET")
 
-	// execute
-	c.router.HandleFunc("/execute/enqueue", c.enqueueExecution).Methods("POST", "OPTIONS")
-	c.router.HandleFunc("/execute/communicate/{exec_id}", c.communicateWithExec)
+	// execution
+	c.router.HandleFunc("/execution/enqueue", c.enqueueExecution).Methods("POST", "OPTIONS")
+	c.router.HandleFunc("/execution/communicate/{exec_id}", c.communicateWithExec)
 
 	// languages
 	c.router.HandleFunc("/languages/list", c.listLanguages).Methods("GET", "OPTIONS")

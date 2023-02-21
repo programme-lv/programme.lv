@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/KrisjanisP/deikstra/service/worker/evaluation"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"io"
@@ -22,7 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	evaluationService := NewEvaluationService(database)
+	evaluationService := evaluation.NewEvaluationService(database)
 
 	for {
 		log.Println("connecting to scheduler ", config.SchedulerAddr)
@@ -35,7 +36,7 @@ func main() {
 }
 
 // listenToScheduler forwards jobs from scheduler to evaluation service
-func listenToScheduler(schedulerAddr string, workerName string, service *EvaluationService) error {
+func listenToScheduler(schedulerAddr string, workerName string, service *evaluation.Service) error {
 	var opts []grpc.DialOption
 	opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
