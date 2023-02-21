@@ -12,11 +12,12 @@ func TestNewIsolateController(t *testing.T) {
 func TestIsolateController_NewIsolateBox(t *testing.T) {
 	boxes := 2
 	ic := NewIsolateController(boxes)
-	for i := 0; i < boxes; i++ {
+	for i := 0; i < 2*boxes; i++ {
 		box, err := ic.NewIsolateBox()
 		if err != nil {
 			t.Error(err)
 		}
 		t.Log(box.BoxPath)
+		box.Release()
 	}
 }
