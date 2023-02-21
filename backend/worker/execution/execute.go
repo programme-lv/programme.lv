@@ -15,13 +15,15 @@ type Result struct {
 	ExitCode int
 }
 
-func Execute(cmd *exec.Cmd, stdin io.Reader) (res Result, err error) {
+func Execute(cmd *exec.Cmd, stdin io.ReadCloser) (res Result, err error) {
 	stdinPipe, _ := cmd.StdinPipe()
 	stdoutPipe, _ := cmd.StdoutPipe()
 	stderrPipe, _ := cmd.StderrPipe()
 	if stdin != nil {
 		_, err = io.Copy(stdinPipe, stdin)
+		_ = stdin.Close()
 	}
+	_ = stdinPipe.Close()
 	if err != nil {
 		return
 	}
@@ -30,6 +32,8 @@ func Execute(cmd *exec.Cmd, stdin io.Reader) (res Result, err error) {
 	}
 	stdoutBytes, _ := io.ReadAll(stdoutPipe)
 	stderrBytes, _ := io.ReadAll(stderrPipe)
+	_ = stdoutPipe.Close()
+	_ = stderrPipe.Close()
 	err = cmd.Wait()
 	if err != nil {
 		return
@@ -40,7 +44,7 @@ func Execute(cmd *exec.Cmd, stdin io.Reader) (res Result, err error) {
 	return
 }
 
-func ExecuteCmd(fullCmd string, stdin io.Reader) (executionRes Result, err error) {
+func ExecuteCmd(fullCmd string, stdin io.ReadCloser) (executionRes Result, err error) {
 	cmdName := strings.Fields(fullCmd)[0]
 	cmdArgs := strings.Fields(fullCmd)[1:]
 	cmd := exec.Command(cmdName, cmdArgs...)
@@ -61,7 +65,7 @@ type Constraints struct {
 	extraTime     *int // seconds
 }
 
-func (box *IsolateBox) Execute(boxCmd string, stdin io.Reader, constraints Constraints) (res ExtendedResult, err error) {
+func (box *IsolateBox) Execute(boxCmd string, stdin io.ReadCloser, constraints Constraints) (res ExtendedResult, err error) {
 	var directory string
 	directory, err = utils.MakeTempDir()
 	if err != nil {
