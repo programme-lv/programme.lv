@@ -1,10 +1,12 @@
 import {useState} from 'react';
-import {Envelope, Lock} from 'react-bootstrap-icons';
+import {Envelope, Lock, Person} from 'react-bootstrap-icons';
 import Link from "next/link";
 
-const LoginForm = () => {
+const RegisterForm = () => {
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,8 +17,16 @@ const LoginForm = () => {
         <div className="container vh-100 w-100 d-flex align-items-center pb-5">
             <div className={"d-flex w-100 justify-content-around mt-5 pb-5"}>
                 <div className="col-5 border p-4">
-                    <h4 className="text-center mb-3">Pieslēdzies savam kontam</h4>
+                    <h4 className="text-center mb-3">programme.lv reģistrācija :)</h4>
                     <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="username" className="form-label">Lietotājvārds</label>
+                            <div className="input-group">
+                                <input type="text" className="form-control" id="username" value={username}
+                                       onChange={(e) => setUsername(e.target.value)} required/>
+                                <span className="input-group-text bg-white"><Person/></span>
+                            </div>
+                        </div>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Epasta adrese</label>
                             <div className="input-group">
@@ -33,22 +43,18 @@ const LoginForm = () => {
                                 <span className="input-group-text bg-white"><Lock/></span>
                             </div>
                         </div>
-                        <div className="d-flex justify-content-between">
-                            <div>
-                                <input className="form-check-input" type="checkbox" value="" id="remember"/>
-                                <label className="form-check-label ms-2 mb-3" htmlFor="remember">
-                                    Atcerēties mani
-                                </label>
-                            </div>
-                            <div>
-                                <a href="#" className="text-decoration-none text-danger">Aizmirsi paroli?</a>
+                        <div className="mb-3">
+                            <label htmlFor="password2" className="form-label">Apstipriniet paroli</label>
+                            <div className="input-group">
+                                <input type="password2" className="form-control" id="password2" value={password2}
+                                       onChange={(e) => setPassword(e.target.value)} required/>
+                                <span className="input-group-text bg-white"><Lock/></span>
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">pieslēgties</button>
+                        <button type="submit" className="btn btn-success w-100">reģistrēties</button>
                         <div className="py-3">
-                            Neesi piereģistrējies? <Link href="/register"><a
-                            className="text-decoration-none text-success">Reģistrēties</a>
-                        </Link>
+                            Jau esi piereģistrējies? <Link href="/login"><a
+                            className="text-decoration-none text-primary">Pieslēgties</a></Link>
                         </div>
                     </form>
 
@@ -61,4 +67,4 @@ const LoginForm = () => {
     </>);
 };
 
-export default LoginForm;
+export default RegisterForm;
