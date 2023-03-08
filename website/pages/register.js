@@ -28,10 +28,19 @@ const RegisterForm = () => {
                     <div className="col-5 border p-4">
                         <h4 className="text-center mb-3 bold">Reģistrācija :)</h4>
                         <form onSubmit={handleSubmit}>
+
+                            <div className="mb-3">
+                                <label htmlFor="username" className="form-label">Lietotājvārds</label>
+                                <div className="input-group">
+                                    <input type="text" className="form-control" id="username" value={username}
+                                           onChange={(e) => setUsername(e.target.value)} required/>
+                                    <span className="input-group-text bg-white"><Person/></span>
+                                </div>
+                            </div>
                             <div className="mb-3 d-flex mt-4">
                                 {/*first name, last name*/}
                                 <div className={"col-6 pe-3"}>
-                                    <label htmlFor="first_name" className="form-label">Vārds</label>
+                                    <label htmlFor="first_name" className="form-label">Jūsu vārds</label>
                                     <div className="input-group">
                                         <input type="text" className="form-control" id="first_name" value={firstName}
                                                onChange={(e) => setFirstName(e.target.value)} required/>
@@ -43,14 +52,6 @@ const RegisterForm = () => {
                                         <input type="text" className="form-control" id="last_name" value={lastName}
                                                onChange={(e) => setLastName(e.target.value)} required/>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="username" className="form-label">Lietotājvārds</label>
-                                <div className="input-group">
-                                    <input type="text" className="form-control" id="username" value={username}
-                                           onChange={(e) => setUsername(e.target.value)} required/>
-                                    <span className="input-group-text bg-white"><Person/></span>
                                 </div>
                             </div>
                             <div className="mb-3">
