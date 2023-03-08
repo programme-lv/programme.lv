@@ -4,7 +4,7 @@ export default function Navbar({active_page, admin}) {
     admin = true; // TODO: this is a temporary hack to make the admin page show up
     return (
         <nav className="navbar">
-            <div className="navbar-expand-md container border p-1 px-3">
+            <div className="navbar-expand-md container border p-1 px-3 bg-white">
                 <div className="d-flex">
                     <Link href="/"><a className="navbar-brand">programme.lv</a></Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas"
@@ -47,7 +47,7 @@ export default function Navbar({active_page, admin}) {
                 </div>
                 <div className="navbar-nav">
                     <li className="nav-item">
-                        <Link href="#"><a className='nav-link active'>pierakstīties <i
+                        <Link href="/login"><a className='nav-link active'>pierakstīties <i
                             className="bi bi-box-arrow-in-right"></i></a></Link>
                     </li>
 
