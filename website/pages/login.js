@@ -1,6 +1,8 @@
 import {useState} from 'react';
 import {Envelope, Lock} from 'react-bootstrap-icons';
 import Link from "next/link";
+import Image from "next/image";
+import LogoWithText from "../public/logo-with-text.png";
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -13,7 +15,12 @@ const LoginForm = () => {
 
     return (<>
         <div className="container vh-100 w-100 d-flex align-items-center pb-5">
-            <div className={"d-flex w-100 justify-content-around mt-5 pb-5"}>
+            <div className={"d-flex w-100 flex-column align-items-center mt-5 pb-5"}>
+                <Link href="/">
+                    <a className="my-3">
+                        <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"80%"}/>
+                    </a>
+                </Link>
                 <div className="col-5 border p-4">
                     <h4 className="text-center mb-3">Pieslēdzies savam kontam</h4>
                     <form onSubmit={handleSubmit}>
@@ -44,7 +51,7 @@ const LoginForm = () => {
                                 <a href="#" className="text-decoration-none text-danger">Aizmirsi paroli?</a>
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">pieslēgties</button>
+                        <button type="submit" className="btn btn-primary w-100 my-2">pieslēgties</button>
                         <div className="py-3">
                             Neesi piereģistrējies? <Link href="/register"><a
                             className="text-decoration-none text-success">Reģistrēties</a>
