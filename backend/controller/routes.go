@@ -3,6 +3,13 @@ package controller
 import "github.com/gorilla/mux"
 
 func (c *Controller) registerAPIRoutes() {
+	// users
+	c.router.HandleFunc("/users/list", c.listUsers).Methods("GET", "OPTIONS")
+	c.router.HandleFunc("/users/view/{user_id}", c.getUser).Methods("GET", "OPTIONS")
+	c.router.HandleFunc("/users/register", c.createUser).Methods("POST", "OPTIONS")
+	c.router.HandleFunc("/users/login", c.loginUser).Methods("POST", "OPTIONS")
+	//c.router.HandleFunc("/users/delete/{user_id}", c.deleteUser).Methods("DELETE", "OPTIONS")
+
 	// tasks
 	c.router.HandleFunc("/tasks/list", c.listTasks).Methods("GET", "OPTIONS")
 	c.router.HandleFunc("/tasks/view/{task_id}", c.getTask).Methods("GET", "OPTIONS")

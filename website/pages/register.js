@@ -4,7 +4,7 @@ import Link from "next/link";
 import LogoWithText from '../public/logo-with-text.png'
 import Image from "next/image";
 
-const RegisterForm = () => {
+const RegisterForm = ({apiUrl}) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
@@ -12,9 +12,27 @@ const RegisterForm = () => {
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        if (password !== password2) {
+            alert("Paroles nesakrīt");
+            return;
+        }
         // Handle form submission
+        const data = {"first_name": firstName, "last_name": lastName, username, email, password};
+        const response = await fetch(apiUrl + "/users/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            alert("Reģistrācija veiksmīga!");
+        } else {
+            alert("Kļūda: " + response.status + " " + response.statusText);
+        }
     };
 
     return (<>
@@ -83,7 +101,7 @@ const RegisterForm = () => {
                             <div className="mb-3">
                                 <label htmlFor="password2" className="form-label">Apstipriniet paroli</label>
                                 <div className="input-group">
-                                    <input type="password2" className="form-control" id="password2" value={password2}
+                                    <input type="password" className="form-control" id="password2" value={password2}
                                            onChange={(e) => setPassword2(e.target.value)} required/>
                                     <span className="input-group-text bg-white"><Lock/></span>
                                 </div>
@@ -106,3 +124,11 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
+
+export async function getServerSideProps() {
+    return {
+        props: {
+            apiUrl: process.env.API_URL
+        }
+    }
+}

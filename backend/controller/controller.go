@@ -11,6 +11,7 @@ import (
 	"github.com/KrisjanisP/deikstra/service/scheduler"
 	"gorm.io/gorm"
 
+	"github.com/alexedwards/scs/v2"
 	"github.com/gorilla/mux"
 )
 
@@ -21,10 +22,12 @@ type Controller struct {
 	validate    *validator.Validate
 	infoLogger  *log.Logger
 	errorLogger *log.Logger
+	sessions    *scs.SessionManager
 }
 
 func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
+	sessions := scs.New()
 	controller := Controller{
 		scheduler:   scheduler,
 		router:      router,
@@ -32,6 +35,7 @@ func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB) *Con
 		validate:    validator.New(),
 		infoLogger:  log.New(os.Stdout, "API INFO ", log.Ldate|log.Ltime),
 		errorLogger: log.New(os.Stderr, "API ERROR ", log.Ldate|log.Ltime|log.Lshortfile),
+		sessions:    sessions,
 	}
 	controller.registerAPIRoutes()
 	return &controller
