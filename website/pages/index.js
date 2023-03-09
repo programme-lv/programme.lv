@@ -10,7 +10,7 @@ export default function Home() {
         <>
             <Navbar/>
             <main className="container">
-                <div className="d-flex my-5">
+                <div className="d-flex my-4">
                     <h1 className="my-4 col-8 mx-auto text-center align-self-center font-monospace">
                         <strong>programme.lv</strong> - jauns
                         nostūris<br/>
@@ -42,6 +42,13 @@ export default function Home() {
                             </ul>
                         </div>
                     </div>
+                </div>
+                <h1 className="text-center mt-5">Tomēr mājaslapa šobrīd ir tikai izstrādes fāzē.</h1>
+                <div className="text-center mt-4 fs-5">
+                    <p>Ja vēlies sekot līdzi tās izstrādei vai vienkārši sadraudzēties ar citiem programmētājiem,
+                        pievienojies mūsu discord <a href="https://discord.gg/b9zcHpaJ">serverim</a>.</p>
+                    <p>Jāmin, ka mājaslapa ir un paliks atvērta pirmkoda ar GPL-3 licenci. Pirmkods: <a
+                        href="https://github.com/KrisjanisP/programme.lv">github.com/KrisjanisP/programme.lv</a></p>
                 </div>
             </main>
             <footer>

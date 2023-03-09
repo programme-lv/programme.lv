@@ -53,7 +53,7 @@ export default function Navbar({active_page, admin}) {
                 </div>
                 <div className="navbar-nav">
                     <li className="nav-item">
-                        <Link href="/login"><a className='nav-link active'>pierakstīties <i
+                        <Link href="/login"><a className='btn btn-sm btn-outline-primary active'>pieslēgties <i
                             className="bi bi-box-arrow-in-right"></i></a></Link>
                     </li>
 
