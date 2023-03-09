@@ -21,11 +21,21 @@ const RegisterForm = () => {
             <div className="container vh-100 w-100 d-flex align-items-center pb-5">
                 <div className={"d-flex flex-column w-100 align-items-center mt-5 pb-5"}>
                     <Link href="/">
-                        <a className="my-3">
+                        <a className="my-3 d-none d-lg-block">
                             <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"80%"}/>
                         </a>
                     </Link>
-                    <div className="col-5 border p-4">
+                    <Link href="/">
+                        <a className="my-3 d-md-none d-block">
+                            <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"200px"}/>
+                        </a>
+                    </Link>
+                    <Link href="/">
+                        <a className="my-3 d-lg-none d-none d-md-block">
+                            <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"130px"}/>
+                        </a>
+                    </Link>
+                    <div className="col-lg-5 col-sm-10 col-11  border p-4">
                         <h4 className="text-center mb-3 bold">Reģistrācija :)</h4>
                         <form onSubmit={handleSubmit}>
 
