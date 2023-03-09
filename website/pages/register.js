@@ -11,11 +11,13 @@ const RegisterForm = ({apiUrl}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password !== password2) {
-            alert("Paroles nesakrīt");
+            setError("Paroles nesakrīt.");
             return;
         }
         // Handle form submission
@@ -27,13 +29,42 @@ const RegisterForm = ({apiUrl}) => {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            alert("Reģistrācija veiksmīga!");
+            setSuccess(true);
         } else {
-            alert("Kļūda: " + response.status + " " + response.statusText);
+            setError(await response.text());
+            setPassword('');
+            setPassword2('');
         }
     };
+
+    if (success) return (
+        <div className="container vh-100 w-100 d-flex align-items-center pb-5">
+            <div className={"d-flex flex-column w-100 align-items-center mt-5 pb-5"}>
+                <Link href="/">
+                    <a className="my-3 d-none d-lg-block">
+                        <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"80%"}/>
+                    </a>
+                </Link>
+                <Link href="/">
+                    <a className="my-3 d-md-none d-block">
+                        <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"200px"}/>
+                    </a>
+                </Link>
+                <Link href="/">
+                    <a className="my-3 d-lg-none d-none d-md-block">
+                        <Image src={LogoWithText} objectFit={"contain"} alt="logo with text" height={"130px"}/>
+                    </a>
+                </Link>
+                <div className="col-lg-5 col-sm-10 col-11  border p-4">
+                    <h4 className="text-center mb-3 bold">Reģistrācija :)</h4>
+                    <div className="alert alert-success" role="alert">
+                        Reģistrācija veiksmīga! Doties uz <Link href="/login"><a
+                        className="alert-link">pierakstīšanos</a></Link>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 
     return (<>
             <div className="container vh-100 w-100 d-flex align-items-center pb-5">
@@ -55,6 +86,7 @@ const RegisterForm = ({apiUrl}) => {
                     </Link>
                     <div className="col-lg-5 col-sm-10 col-11  border p-4">
                         <h4 className="text-center mb-3 bold">Reģistrācija :)</h4>
+                        {error && <div className="alert alert-danger">{error}</div>}
                         <form onSubmit={handleSubmit}>
 
                             <div className="mb-3">

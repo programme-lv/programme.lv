@@ -102,6 +102,20 @@ func (c *Controller) createUser(w http.ResponseWriter, r *http.Request) {
 	user.Password = string(hashedPassword)
 	user.Admin = false
 
+	// check if database contains a user with the same email
+	var existingUser models.User
+	err = c.database.Model(&models.User{}).Where("email = ?", user.Email).Take(&existingUser).Error
+	if err == nil {
+		http.Error(w, "Lietotājs ar šo epastu jau eksistē.", http.StatusBadRequest)
+		return
+	}
+
+	err = c.database.Model(&models.User{}).Where("username = ?", user.Username).Take(&existingUser).Error
+	if err == nil {
+		http.Error(w, "Lietotājs ar šo lietotājvārdu jau eksistē.", http.StatusBadRequest)
+		return
+	}
+
 	err = c.database.Create(&user).Error
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
