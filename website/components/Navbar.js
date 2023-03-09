@@ -1,12 +1,18 @@
 import Link from 'next/link'
+import Image from "next/image";
+import LogoWithText from "../public/logo-with-text.png";
 
 export default function Navbar({active_page, admin}) {
     admin = true; // TODO: this is a temporary hack to make the admin page show up
     return (
         <nav className="navbar">
-            <div className="navbar-expand-md container border p-1 px-3 bg-white">
-                <div className="d-flex">
-                    <Link href="/"><a className="navbar-brand">programme.lv</a></Link>
+            <div className="navbar-expand-md container py-1 bg-white">
+                <div className="d-flex align-items-center">
+                    <Link href="/">
+                        <a className="navbar-brand py-0 position-relative" style={{top: "5px", right: "5px"}}>
+                            <Image src={LogoWithText} alt="logo with text" width={"160px"} height={"40px"}/>
+                        </a>
+                    </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="offcanvas"
                             data-bs-target="#navbar-offcanvas">
                         <span className="navbar-toggler-icon"></span>
