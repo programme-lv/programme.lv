@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
+	"regexp"
 	"strconv"
 )
 
@@ -87,6 +88,40 @@ func (c *Controller) createUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// check if the values provided are sane
+	if len(user.Password) < 8 {
+		http.Error(w, "Parolei jābūt vismaz 8 rakstzīmju garai.", http.StatusBadRequest)
+		return
+	}
+	if len(user.Password) > 64 {
+		http.Error(w, "Parole nedrīkst būt garāka par 64 simboliem.", http.StatusBadRequest)
+		return
+	}
+	if len(user.Username) < 3 {
+		http.Error(w, "Lietotājvārdam jābūt vismaz 3 rakstzīmju garam.", http.StatusBadRequest)
+		return
+	}
+	if len(user.Username) > 20 {
+		http.Error(w, "Lietotājvārds nedrīkst būt garāks par 20 simboliem.", http.StatusBadRequest)
+		return
+	}
+	if regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`).MatchString(user.Email) == false {
+		http.Error(w, "Epasts nav pareizā formātā.", http.StatusBadRequest)
+		return
+	}
+	if len(user.Email) > 50 {
+		http.Error(w, "Epasts nedrīkst būt garāks par 50 simboliem.", http.StatusBadRequest)
+		return
+	}
+	if len(user.FirstName) < 2 || len(user.FirstName) > 50 {
+		http.Error(w, "Vārds nedrīkst būt garāks par 50 simboliem un nedrīkst būt īsāks par 2 simboliem.", http.StatusBadRequest)
+		return
+	}
+	if len(user.LastName) < 2 || len(user.LastName) > 50 {
+		http.Error(w, "Uzvārds nedrīkst būt garāks par 50 simboliem un nedrīkst būt īsāks par 2 simboliem.", http.StatusBadRequest)
 		return
 	}
 
