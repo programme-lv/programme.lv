@@ -11,6 +11,7 @@ type SchedulerConfig struct {
 	SchedulerPort int    `mapstructure:"scheduler_port"`
 	DBConnString  string `mapstructure:"db_conn_string"`
 	TasksDir      string `mapstructure:"tasks_dir"`
+	PasswordSalt  string `mapstructure:"password_salt"`
 }
 
 func LoadAppConfig() SchedulerConfig {

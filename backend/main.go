@@ -21,6 +21,6 @@ func main() {
 
 	go sched.StartSchedulerServer(conf.SchedulerPort)
 
-	c := controller.CreateAPIController(sched, db)
+	c := controller.CreateAPIController(sched, db, conf.PasswordSalt)
 	c.StartAPIServer(conf.APIPort)
 }

@@ -16,26 +16,28 @@ import (
 )
 
 type Controller struct {
-	scheduler   *scheduler.Scheduler
-	database    *gorm.DB
-	router      *mux.Router
-	validate    *validator.Validate
-	infoLogger  *log.Logger
-	errorLogger *log.Logger
-	sessions    *scs.SessionManager
+	scheduler    *scheduler.Scheduler
+	database     *gorm.DB
+	router       *mux.Router
+	validate     *validator.Validate
+	infoLogger   *log.Logger
+	errorLogger  *log.Logger
+	sessions     *scs.SessionManager
+	passwordSalt string
 }
 
-func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB) *Controller {
+func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, passwSalt string) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	sessions := scs.New()
 	controller := Controller{
-		scheduler:   scheduler,
-		router:      router,
-		database:    database,
-		validate:    validator.New(),
-		infoLogger:  log.New(os.Stdout, "API INFO ", log.Ldate|log.Ltime),
-		errorLogger: log.New(os.Stderr, "API ERROR ", log.Ldate|log.Ltime|log.Lshortfile),
-		sessions:    sessions,
+		scheduler:    scheduler,
+		router:       router,
+		database:     database,
+		validate:     validator.New(),
+		infoLogger:   log.New(os.Stdout, "API INFO ", log.Ldate|log.Ltime),
+		errorLogger:  log.New(os.Stderr, "API ERROR ", log.Ldate|log.Ltime|log.Lshortfile),
+		sessions:     sessions,
+		passwordSalt: passwSalt,
 	}
 	controller.registerAPIRoutes()
 	return &controller

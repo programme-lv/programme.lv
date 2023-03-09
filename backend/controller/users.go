@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/KrisjanisP/deikstra/service/models"
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
 )
@@ -88,6 +89,18 @@ func (c *Controller) createUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	user.Password += c.passwordSalt
+
+	var hashedPassword []byte
+	hashedPassword, err = bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user.Password = string(hashedPassword)
+	user.Admin = false
 
 	err = c.database.Create(&user).Error
 	if err != nil {
