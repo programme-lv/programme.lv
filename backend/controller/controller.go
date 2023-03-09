@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/KrisjanisP/deikstra/service/scheduler"
 	"gorm.io/gorm"
@@ -29,6 +30,12 @@ type Controller struct {
 func CreateAPIController(scheduler *scheduler.Scheduler, database *gorm.DB, passwSalt string) *Controller {
 	router := mux.NewRouter().StrictSlash(true)
 	sessions := scs.New()
+	sessions.Lifetime = 24 * time.Hour
+	sessions.Cookie.Persist = true
+	sessions.Cookie.SameSite = http.SameSiteNoneMode
+	sessions.Cookie.Secure = true
+	sessions.Cookie.Name = "proglv-session"
+	router.Use(sessions.LoadAndSave)
 	controller := Controller{
 		scheduler:    scheduler,
 		router:       router,

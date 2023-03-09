@@ -174,13 +174,6 @@ func (c *Controller) createUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Controller) loginUser(w http.ResponseWriter, r *http.Request) {
-	// CORS
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "content-type")
-	if r.Method == http.MethodOptions {
-		return
-	}
-
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -188,21 +181,37 @@ func (c *Controller) loginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = c.database.Model(&models.User{}).Where("email = ?", user.Email).Take(&user).Error
+	var existingUser models.User
+	err = c.database.Model(&models.User{}).Where("email = ?", user.Email).Take(&existingUser).Error
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	c.sessions.Put(r.Context(), "user_id", user.ID)
+	err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password+c.passwordSalt))
+	if err != nil {
+		http.Error(w, "Epasts vai parole nav pareiza.", http.StatusBadRequest)
+		return
+	}
 
-	resp, err := json.Marshal(user)
+	c.infoLogger.Println(c.sessions.Get(r.Context(), "user_id"))
+
+	err = c.sessions.RenewToken(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	c.infoLogger.Printf("Logged in user: %v", user)
+	c.sessions.Put(r.Context(), "user_id", existingUser.ID)
+
+	existingUser.Password = "noslepums"
+	resp, err := json.Marshal(existingUser)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	c.infoLogger.Printf("Logged in user: %v", existingUser)
 
 	// send the response
 	_, err = w.Write(resp)

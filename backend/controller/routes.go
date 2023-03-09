@@ -1,6 +1,21 @@
 package controller
 
-import "github.com/gorilla/mux"
+import (
+	"github.com/gorilla/mux"
+	"net/http"
+)
+
+func (c *Controller) handleCors(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+		w.Header().Set("Access-Control-Allow-Headers", "content-type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		if r.Method == http.MethodOptions {
+			return
+		}
+		handler.ServeHTTP(w, r)
+	})
+}
 
 func (c *Controller) registerAPIRoutes() {
 	// users
@@ -31,4 +46,5 @@ func (c *Controller) registerAPIRoutes() {
 	c.router.HandleFunc("/languages/list", c.listLanguages).Methods("GET", "OPTIONS")
 
 	c.router.Use(mux.CORSMethodMiddleware(c.router))
+	c.router.Use(c.handleCors)
 }
