@@ -3,14 +3,33 @@ import {Envelope, Lock} from 'react-bootstrap-icons';
 import Link from "next/link";
 import Image from "next/image";
 import LogoWithText from "../public/logo-with-text.png";
+import router from "next/router";
 
-const LoginForm = () => {
+const LoginForm = ({apiUrl}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle form submission
+        const data = {email, password};
+        try {
+            const response = await fetch(apiUrl + "/users/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                await router.push("/");
+            } else {
+                setError(await response.text());
+                setPassword('');
+            }
+        } catch (e) {
+            setError("Neizdevās pieslēgties. Iespējams, sistēma ir izslēgta.");
+        }
     };
 
     return (<>
@@ -33,6 +52,9 @@ const LoginForm = () => {
                 </Link>
                 <div className="col-lg-5 col-sm-10 col-11 border p-4">
                     <h4 className="text-center mb-3">Pieslēdzies savam kontam</h4>
+                    {error && <div className="alert alert-danger" role="alert">
+                        {error}
+                    </div>}
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="email" className="form-label">Epasta adrese</label>
@@ -70,12 +92,17 @@ const LoginForm = () => {
                     </form>
 
                 </div>
-                {/*<div className="col-4 d-flex bg-white border py-4">*/}
-                {/*    <Image src={Fractal_canopy} objectFit={"contain"} alt="fractal canopy" height={"100%"}/>*/}
-                {/*</div>*/}
             </div>
         </div>
     </>);
 };
 
 export default LoginForm;
+
+export async function getServerSideProps() {
+    return {
+        props: {
+            apiUrl: process.env.API_URL
+        }
+    }
+}

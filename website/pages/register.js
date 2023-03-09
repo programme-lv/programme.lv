@@ -22,18 +22,22 @@ const RegisterForm = ({apiUrl}) => {
         }
         // Handle form submission
         const data = {"first_name": firstName, "last_name": lastName, username, email, password};
-        const response = await fetch(apiUrl + "/users/register", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data)
-        });
+        try {
+            const response = await fetch(apiUrl + "/users/register", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
 
-        if (response.ok) {
-            setSuccess(true);
-        } else {
-            setError(await response.text());
-            setPassword('');
-            setPassword2('');
+            if (response.ok) {
+                setSuccess(true);
+            } else {
+                setError(await response.text());
+                setPassword('');
+                setPassword2('');
+            }
+        } catch (e) {
+            setError("Neizdevās reģistrēties. Iespējams, sistēma ir izslēgta.");
         }
     };
 
