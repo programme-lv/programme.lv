@@ -10,6 +10,10 @@ function MyApp({Component, pageProps}) {
         require("bootstrap/dist/js/bootstrap");
     }, [])
 
+    useEffect(()=>{
+	    console.log("hello");
+    },[Component])
+
     return (
         <>
             <Head>
