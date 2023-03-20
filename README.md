@@ -1,10 +1,7 @@
 # programme.lv
 
-Modern programming education platforma
-
-![uzdevumi](./tasks-screenshot.png)
-![diagramma](./diagram.svg)
-
+`programme.lv` is a modern latvian programming education platform. The frontend is a stateless `next.js` service, the backend is written in `go`. In front of the frontend and backend will be sitting a reverse proxy `caddy` that will route `/api/*` requests to backend and others to frontend. The backend can communicate with the `postgres` database. Backend consists of the `controller` that routes the api requests and works with database and the `scheduler` that publishes jobs to the `worker`s.
+ 
 ## starting reverse proxy
 
 ```
