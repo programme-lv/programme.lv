@@ -6,6 +6,8 @@ The frontend is served by a stateless `next.js` service. The backend is written 
 
 Communication between the frontend and backend is done via REST API. Communication between the `scheduler` and the `worker` is done via gRPC and defined in the `protofiles`.
 
+Live updates to frontend users will be supplied using websockets.
+
 ## starting reverse proxy
 
 ```
@@ -22,7 +24,17 @@ yarn run dev
 
 ## starting backend
 
+Besides having go installed an .env file should be located in the backend folder and contain `db_conn_string`.
+
 ```
 cd backend
+go run scripts/migration/migrate.go
 go run .
 ```
+
+## start worker
+```
+cd backend
+cd worker
+go run .
+``
