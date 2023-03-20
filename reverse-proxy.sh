@@ -1,0 +1,1 @@
+sudo caddy run --config ./caddy.conf --adapter caddyfile
