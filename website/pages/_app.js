@@ -2,6 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/globals.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import Head from "next/head";
+// import Footer from "next/footer";
+import SponsorBar from "../components/SponsorBar";
 
 import {useEffect} from 'react'
 
@@ -23,6 +25,9 @@ function MyApp({Component, pageProps}) {
 
             </Head>
             <Component {...pageProps} />
+            {/*<Footer>*/}
+            <SponsorBar/>
+            {/*</Footer>*/}
         </>
     );
 }
