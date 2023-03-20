@@ -15,7 +15,7 @@ const LoginForm = ({apiUrl}) => {
         // Handle form submission
         const data = {email, password};
         try {
-            const response = await fetch(apiUrl + "/users/login", {
+            const response = await fetch(apiUrl + "/users/login", { //sākotnēji iekavās bija apiUrl + "/users/login"
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(data),
