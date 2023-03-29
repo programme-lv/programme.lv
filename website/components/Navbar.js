@@ -21,11 +21,11 @@ export default function Navbar({active_page, admin}) {
                         <ul className="navbar-nav">
                             <li className="nav-item">
                                 <Link href="/tasks"><a
-                                    className={'nav-link ' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/submissions"><a
-                                    className={'nav-link ' + (active_page === 'submissions' ? 'active' : '')}>iesūtījumi</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'submissions' ? 'active' : '')}>iesūtījumi</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/results"><a
@@ -45,7 +45,7 @@ export default function Navbar({active_page, admin}) {
                             </li>
                             {admin ? <li className="nav-item">
                                 <Link href="/admin"><a
-                                    className={'nav-link ' + (active_page === 'admin' ? 'active' : '')}>administrācija</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'admin' ? 'active' : '')}>administrācija</a></Link>
                             </li> : <></>}
 
                         </ul>
@@ -53,7 +53,7 @@ export default function Navbar({active_page, admin}) {
                 </div>
                 <div className="navbar-nav">
                     <li className="nav-item">
-                        <Link href="/login"><a className='btn btn-sm btn-outline-primary active'>pieslēgties <i
+                        <Link href="/login"><a className='btn btn-sm btn-outline-primary active disabled'>pieslēgties <i
                             className="bi bi-box-arrow-in-right"></i></a></Link>
                     </li>
 
@@ -64,10 +64,10 @@ export default function Navbar({active_page, admin}) {
                 <div className="offcanvas-body">
                     <ul className="navbar-nav me-auto">
                         <li className="nav-item">
-                            <Link href="/tasks"><a className='nav-link'>uzdevumi</a></Link>
+                            <Link href="/tasks"><a className='nav-link disabled'>uzdevumi</a></Link>
                         </li>
                         <li className="nav-item mt-2">
-                            <Link href="/submissions"><a className='nav-link'>iesūtījumi</a></Link>
+                            <Link href="/submissions"><a className='nav-link disabled'>iesūtījumi</a></Link>
                         </li>
                         <li className="nav-item mt-2">
                             <Link href="/results"><a className='nav-link disabled'>rezultāti</a></Link>

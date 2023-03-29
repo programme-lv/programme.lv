@@ -10,16 +10,10 @@ export default function Home() {
     return (<>
         <Navbar/>
         <main className="container">
-            <div className="my-4 w-100">
-                <h2 className={"text-center"}>
-                    Lūdzu, nobalso par programme.lv swedbank <a className={"px-2"}
-                                                                href={"https://konkurss.biznesaskices.lv/dalibnieku-video/programme-lv-10"}> konkursā</a>!
-                </h2>
-                <div className={"d-flex mx-auto justify-content-center my-3"}>
-                    <Image alt="voting poster with qr code" src={Poster} width={"500px"} height={"700px"}
-                           className={"mx-auto"}/>
-                </div>
-            </div>
+            <h1 className="text-center py-5 text-primary">
+                mājaslapu plānots darīt funkcionālu
+                pavasara beigās :)
+            </h1>
             <div className="d-flex my-4">
                 <h1 className="my-4 col-8 mx-auto text-center align-self-center font-monospace">
                     <strong>programme.lv</strong> - jauns
