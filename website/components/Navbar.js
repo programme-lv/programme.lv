@@ -19,6 +19,16 @@ export default function Navbar({active_page, admin}) {
                     </button>
                     <div className="collapse navbar-collapse" id="navbar-main">
                         <ul className="navbar-nav">
+                            {/* TODO: remove when logged in*/}
+                            <li className="nav-item">
+                                <Link href="/news"><a
+                                    className={'nav-link disabled' + (active_page === 'news' ? 'active' : '')}>jaunumi</a></Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link href="/contacts"><a
+                                    className={'nav-link' + (active_page === 'contacts' ? 'active' : '')}>kontakti</a></Link>
+                            </li>
+                            {/* */}
                             <li className="nav-item">
                                 <Link href="/tasks"><a
                                     className={'nav-link disabled' + (active_page === 'tasks' ? 'active' : '')}>uzdevumi</a></Link>
@@ -29,19 +39,19 @@ export default function Navbar({active_page, admin}) {
                             </li>
                             <li className="nav-item">
                                 <Link href="/results"><a
-                                    className={'nav-link disabled ' + (active_page === 'results' ? 'active' : '')}>rezultāti</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'results' ? 'active' : '')}>rezultāti</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/competitions"><a
-                                    className={'nav-link disabled ' + (active_page === 'competitions' ? 'active' : '')}>sacensības</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'competitions' ? 'active' : '')}>sacensības</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/editor"><a
-                                    className={'nav-link disabled ' + (active_page === 'editor' ? 'active' : '')}>redaktors</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'editor' ? 'active' : '')}>redaktors</a></Link>
                             </li>
                             <li className="nav-item">
                                 <Link href="/theory"><a
-                                    className={'nav-link disabled ' + (active_page === 'theory' ? 'active' : '')}>teorija</a></Link>
+                                    className={'nav-link disabled' + (active_page === 'theory' ? 'active' : '')}>teorija</a></Link>
                             </li>
                             {admin ? <li className="nav-item">
                                 <Link href="/admin"><a
